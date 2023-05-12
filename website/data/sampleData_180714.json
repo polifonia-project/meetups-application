@@ -1,0 +1,724 @@
+[
+  {
+    "paragraphIndex": 10,
+    "wikiId": 180714,
+    "annotation": "HM",
+    "group": 4,
+    "sentences": "Ad hoc engagements of this kind were commonplace for organists, but they brought little prestige such as was given to British conductor-composers such as Sullivan, Charles Villiers Stanford and Alexander Mackenzie, or the rising generation of German star conductors led by Hans Richter and Arthur Nikisch.",
+    "people": [
+      {
+        "URI": "http://dbpedia.org/resource/Ad_hoc",
+        "entity": "Ad hoc",
+        "sentenceIndex": 5,
+        "paragraphIndex": 10,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Arthur_Sullivan",
+        "entity": "Sullivan",
+        "sentenceIndex": 5,
+        "paragraphIndex": 10,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Charles_Villiers_Stanford",
+        "entity": "Charles Villiers Stanford",
+        "sentenceIndex": 5,
+        "paragraphIndex": 10,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Alexander_Mackenzie_of_Kintail",
+        "entity": "Alexander Mackenzie",
+        "sentenceIndex": 5,
+        "paragraphIndex": 10,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Hans_Richter_(conductor)",
+        "entity": "Hans Richter",
+        "sentenceIndex": 5,
+        "paragraphIndex": 10,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Arthur_Nikisch",
+        "entity": "Arthur Nikisch",
+        "sentenceIndex": 5,
+        "paragraphIndex": 10,
+        "entType": "person"
+      }
+    ],
+    "place": [
+      {
+        "URI": "http://dbpedia.org/resource/United_Kingdom",
+        "entity": "British",
+        "sentenceIndex": 5,
+        "paragraphIndex": 10,
+        "entType": "place"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Germany",
+        "entity": "German",
+        "sentenceIndex": 5,
+        "paragraphIndex": 10,
+        "entType": "place"
+      }
+    ],
+    "timeExp": [
+      {
+        "time_expression": "Ad",
+        "sentenceIndex": 5,
+        "paragraphIndex": 10
+      }
+    ],
+    "themes": [
+      {
+        "Business meeting": 3.3825538e-05,
+        "Coincidence": 0.31913102,
+        "Education": 0.6785944,
+        "Music making": 0.00018540319,
+        "Personal life": 2.4874294e-06,
+        "Public celebration": 0.0020528813
+      }
+    ]
+  },
+  {
+    "paragraphIndex": 12,
+    "wikiId": 180714,
+    "annotation": "HM",
+    "group": 2,
+    "sentences": "There had been such concerts in London since 1838, under conductors from Louis Antoine Jullien to Arthur Sullivan.",
+    "people": [
+      {
+        "URI": "http://dbpedia.org/resource/Louis-Antoine_Jullien",
+        "entity": "Louis Antoine Jullien",
+        "sentenceIndex": 2,
+        "paragraphIndex": 12,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Arthur_Sullivan",
+        "entity": "Arthur Sullivan",
+        "sentenceIndex": 2,
+        "paragraphIndex": 12,
+        "entType": "person"
+      }
+    ],
+    "place": [
+      {
+        "URI": "http://dbpedia.org/resource/London",
+        "entity": "London",
+        "sentenceIndex": 2,
+        "paragraphIndex": 12,
+        "entType": "place"
+      }
+    ],
+    "timeExp": [
+      {
+        "time_expression": "1838",
+        "sentenceIndex": 2,
+        "paragraphIndex": 12
+      }
+    ],
+    "themes": [
+      {
+        "Business meeting": 0.9786235,
+        "Coincidence": 4.000284e-05,
+        "Education": 1.3593313e-05,
+        "Music making": 0.014926694,
+        "Personal life": 5.6387013e-05,
+        "Public celebration": 0.0063397684
+      }
+    ]
+  },
+  {
+    "paragraphIndex": 15,
+    "wikiId": 180714,
+    "annotation": "HM",
+    "group": 4,
+    "sentences": "Sullivan wrote to him in 1898, \"I have never heard a finer performance in England than that of the Tchaikovsky symphony under your direction last Wednesday\".",
+    "people": [
+      {
+        "URI": "http://dbpedia.org/resource/Arthur_Sullivan",
+        "entity": "Sullivan",
+        "sentenceIndex": 5,
+        "paragraphIndex": 15,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Pyotr_Ilyich_Tchaikovsky",
+        "entity": "Tchaikovsky",
+        "sentenceIndex": 5,
+        "paragraphIndex": 15,
+        "entType": "person"
+      }
+    ],
+    "place": [
+      {
+        "URI": "http://dbpedia.org/resource/England",
+        "entity": "England",
+        "sentenceIndex": 5,
+        "paragraphIndex": 15,
+        "entType": "place"
+      }
+    ],
+    "timeExp": [
+      {
+        "time_expression": "1898",
+        "sentenceIndex": 5,
+        "paragraphIndex": 15
+      },
+      {
+        "time_expression": "last Wednesday",
+        "sentenceIndex": 5,
+        "paragraphIndex": 15
+      }
+    ],
+    "themes": [
+      {
+        "Business meeting": 0.019425169,
+        "Coincidence": 0.00022629648,
+        "Education": 0.00030044495,
+        "Music making": 0.9800363,
+        "Personal life": 1.0400498e-05,
+        "Public celebration": 1.4252045e-06
+      }
+    ]
+  },
+  {
+    "paragraphIndex": 17,
+    "wikiId": 180714,
+    "annotation": "HM",
+    "group": 6,
+    "sentences": "Leaving the leader of the orchestra, Arthur Payne, to conduct during his absence, Wood and his wife took a cruise to Morocco, missing the Proms concerts from 13 October to 8 November.",
+    "people": [
+      {
+        "URI": "http://dbpedia.org/resource/King_Arthur",
+        "entity": "Arthur",
+        "sentenceIndex": 8,
+        "paragraphIndex": 17,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Henry_Wood",
+        "entity": "Wood",
+        "sentenceIndex": 8,
+        "paragraphIndex": 17,
+        "entType": "person"
+      }
+    ],
+    "place": [
+      {
+        "URI": "http://dbpedia.org/resource/Morocco",
+        "entity": "Morocco",
+        "sentenceIndex": 8,
+        "paragraphIndex": 17,
+        "entType": "place"
+      }
+    ],
+    "timeExp": [
+      {
+        "time_expression": "13 October to 8 November",
+        "sentenceIndex": 8,
+        "paragraphIndex": 17
+      }
+    ],
+    "themes": [
+      {
+        "Business meeting": 0.23152696,
+        "Coincidence": 3.4583216e-05,
+        "Education": 0.76493746,
+        "Music making": 4.7171616e-05,
+        "Personal life": 0.0009205803,
+        "Public celebration": 0.0025333252
+      }
+    ]
+  },
+  {
+    "paragraphIndex": 17,
+    "wikiId": 180714,
+    "annotation": "HM",
+    "group": 8,
+    "sentences": "In 1899 Newman unsuccessfully attempted to secure for Wood the premiere of Elgar's Enigma Variations, but in the same year Newman passed up the opportunity to introduce the music of Delius to London concertgoers.",
+    "people": [
+      {
+        "URI": "http://dbpedia.org/resource/John_Henry_Newman",
+        "entity": "Newman",
+        "sentenceIndex": 10,
+        "paragraphIndex": 17,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/John_Henry_Newman",
+        "entity": "Newman",
+        "sentenceIndex": 10,
+        "paragraphIndex": 17,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Edward_Elgar",
+        "entity": "Elgar",
+        "sentenceIndex": 10,
+        "paragraphIndex": 17,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Frederick_Delius",
+        "entity": "Delius",
+        "sentenceIndex": 10,
+        "paragraphIndex": 17,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Henry_Wood",
+        "entity": "Wood",
+        "sentenceIndex": 10,
+        "paragraphIndex": 17,
+        "entType": "person"
+      }
+    ],
+    "place": [
+      {
+        "URI": "http://dbpedia.org/resource/London",
+        "entity": "London",
+        "sentenceIndex": 10,
+        "paragraphIndex": 17,
+        "entType": "place"
+      }
+    ],
+    "timeExp": [
+      {
+        "time_expression": "1899",
+        "sentenceIndex": 10,
+        "paragraphIndex": 17
+      },
+      {
+        "time_expression": "year",
+        "sentenceIndex": 10,
+        "paragraphIndex": 17
+      }
+    ],
+    "themes": [
+      {
+        "Business meeting": 1.1348019e-05,
+        "Coincidence": 0.94832766,
+        "Education": 8.282842e-07,
+        "Music making": 0.000109964174,
+        "Personal life": 0.05150212,
+        "Public celebration": 4.8064398e-05
+      }
+    ]
+  },
+  {
+    "paragraphIndex": 17,
+    "wikiId": 180714,
+    "annotation": "HM",
+    "group": 12,
+    "sentences": "In the same year, he introduced several of Richard Strauss's tone poems to London, and in 1905 he gave Strauss's Symphonia Domestica.",
+    "people": [
+      {
+        "URI": "http://dbpedia.org/resource/Richard_Strauss",
+        "entity": "Richard Strauss",
+        "sentenceIndex": 14,
+        "paragraphIndex": 17,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Richard_Strauss",
+        "entity": "Strauss",
+        "sentenceIndex": 14,
+        "paragraphIndex": 17,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Henry_Wood",
+        "entity": "Wood",
+        "sentenceIndex": 14,
+        "paragraphIndex": 17,
+        "entType": "person"
+      }
+    ],
+    "place": [
+      {
+        "URI": "http://dbpedia.org/resource/London",
+        "entity": "London",
+        "sentenceIndex": 14,
+        "paragraphIndex": 17,
+        "entType": "place"
+      }
+    ],
+    "timeExp": [
+      {
+        "time_expression": "year",
+        "sentenceIndex": 14,
+        "paragraphIndex": 17
+      },
+      {
+        "time_expression": "1905",
+        "sentenceIndex": 14,
+        "paragraphIndex": 17
+      }
+    ],
+    "themes": [
+      {
+        "Business meeting": 0.00043251176,
+        "Coincidence": 0.029730061,
+        "Education": 0.007124371,
+        "Music making": 0.73405373,
+        "Personal life": 0.0023920431,
+        "Public celebration": 0.22626728
+      }
+    ]
+  },
+  {
+    "paragraphIndex": 19,
+    "wikiId": 180714,
+    "annotation": "HM",
+    "group": 2,
+    "sentences": "In 1906, at the Norwich music festival he presented Beethoven's Choral Symphony and Bach's St Matthew Passion, with his wife among the singers.",
+    "people": [
+      {
+        "URI": "http://dbpedia.org/resource/Ludwig_van_Beethoven",
+        "entity": "Beethoven",
+        "sentenceIndex": 2,
+        "paragraphIndex": 19,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Johann_Sebastian_Bach",
+        "entity": "Bach",
+        "sentenceIndex": 2,
+        "paragraphIndex": 19,
+        "entType": "person"
+      }
+    ],
+    "place": [
+      {
+        "URI": "http://dbpedia.org/resource/Norwich",
+        "entity": "Norwich",
+        "sentenceIndex": 2,
+        "paragraphIndex": 19,
+        "entType": "place"
+      }
+    ],
+    "timeExp": [
+      {
+        "time_expression": "1906",
+        "sentenceIndex": 2,
+        "paragraphIndex": 19
+      }
+    ],
+    "themes": [
+      {
+        "Business meeting": 1.18735585e-07,
+        "Coincidence": 0.003290779,
+        "Education": 0.0003251315,
+        "Music making": 0.55294734,
+        "Personal life": 0.038904514,
+        "Public celebration": 0.40453216
+      }
+    ]
+  },
+  {
+    "paragraphIndex": 19,
+    "wikiId": 180714,
+    "annotation": "HM",
+    "group": 5,
+    "sentences": "In the same year he accepted a knighthood, and declined the conductorship of the New York Philharmonic Orchestra in succession to Mahler, as he felt it his duty to devote himself to the British public.",
+    "people": [
+      {
+        "URI": "http://dbpedia.org/resource/Gustav_Mahler",
+        "entity": "Mahler",
+        "sentenceIndex": 7,
+        "paragraphIndex": 19,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Cathcart",
+        "entity": "Cathcart",
+        "sentenceIndex": 7,
+        "paragraphIndex": 19,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Cathcart",
+        "entity": "Cathcart",
+        "sentenceIndex": 7,
+        "paragraphIndex": 19,
+        "entType": "person"
+      }
+    ],
+    "place": [
+      {
+        "URI": "http://dbpedia.org/resource/United_Kingdom",
+        "entity": "British",
+        "sentenceIndex": 7,
+        "paragraphIndex": 19,
+        "entType": "place"
+      }
+    ],
+    "timeExp": [
+      {
+        "time_expression": "year",
+        "sentenceIndex": 7,
+        "paragraphIndex": 19
+      }
+    ],
+    "themes": [
+      {
+        "Business meeting": 0.9999927,
+        "Coincidence": 3.2820975e-11,
+        "Education": 3.2304888e-06,
+        "Music making": 1.1827941e-11,
+        "Personal life": 3.0176042e-09,
+        "Public celebration": 4.0030004e-06
+      }
+    ]
+  },
+  {
+    "paragraphIndex": 20,
+    "wikiId": 180714,
+    "annotation": "HM",
+    "group": 3,
+    "sentences": "However, when Wood invited Schoenberg himself to conduct the work's second British performance, on 17 January 1914, the composer was so delighted with the result, more warmly received than had been the premiere, that he congratulated Wood and the orchestra warmly: \"I must say it was the first time since Gustav Mahler that I heard such music played again as a musician of culture demands.\"",
+    "people": [
+      {
+        "URI": "http://dbpedia.org/resource/Arnold_Schoenberg",
+        "entity": "Schoenberg",
+        "sentenceIndex": 6,
+        "paragraphIndex": 20,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Gustav_Mahler",
+        "entity": "Gustav Mahler",
+        "sentenceIndex": 6,
+        "paragraphIndex": 20,
+        "entType": "person"
+      }
+    ],
+    "place": [
+      {
+        "URI": "http://dbpedia.org/resource/United_Kingdom",
+        "entity": "British",
+        "sentenceIndex": 6,
+        "paragraphIndex": 20,
+        "entType": "place"
+      }
+    ],
+    "timeExp": [
+      {
+        "time_expression": "17 January 1914",
+        "sentenceIndex": 6,
+        "paragraphIndex": 20
+      }
+    ],
+    "themes": [
+      {
+        "Business meeting": 4.342945e-07,
+        "Coincidence": 0.9416222,
+        "Education": 0.05823881,
+        "Music making": 0.00013852397,
+        "Personal life": 1.2831327e-08,
+        "Public celebration": 4.3500044e-09
+      }
+    ]
+  },
+  {
+    "paragraphIndex": 22,
+    "wikiId": 180714,
+    "annotation": "HM",
+    "group": 4,
+    "sentences": "The Proms continued throughout the war years, with fewer major new works than before, although there were nevertheless British premieres of pieces by Bart\u00f3k, Stravinsky and Debussy.",
+    "people": [
+      {
+        "URI": "http://dbpedia.org/resource/Igor_Stravinsky",
+        "entity": "Stravinsky",
+        "sentenceIndex": 5,
+        "paragraphIndex": 22,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Claude_Debussy",
+        "entity": "Debussy",
+        "sentenceIndex": 5,
+        "paragraphIndex": 22,
+        "entType": "person"
+      }
+    ],
+    "place": [
+      {
+        "URI": "http://dbpedia.org/resource/United_Kingdom",
+        "entity": "British",
+        "sentenceIndex": 5,
+        "paragraphIndex": 22,
+        "entType": "place"
+      }
+    ],
+    "timeExp": [
+      {
+        "time_expression": "years",
+        "sentenceIndex": 5,
+        "paragraphIndex": 22
+      }
+    ],
+    "themes": [
+      {
+        "Business meeting": 1.0123275e-05,
+        "Coincidence": 0.9910529,
+        "Education": 0.001672043,
+        "Music making": 0.0026819182,
+        "Personal life": 7.92131e-07,
+        "Public celebration": 0.0045820554
+      }
+    ]
+  },
+  {
+    "paragraphIndex": 29,
+    "wikiId": 180714,
+    "annotation": "HM",
+    "group": 11,
+    "sentences": "The BBC brought its symphony orchestra back to London and resumed its backing of the Proms in 1942; Boult joined Cameron as Wood's associate conductor during that season.",
+    "people": [
+      {
+        "URI": "http://dbpedia.org/resource/David_Cameron",
+        "entity": "Cameron",
+        "sentenceIndex": 12,
+        "paragraphIndex": 29,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Basil_Cameron",
+        "entity": "Cameron",
+        "sentenceIndex": 12,
+        "paragraphIndex": 29,
+        "entType": "person"
+      }
+    ],
+    "place": [
+      {
+        "URI": "http://dbpedia.org/resource/London",
+        "entity": "London",
+        "sentenceIndex": 12,
+        "paragraphIndex": 29,
+        "entType": "place"
+      }
+    ],
+    "timeExp": [
+      {
+        "time_expression": "1942",
+        "sentenceIndex": 12,
+        "paragraphIndex": 29
+      }
+    ],
+    "themes": [
+      {
+        "Business meeting": 0.0033296372,
+        "Coincidence": 4.912355e-07,
+        "Education": 0.995904,
+        "Music making": 2.7311171e-05,
+        "Personal life": 5.3490194e-06,
+        "Public celebration": 0.00073316594
+      }
+    ]
+  },
+  {
+    "paragraphIndex": 32,
+    "wikiId": 180714,
+    "annotation": "HM",
+    "group": 0,
+    "sentences": "Wood's recording career began in 1908, when he accompanied his wife Olga in \"Farewell, forests\" by Tchaikovsky, for the Gramophone and Typewriter Company, better known as His Master's Voice or HMV.",
+    "people": [
+      {
+        "URI": "http://dbpedia.org/resource/Grand_Duchess_Olga_Nikolaevna_of_Russia",
+        "entity": "Olga",
+        "sentenceIndex": 0,
+        "paragraphIndex": 32,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Pyotr_Ilyich_Tchaikovsky",
+        "entity": "Tchaikovsky",
+        "sentenceIndex": 0,
+        "paragraphIndex": 32,
+        "entType": "person"
+      }
+    ],
+    "place": [
+      {
+        "URI": "http://dbpedia.org/resource/Farewell_and_Chorley",
+        "entity": "Farewell",
+        "sentenceIndex": 0,
+        "paragraphIndex": 32,
+        "entType": "place"
+      }
+    ],
+    "timeExp": [
+      {
+        "time_expression": "1908",
+        "sentenceIndex": 0,
+        "paragraphIndex": 32
+      }
+    ],
+    "themes": [
+      {
+        "Business meeting": 0.26341003,
+        "Coincidence": 1.3877406e-08,
+        "Education": 0.0008475646,
+        "Music making": 0.0023078413,
+        "Personal life": 0.73326445,
+        "Public celebration": 0.00017013466
+      }
+    ]
+  },
+  {
+    "paragraphIndex": 32,
+    "wikiId": 180714,
+    "annotation": "HM",
+    "group": 6,
+    "sentences": "For Decca he conducted 23 recordings over the next two years, including Beethoven's Fifth Symphony, Elgar's Enigma Variations and Vaughan Williams's A London Symphony.",
+    "people": [
+      {
+        "URI": "http://dbpedia.org/resource/Ludwig_van_Beethoven",
+        "entity": "Beethoven",
+        "sentenceIndex": 7,
+        "paragraphIndex": 32,
+        "entType": "person"
+      },
+      {
+        "URI": "http://dbpedia.org/resource/Edward_Elgar",
+        "entity": "Elgar",
+        "sentenceIndex": 7,
+        "paragraphIndex": 32,
+        "entType": "person"
+      }
+    ],
+    "place": [
+      {
+        "URI": "http://dbpedia.org/resource/Vaughan",
+        "entity": "Vaughan",
+        "sentenceIndex": 7,
+        "paragraphIndex": 32,
+        "entType": "place"
+      }
+    ],
+    "timeExp": [
+      {
+        "time_expression": "the next two years",
+        "sentenceIndex": 7,
+        "paragraphIndex": 32
+      }
+    ],
+    "themes": [
+      {
+        "Business meeting": 0.004528418,
+        "Coincidence": 3.4560935e-06,
+        "Education": 0.9365087,
+        "Music making": 0.05887687,
+        "Personal life": 8.1713406e-05,
+        "Public celebration": 8.965993e-07
+      }
+    ]
+  }
+]

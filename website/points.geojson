@@ -1,0 +1,96 @@
+pointsData = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "subject": "Peter Smith",
+        "participant": "Paul Jackson",
+        "Date": "22/01/1895",
+        "Location": "Northampton",
+        "Description": "This was a chance encounter between Peter and Paul where they played wonderful music",
+        "Type": "Performance"
+      },
+      "geometry": {
+        "coordinates": [
+          -0.747244826604458,
+          52.23892351365282
+        ],
+        "type": "Point"
+      },
+      "id": 0
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "subject": "David Camille",
+        "participant": "Sarah Jones",
+        "Date": "21/06/1935",
+        "Location": "Northampton",
+        "Description": "This was a planned tuition session",
+        "Type": "Education"
+      },
+      "geometry": {
+        "coordinates": [
+          -0.4070050903340814,
+          52.12063728045692
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "subject": "Joanna Lyle",
+        "participant": "Helen Davis",
+        "Date": "22/02/1885",
+        "Location": "Northampton",
+        "Description": "A joint performance at the local opera",
+        "Type": "Performance"
+      },
+      "geometry": {
+        "coordinates": [
+          -0.9886335740652044,
+          51.610051391153746
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "subject": "Susanna Reid",
+        "participant": "David Baker",
+        "Date": "22/01/1895",
+        "Location": "Northampton",
+        "Description": "Peter told david during a music lesson that his violin playing was amazing.",
+        "Type": "Education"
+      },
+      "geometry": {
+        "coordinates": [
+          -1.1489743993105037,
+          52.0568891839045
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "subject": "Susan Chancer",
+        "participant": "David Baker",
+        "Date": "22/01/1895",
+        "Location": "Northampton",
+        "Description": "This was a chance encounter",
+        "Type": "Performance"
+      },
+      "geometry": {
+        "coordinates": [
+          -0.08003556434482562,
+          51.9756234821383
+        ],
+        "type": "Point"
+      }
+    }
+  ]
+}
