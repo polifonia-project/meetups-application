@@ -1,5 +1,5 @@
 ---
-component-id: meetups-ui-design
+component-id: meetups-application
 type: WebApplication
 name: MEETUPS web application
 description: The MEETUPS pilot application.
@@ -30,4 +30,6 @@ related-components:
     - meetups-ui-design 
   - persona
     - Ortenz
+    - David
+    - Sophie
 ---
