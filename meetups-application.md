@@ -1,8 +1,8 @@
 ---
 component-id: meetups-ui-design
-type: RequirementsCollection
-name: MEETUPS UI Designs
-description: A collection of initial user interface mockups, used as part of the the initial application requirements for building the MEETUPS pilot application interface
+type: WebApplication
+name: MEETUPS web application
+description: The MEETUPS pilot application.
 image:
 logo:
 demo:
@@ -25,5 +25,6 @@ contributors:
   - Enrico Daga <https://github.com/enridaga>
 related-components:
   - informed-by:
+    - meetups-ui-design 
     - Ortenz
 ---
