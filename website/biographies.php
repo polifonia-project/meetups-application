@@ -76,7 +76,7 @@
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                    <?php foreach (range(100, 185) as $i):?>
+                                    <?php foreach (range(100, 101) as $i):?>
                                         <tr>
                                             <td><a href="biography.php?id=<?= $i ?>">Tiger Nixon <?= $i ?></a></td>
                                             <td>2011/04/25</td>
@@ -153,6 +153,19 @@
 
     <!-- Page level custom scripts -->
     <script src="js/demo/datatables-demo.js"></script>
+
+<script>
+    $( document ).ready(function() {
+        $.getJSON("services/biographies.php", function(result){
+            $.each(result, function(i, field){
+                $('#dataTable tr:last').after('<tr><td>'+field+'</td><td>2011/04/25</td><td>2011/04/25</td><td>2011/04/25</td></tr>');
+            });
+            //console.log(result);
+        });
+    });
+
+
+</script>
 
 </body>
 
