@@ -3,18 +3,25 @@ header('Content-Type: application/json; charset=utf-8');
 
 $biography = $_GET["id"];
 
-$sparql = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#> '
-.'PREFIX schema: <http://schema.org/> '
-.'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '
-.'PREFIX dbo:	<http://dbpedia.org/ontology/> '
-.'SELECT DISTINCT ?name ?comment ?birthdate ?birthplacelabel '
-.'FROM <http://data.open.ac.uk/context/meetups> '
-.'WHERE { ?meetup mtp:hasSubject <http://dbpedia.org/resource/Geoffrey_K._Pullum> . '
-.'SERVICE <https://dbpedia.org/sparql/> { '
-    .'<'.$biography.'> rdfs:label ?name FILTER (langMatches(lang(?name),"en")) . '
-    .'<'.$biography.'> rdfs:comment ?comment FILTER (langMatches(lang(?comment),"en")) . '
-    .'<'.$biography.'> dbo:birthDate ?birthdate . '
-    .'<'.$biography.'> dbo:birthPlace ?birthplace . ?birthplace rdfs:label ?birthplacelabel FILTER (langMatches(lang(?birthplacelabel),"en")) } }';
+$sparql = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#> '.
+'PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> '.
+'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '.
+'PREFIX dbo:	<http://dbpedia.org/ontology/> '.
+'SELECT DISTINCT  ?name ?comment ?image ?birthplacelabel '.
+'FROM <http://data.open.ac.uk/context/meetups> '.
+'    WHERE { '.
+'        <'.$biography.'>  rdfs:label ?name . '.
+'        OPTIONAL { '.
+'            <'.$biography.'>  mtp:thumbnail ?image . '.
+'        }    '.
+'        SERVICE <https://dbpedia.org/sparql/> { '.
+'        OPTIONAL { '.
+'            <'.$biography.'> rdfs:comment ?comment FILTER (langMatches(lang(?comment),"en")) '.
+'            <'.$biography.'> dbo:birthPlace ?birthplace . '.
+'            ?birthplace rdfs:label ?birthplacelabel FILTER (langMatches(lang(?birthplacelabel),"en")) '.
+'        } '.
+'    } '.
+'} ';
 $sparql_encoded = urlencode($sparql);
 //echo($sparql);
 $curl = curl_init();
@@ -48,8 +55,9 @@ $bindings = $responseObj->results->bindings[0];
 $outputObj = [
     'name' => $bindings->name->value,
     'abstract' => $bindings->comment->value,
-    'birthdate' => $bindings->birthdate->value,
+    //'birthdate' => $bindings->birthdate->value,
     'birthplace' => $bindings->birthplacelabel->value,
+    'image' => $bindings->image->value
 ];
-header('Content-Type: application/json; charset=utf-8');
+//header('Content-Type: application/json; charset=utf-8');
 echo(json_encode($outputObj));

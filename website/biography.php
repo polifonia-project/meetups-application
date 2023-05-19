@@ -149,7 +149,8 @@
                                     <h6 class="m-0 font-weight-bold text-primary"><span id="spanSubjectNameCardHeader"></span> <em>(<?= $_GET["id"]; ?>)</em></h6>
                                 </div>
                                 <div class="card-body">
-                                    <img src="img/chopin.jpg" class="rounded float-right" alt="Frederic Chopin" width="250px">
+                                    <span id="spanSubjectImage"></span>
+                                    <!--<img src="img/chopin.jpg" class="rounded float-right" alt="Frederic Chopin" width="250px">-->
                                     <p>
                                         <strong>Date of birth: </strong><span id="spanBirthDate"></span><br />
                                     </p>
@@ -175,9 +176,32 @@
                                     <h6 class="m-0 font-weight-bold text-primary">Meetups</h6>
                                 </div>
                                 <div class="card-body">
-                                    The styling for this basic card example is created by using default Bootstrap
-                                    utility classes. By using utility classes, the style of the card component can be
-                                    easily modified with no need for any custom CSS!
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="meetupsTable" width="100%" cellspacing="0">
+                                            <thead>
+                                            <tr>
+                                                <th>MeetupID</th>
+                                                <th>Purpose</th>
+                                                <th>When</th>
+                                            </tr>
+                                            </thead>
+                                            <!--
+                                            <tfoot>
+
+                                            <tr>
+                                                <th>MeetupID</th>
+                                                <th>Purpose</th>
+                                                <th>When</th>
+                                            </tr>
+
+                                            </tfoot>
+                                            -->
+                                            <tbody>
+                                                <tr><td></td><td></td><td></td></tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -259,12 +283,27 @@
         $.getJSON("services/biography.php?id=<?= $_GET["id"]; ?>", function(result){
             $('#spanSubjectName').text(result.name);
             $('#spanSubjectNameCardHeader').text(result.name);
-            $('#spanBirthDate').text(result.birthdate);
+            $('#spanBirthDate').text('---');
             $('#spanBirthPlace').text(result.birthplace);
             $('#spanAbstract').text(result.abstract);
+            imageHtml = '<img src="' + result.image + '" class="rounded float-right" alt="Frederic Chopin" width="250px">';
+            $('#spanSubjectImage').html(imageHtml);
             console.log(result);
             //$('#dataTable').DataTable();
         });
+
+        $.getJSON("services/meetups.php?id=<?= $_GET["id"]; ?>", function(result){
+            $.each(result, function(i, field){
+                console.log(field);
+                html = '<tr><td>' ;
+                html += '<a href="#">' + field.meetup.substring(field.meetup.lastIndexOf('meetup') + 7) + '</a></td>';
+                html += '<td>' + field.purpose.substring(field.purpose.lastIndexOf('/') + 1) + '</td>';
+                html += '<td>' + field.when.substring(field.when.lastIndexOf('/') + 1) + '</td></tr>';
+                $('#meetupsTable tr:last').after(html);
+            });
+            $('#meetupsTable').DataTable();
+        });
+
     });
 </script>
 

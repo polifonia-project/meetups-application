@@ -1,6 +1,16 @@
 <?php
+header('Content-Type: application/json; charset=utf-8');
 
-$sparql = "prefix mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#> select distinct ?biography from <http://data.open.ac.uk/context/meetups> where { ?s  mtp:hasSubject ?biography }";
+$biography = $_GET["id"];
+
+$sparql = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#> '.
+'SELECT DISTINCT ?meetup ?purpose ?when '.
+'FROM <http://data.open.ac.uk/context/meetups> '.
+'WHERE { '.
+'    ?meetup mtp:hasSubject <'.$biography.'> . '.
+'    ?meetup mtp:hasAPurpose ?purpose . '.
+'    ?meetup mtp:happensAt ?when '.
+'}';
 $sparql_encoded = urlencode($sparql);
 $curl = curl_init();
 
@@ -30,7 +40,11 @@ $responseObj = json_decode($response);
 $bindings = $responseObj->results->bindings;
 $outputObj = [];
 foreach ($bindings as $binding) {
-    $outputObj[] = $binding->biography->value;
+    $tempObject = [
+        'meetup' => $binding->meetup->value,
+        'purpose' => $binding->purpose->value,
+        'when' => $binding->when->value,
+    ];
+    $outputObj[] = $tempObject;
 }
-header('Content-Type: application/json; charset=utf-8');
 echo(json_encode($outputObj));
