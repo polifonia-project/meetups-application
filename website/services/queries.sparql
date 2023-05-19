@@ -1,0 +1,46 @@
+# retrieve bigraphy details for Geoffrey Pullum
+PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+PREFIX schema: <http://schema.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbo:	<http://dbpedia.org/ontology/>
+SELECT DISTINCT ?name ?comment ?birthdate ?birthplacelabel
+FROM <http://data.open.ac.uk/context/meetups>
+WHERE {
+    ?meetup mtp:hasSubject <http://dbpedia.org/resource/Geoffrey_K._Pullum> .
+    SERVICE <https://dbpedia.org/sparql/> {
+        <http://dbpedia.org/resource/Geoffrey_K._Pullum> rdfs:label ?name FILTER (langMatches(lang(?name),"en")) .
+        <http://dbpedia.org/resource/Geoffrey_K._Pullum> rdfs:comment ?comment FILTER (langMatches(lang(?comment),"en")) .
+        <http://dbpedia.org/resource/Geoffrey_K._Pullum> dbo:birthDate ?birthdate .
+        <http://dbpedia.org/resource/Geoffrey_K._Pullum> dbo:birthPlace ?birthplace .
+        ?birthplace rdfs:label ?birthplacelabel FILTER (langMatches(lang(?birthplacelabel),"en"))
+    }
+}
+# -------------------------------------------
+# -------------------------------------------
+# retrieve all biographies
+PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+SELECT DISTINCT ?biography
+FROM <http://data.open.ac.uk/context/meetups>
+WHERE {
+    ?s  mtp:hasSubject ?biography
+}
+# -------------------------------------------
+# -------------------------------------------
+#retrieve meeetups for single biography
+PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+SELECT DISTINCT ?meetup
+FROM <http://data.open.ac.uk/context/meetups>
+WHERE {
+    ?meetup mtp:hasSubject <http://dbpedia.org/resource/Geoffrey_K._Pullum>
+}
+# -------------------------------------------
+# -------------------------------------------
+# all meetups for a single biograpy with some attributes
+PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+SELECT DISTINCT ?meetup ?purpose ?when
+FROM <http://data.open.ac.uk/context/meetups>
+WHERE {
+    ?meetup mtp:hasSubject <http://dbpedia.org/resource/Geoffrey_K._Pullum> .
+    ?meetup mtp:hasAPurpose ?purpose .
+    ?meetup mtp:happensAt ?when
+}

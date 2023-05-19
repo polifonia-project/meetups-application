@@ -152,15 +152,18 @@
     <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
     <!-- Page level custom scripts -->
-    <script src="js/demo/datatables-demo.js"></script>
+
 
 <script>
     $( document ).ready(function() {
         $.getJSON("services/biographies.php", function(result){
             $.each(result, function(i, field){
-                $('#dataTable tr:last').after('<tr><td>'+field+'</td><td>2011/04/25</td><td>2011/04/25</td><td>2011/04/25</td></tr>');
+                html = '<tr><td>' ;
+                html += '<a href="biography.php?id=' + field + '">' + field + '</a></td>';
+                html += '<td> - </td><td> - </td><td> - </td></tr>';
+                $('#dataTable tr:last').after(html);
             });
-            //console.log(result);
+            $('#dataTable').DataTable();
         });
     });
 

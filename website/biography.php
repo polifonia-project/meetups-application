@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>MEETUPS - Biographies</title>
+    <title>MEETUPS - Biography</title>
 
     <!-- Custom fonts for this template -->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -46,7 +46,7 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Tiger Nixon <?= $_GET["id"]; ?></h1>
+                    <h1 class="h3 mb-2 text-gray-800"><span id="spanSubjectName">name...</span></h1>
                     <p class="mb-4">Biographies stored within the MEETUPS data are listed and summarised below.
                         Select a biography to explore the subject in more detail and view the meetups that it describes. </p>
 
@@ -146,22 +146,19 @@
                         <div class="col-lg-12">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Tiger Nixon <?= $_GET["id"]; ?></h6>
+                                    <h6 class="m-0 font-weight-bold text-primary"><span id="spanSubjectNameCardHeader"></span> <em>(<?= $_GET["id"]; ?>)</em></h6>
                                 </div>
                                 <div class="card-body">
                                     <img src="img/chopin.jpg" class="rounded float-right" alt="Frederic Chopin" width="250px">
                                     <p>
-                                        <strong>Date of birth: </strong>13/03/1886<br />
+                                        <strong>Date of birth: </strong><span id="spanBirthDate"></span><br />
                                     </p>
                                     <p>
-                                        <strong>Place of birth: </strong>Berlin, Germany<br />
+                                        <strong>Place of birth: </strong><span id="spanBirthPlace"></span><br />
                                     </p>
                                     <p>
                                         <strong>Biography abstract: </strong>
-                                        Frédéric François Chopin (born Fryderyk Franciszek Chopin; 1 March 1810 – 17 October 1849) was a Polish
-                                        composer and virtuoso pianist of the Romantic period, who wrote primarily for solo piano.
-                                        He has maintained worldwide renown as a leading musician of his era, one whose "poetic genius
-                                        was based on a professional technique that was without equal in his generation".
+                                        <span id="spanAbstract"></span>
                                     </p>
                                 </div>
                             </div>
@@ -256,6 +253,20 @@
 
     <!-- Page level custom scripts -->
     <script src="js/demo/datatables-demo.js"></script>
+
+<script>
+    $( document ).ready(function() {
+        $.getJSON("services/biography.php?id=<?= $_GET["id"]; ?>", function(result){
+            $('#spanSubjectName').text(result.name);
+            $('#spanSubjectNameCardHeader').text(result.name);
+            $('#spanBirthDate').text(result.birthdate);
+            $('#spanBirthPlace').text(result.birthplace);
+            $('#spanAbstract').text(result.abstract);
+            console.log(result);
+            //$('#dataTable').DataTable();
+        });
+    });
+</script>
 
 </body>
 
