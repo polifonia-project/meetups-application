@@ -52,9 +52,11 @@
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
+                        <!--
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
                         </div>
+                        -->
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -76,14 +78,14 @@
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                    <?php foreach (range(100, 101) as $i):?>
+
                                         <tr>
-                                            <td><a href="biography.php?id=<?= $i ?>">Tiger Nixon <?= $i ?></a></td>
-                                            <td>2011/04/25</td>
-                                            <td>2011/04/25</td>
-                                            <td>2011/04/25</td>
+                                            <td>loading...</td>
+                                            <td>loading...</td>
+                                            <td>loading...</td>
+                                            <td>loading...</td>
                                         </tr>
-                                    <?php endforeach; ?>
+
                                     </tbody>
                                 </table>
                             </div>

@@ -283,7 +283,7 @@
         $.getJSON("services/biography.php?id=<?= $_GET["id"]; ?>", function(result){
             $('#spanSubjectName').text(result.name);
             $('#spanSubjectNameCardHeader').text(result.name);
-            $('#spanBirthDate').text('---');
+            $('#spanBirthDate').text(result.birthdate);
             $('#spanBirthPlace').text(result.birthplace);
             $('#spanAbstract').text(result.abstract);
             imageHtml = '<img src="' + result.image + '" class="rounded float-right" alt="Frederic Chopin" width="250px">';

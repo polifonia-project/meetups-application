@@ -7,12 +7,13 @@ $sparql = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#> '.
 'PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> '.
 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '.
 'PREFIX dbo:	<http://dbpedia.org/ontology/> '.
-'SELECT DISTINCT  ?name ?comment ?image ?birthplacelabel '.
+'SELECT DISTINCT  ?name ?comment ?image ?birthdate ?birthplacelabel '.
 'FROM <http://data.open.ac.uk/context/meetups> '.
 '    WHERE { '.
 '        <'.$biography.'>  rdfs:label ?name . '.
 '        OPTIONAL { '.
 '            <'.$biography.'>  mtp:thumbnail ?image . '.
+'            <'.$biography.'>  mtp:hasdob ?birthdate . '.
 '        }    '.
 '        SERVICE <https://dbpedia.org/sparql/> { '.
 '        OPTIONAL { '.
@@ -55,7 +56,7 @@ $bindings = $responseObj->results->bindings[0];
 $outputObj = [
     'name' => $bindings->name->value,
     'abstract' => $bindings->comment->value,
-    //'birthdate' => $bindings->birthdate->value,
+    'birthdate' => $bindings->birthdate->value,
     'birthplace' => $bindings->birthplacelabel->value,
     'image' => $bindings->image->value
 ];
