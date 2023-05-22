@@ -59,10 +59,9 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Locations</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                Vienna <br />
-                                                Sofia
+                                                Top Locations</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="topLocations">
+
                                             </div>
                                         </div>
                                         <div class="col-auto">
@@ -294,7 +293,6 @@
 
         $.getJSON("services/meetups.php?id=<?= $_GET["id"]; ?>", function(result){
             $.each(result, function(i, field){
-                console.log(field);
                 html = '<tr><td>' ;
                 html += '<a href="#">' + field.meetup.substring(field.meetup.lastIndexOf('meetup') + 7) + '</a></td>';
                 html += '<td>' + field.purpose.substring(field.purpose.lastIndexOf('/') + 1) + '</td>';
@@ -303,6 +301,15 @@
             });
             $('#meetupsTable').DataTable();
         });
+
+        $.getJSON("services/biography-stats.php?id=<?= $_GET["id"]; ?>", function(result){
+            html = '';
+            $.each(result, function(i, field){
+                html += field.label + ' <em>(' + field.count + ')</em><br />';
+            });
+            $('#topLocations').html(html);
+        });
+
 
     });
 </script>
