@@ -23,6 +23,9 @@ $sparql = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#> '.
 '        } '.
 '    } '.
 '} ';
+
+
+
 $sparql_encoded = urlencode($sparql);
 //echo($sparql);
 $curl = curl_init();

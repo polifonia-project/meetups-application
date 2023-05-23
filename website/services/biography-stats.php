@@ -4,21 +4,68 @@ header('Content-Type: application/json; charset=utf-8');
 $biography = $_GET["id"];
 $statType = $_GET["stat"];
 
-$sparql = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#> '.
+$sparqlTheme = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#> '.
 'PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> '.
 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '.
-'SELECT ( COUNT( ?s1) as ?number_mt ) ?s1 '.
+'SELECT ( COUNT( ?label) as ?count ) ?label '.
 'FROM <http://data.open.ac.uk/context/meetups> '.
 'WHERE '.
 '{ ?s rdf:type mtp:Meetup ; '.
 '      mtp:hasSubject <'.$biography.'> ; '.
 '      mtp:hasAPurpose ?meetupType . '.
-'  ?meetupType rdfs:label ?s1 . '.
+'  ?meetupType rdfs:label ?label . '.
 '} '.
-'GROUP BY ?s1 '.
-'    ORDER BY DESC(?number_mt) '.
+'GROUP BY ?label '.
+'    ORDER BY DESC(?count) '.
 'LIMIT 2 ';
 
+$sparqlPlace = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ( COUNT( ?label) as ?count ) ?label
+FROM <http://data.open.ac.uk/context/meetups>
+WHERE
+{ ?s rdf:type mtp:Meetup ;
+    mtp:hasSubject <'.$biography.'> ;
+    mtp:hasPlace ?place .
+  	?place rdfs:label ?label .
+}
+GROUP BY ?label
+ORDER BY DESC(?count)
+LIMIT 2';
+
+$sparqlPeople = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT ( COUNT( ?label) as ?count ) ?label
+FROM <http://data.open.ac.uk/context/meetups>
+WHERE
+{ ?s rdf:type mtp:Meetup ;
+      mtp:hasSubject <'.$biography.'> ;
+      mtp:hasParticipant ?participant .
+      FILTER  (!regex (str(?participant), \''.$biography.'\' ) ) .
+      ?participant rdfs:label ?label
+}
+GROUP BY ?label
+    ORDER BY DESC(?count) ?label
+LIMIT 2';
+
+$sparql = '';
+switch ($statType) {
+    case 'theme':
+        $sparql = $sparqlTheme;
+    break;
+    case 'place':
+        $sparql = $sparqlPlace;
+        break;
+    case 'people':
+        $sparql = $sparqlPeople;
+        break;
+    case 'period':
+        $sparql = $sparqlTheme;
+        break;
+    default:
+        $sparql = $sparqlTheme;
+}
 
 $sparql_encoded = urlencode($sparql);
 //echo($sparql);
@@ -52,8 +99,8 @@ $bindings = $responseObj->results->bindings;
 $outputObj = [];
 foreach ($bindings as $binding) {
     $item = [
-        'label' => $binding->s1->value,
-        'count' => $binding->number_mt->value
+        'label' => $binding->label->value,
+        'count' => $binding->count->value
     ];
     $outputObj[] = $item;
 }
