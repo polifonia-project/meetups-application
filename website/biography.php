@@ -32,7 +32,7 @@
             margin: 0;
         }
         .leaflet-container {
-            height: 400px;
+            height: 600px;
             width: 600px;
             max-width: 100%;
             max-height: 100%;
@@ -141,8 +141,8 @@
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col-auto">
                                                     <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" id="topPeriods">
-                                                        1845 - 1847 <br />
-                                                        1857 - 1859
+                                                        ...<br />
+                                                        ...
                                                     </div>
                                                 </div>
                                             </div>
@@ -212,7 +212,7 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table class="table table-bordered" id="meetupsTable" width="100%" cellspacing="0">
+                                        <table class="table table-bordered" id="meetupsTable">
                                             <thead>
                                             <tr>
                                                 <th>When</th>
@@ -233,7 +233,7 @@
                                             </tfoot>
                                             -->
                                             <tbody>
-                                                <tr><td></td><td></td><td></td></tr>
+                                                <tr><td></td><td></td><td></td><td></td></tr>
 
                                             </tbody>
                                         </table>
@@ -248,7 +248,7 @@
                                     <h6 class="m-0 font-weight-bold text-primary">Map</h6>
                                 </div>
                                 <div class="card-body">
-                                    <div id="map" style="width: 100%; height: 400px;"></div>
+                                    <div id="map" style="width: 100%; height: 600px;"></div>
                                 </div>
                             </div>
                         </div>
@@ -344,7 +344,7 @@
     function onEachFeature(feature, layer) {
         // does this feature have a property named popupContent?
         if (feature.properties) {
-            console.log(feature.properties);
+            //console.log(feature.properties);
             html = "<p><strong>Participants: </strong>" + feature.properties.participants + "</p>";
             html += "<p><strong>Purpose: </strong>" + feature.properties.purpose + "</p>";
             buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateModal('+feature.properties.index+');"><i class="fas fa-search-plus"></i> View meetup</button> ';
@@ -378,7 +378,7 @@
             $('#spanAbstract').text(result.abstract);
             imageHtml = '<img src="' + result.image + '" class="rounded float-right" alt="Frederic Chopin" width="250px">';
             $('#spanSubjectImage').html(imageHtml);
-            console.log(result);
+            //console.log(result);
             //$('#dataTable').DataTable();
         });
 
@@ -388,7 +388,7 @@
 
                 html = '<tr>';
 
-                html += '<td>' + buttonHtml + field.when.substring(field.when.lastIndexOf('/') + 1).substring(7,12) + '...</td>';
+                html += '<td>' + buttonHtml + '...</td>';
                 html += '<td>' + field.location + '</td>';
                 html += '<td>' + field.participants + '</td>';
                 //html += '<td><a href="#">' + field.meetup.substring(field.meetup.lastIndexOf('meetup') + 7) + '</a></td>';
@@ -397,6 +397,8 @@
                 html += '</tr>';
                 $('#meetupsTable tr:last').after(html);
             });
+            $('#meetupsTable').DataTable();
+
             $geoJsonData = createGeoJson(result);
             meetupsData = result;
             var pointsLayer = L.geoJSON($geoJsonData, {
@@ -404,7 +406,7 @@
             }).addTo(map);
             map.fitBounds(pointsLayer.getBounds());
 
-            $('#meetupsTable').DataTable();
+
         });
 
         $.getJSON("services/biography-stats.php?id=<?= $_GET["id"]; ?>&stat=place", function(result){
