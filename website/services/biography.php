@@ -11,13 +11,13 @@ $sparql = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#> '.
 'FROM <http://data.open.ac.uk/context/meetups> '.
 '    WHERE { '.
 '        <'.$biography.'>  rdfs:label ?name . '.
+'        <'.$biography.'>  mtp:hasAbstract ?comment . '.
 '        OPTIONAL { '.
 '            <'.$biography.'>  mtp:thumbnail ?image . '.
 '            <'.$biography.'>  mtp:hasdob ?birthdate . '.
 '        }    '.
 '        SERVICE <https://dbpedia.org/sparql/> { '.
 '        OPTIONAL { '.
-'            <'.$biography.'> rdfs:comment ?comment FILTER (langMatches(lang(?comment),"en")) '.
 '            <'.$biography.'> dbo:birthPlace ?birthplace . '.
 '            ?birthplace rdfs:label ?birthplacelabel FILTER (langMatches(lang(?birthplacelabel),"en")) '.
 '        } '.
