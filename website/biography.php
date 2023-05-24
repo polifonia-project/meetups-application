@@ -358,13 +358,21 @@
         meetupDetails = meetupsData[index];
         console.log(meetupDetails);
         $('#modalTitle').text('Meetup Details');
+        buttonHtml = '<button type="button" class="btn btn-sm btn-primary" onclick="zoomToPoint('+meetupDetails.lat+','+meetupDetails.long+');"><i class="fas fa-map-marked-alt"></i> View on map</button> ';
+
         html = '';
         html += '<p><strong>When</strong>: ...</p>';
-        html += '<p><strong>Where</strong>: ' + meetupDetails.location + ' <em>(<a href="#">View on map</a>)</em></p>';
+        html += '<p><strong>Where</strong>: ' + meetupDetails.location;
         html += '<p><strong>Participants</strong>: ' + meetupDetails.participants + '</p>';
         html += '<p><strong>Purpose</strong>: ' + meetupDetails.purpose + '</p>';
         html += '<p><strong>Evidence</strong>: ' + meetupDetails.evidence + '</p>';
+        html += '<p>' + buttonHtml + '</p>'
         $('#meetupModalBody').html(html);
+    }
+
+    function zoomToPoint(lat, long) {
+        zoomLevel = 10;
+        map.flyTo([lat, long], zoomLevel);
     }
 
     var meetupsData;
