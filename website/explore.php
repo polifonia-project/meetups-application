@@ -33,7 +33,7 @@ $searchPanel = True;
             margin: 0;
         }
         .leaflet-container {
-            height: 400px;
+            height: 600px;
             width: 600px;
             max-width: 100%;
             max-height: 100%;
@@ -83,7 +83,7 @@ $searchPanel = True;
                                     <h6 class="m-0 font-weight-bold text-primary">Meetups</h6>
                                 </div>
                                 <div class="card-body">
-                                    <div id="map" style="width: 100%; height: 400px;"></div>
+                                    <div id="map" style="width: 100%; height: 600px;"></div>
                                 </div>
                             </div>
                         </div>
@@ -128,13 +128,11 @@ $searchPanel = True;
 
                     <!-- DataTales Example -->
 
-
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Detail view</h6>
+                            <h6 class="m-0 font-weight-bold text-primary" id="detailView">Detail view</h6>
                         </div>
-                        <div class="card-body">
-                            <p><span id="pointDetails">Hello</span></p>
+                        <div class="card-body" id="meetupDetails">
                         </div>
                     </div>
 
@@ -202,6 +200,12 @@ $searchPanel = True;
     <!-- Page level custom scripts -->
 
     <script>
+        function scrollToAnchor(aid){
+            $('html, body').animate({
+                scrollTop: $("#myDiv").offset().top
+            }, 2000);
+        }
+
         function createGeoJson(inputData) {
             output = {
                 "type": "FeatureCollection",
@@ -211,11 +215,12 @@ $searchPanel = True;
                 feature = {
                     "type": "Feature",
                     "properties": {
-                        "evidence":  inputData[i].evidence,
-                        "meetup": inputData[i].meetup,
+                        "evidence_text":  inputData[i].evidence_text,
+                        //"meetup": inputData[i].meetup,
                         "participants": inputData[i].participants,
                         "when": inputData[i].when,
                         "purpose": inputData[i].purpose,
+                        "subject": inputData[i].subject,
                         "location": inputData[i].location,
                         "index": i
                     },
@@ -230,6 +235,7 @@ $searchPanel = True;
             return output;
         }
 
+        /*
         function markerOnClick(e) {
             var attributes = e.layer.feature.properties;
             console.log(attributes);
@@ -242,15 +248,55 @@ $searchPanel = True;
             //html += "<br /><strong>Type</strong>: " + attributes.Type;
             $('#pointDetails').html(html);
         }
+        */
+
 
         function onEachFeature(feature, layer) {
             // does this feature have a property named popupContent?
-            if (feature.properties && feature.properties.description) {
-                layer.bindPopup(feature.properties.subject + " &lt;--&gt; " + feature.properties.participant);
+            if (feature.properties) {
+                //console.log(feature.properties);
+                html = "";
+                html += "<p><strong>Subject: </strong>" + feature.properties.subject + "</p>";
+                html += "<p><strong>Participants: </strong>" + feature.properties.participants + "</p>";
+                html += "<p><strong>Purpose: </strong>" + feature.properties.purpose + "</p>";
+                html += "<p><strong>Location: </strong>" + feature.properties.location + "</p>";
+                buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateDetailsPanel('+feature.properties.index+');"><i class="fas fa-search-plus"></i> View meetup</button> ';
+                html += '<p>'+buttonHtml+'</p>';
+
+                layer.bindPopup(html);
             }
         }
 
+        function zoomToPoint(lat, long) {
+            zoomLevel = 8;
+            map.flyTo([lat, long], zoomLevel);
+            $('html, body').animate({
+                scrollTop: $("#nav-tab").offset().top
+            }, 2000);
+            $('#nav-tab button[data-target="#nav-home"]').tab('show')
 
+        }
+
+        function populateDetailsPanel(index) {
+            meetupDetails = meetupsData[index];
+            //console.log(meetupDetails);
+            //$('#modalTitle').text('Meetup Details');
+            buttonHtml = '<button type="button" class="btn btn-sm btn-primary" onclick="zoomToPoint('+meetupDetails.lat+','+meetupDetails.long+');"><i class="fas fa-map-marked-alt"></i> View on map</button> ';
+
+            html = '';
+            html += '<p><strong>When</strong>: ...</p>';
+            html += '<p><strong>Where</strong>: ' + meetupDetails.location;
+            html += '<p><strong>Participants</strong>: ' + meetupDetails.participants + '</p>';
+            html += '<p><strong>Purpose</strong>: ' + meetupDetails.purpose + '</p>';
+            html += '<p><strong>Evidence</strong>: ' + meetupDetails.evidence_text + '</p>';
+            html += '<p>' + buttonHtml + '</p>'
+            $('#meetupDetails').html(html);
+            $('html, body').animate({
+                scrollTop: $("#detailView").offset().top
+            }, 500);
+        }
+
+        var meetupsData;
 
         const map = L.map('map').setView([52, -0.7], 8);
 
@@ -272,8 +318,9 @@ $searchPanel = True;
                 $.getJSON('services/search.php'+params, function(result){
                     //console.log(result);
                     $("#tbodyid").empty();
+                    meetupsData = result;
                     $.each(result, function(i, field){
-                        buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick=""><i class="fas fa-search-plus"></i></button> ';
+                        buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateDetailsPanel('+i+');"><i class="fas fa-search-plus"></i></button> ';
 
                         html = '<tr>';
 
