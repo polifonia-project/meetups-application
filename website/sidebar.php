@@ -32,41 +32,55 @@
             <span>Biographies</span></a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="map.php">
+        <a class="nav-link" href="explore.php">
             <i class="fas fa-fw fa-chart-area"></i>
-            <span>Map</span></a>
+            <span>Explore</span></a>
     </li>
 
     <hr class="sidebar-divider">
 
 
+<?php if (isset($searchPanel) && $searchPanel): ?>
 
     <!-- Heading -->
-    <!--
+
     <div class="sidebar-heading">
-        Interface
+        Search
     </div>
-    -->
+
 
 
     <!-- Nav Item - Pages Collapse Menu -->
-    <!--
+
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+        <a class="nav-link " href="#" data-toggle="collapse" data-target="#collapseTwo"
            aria-expanded="true" aria-controls="collapseTwo">
-            <i class="fas fa-fw fa-cog"></i>
-            <span>Components</span>
+            <i class="fas fa-filter"></i>
+            <span>Filters</span>
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Custom Components:</h6>
-                <a class="collapse-item" href="buttons.html">Buttons</a>
-                <a class="collapse-item" href="cards.html">Cards</a>
+                <h6 class="collapse-header">Subject:</h6>
+                input here
+                <hr>
+                <h6 class="collapse-header">Participant:</h6>
+                input here
+                <hr>
+                <h6 class="collapse-header">Purpose:</h6>
+                input here
+                <hr>
+                <h6 class="collapse-header">Place:</h6>
+                input here
+                <hr>
+                <p>
+                    <button class="btn btn-sm btn-primary" type="button"><i class="fas fa-sync"></i> Reload</button>
+
+                </p>
             </div>
         </div>
     </li>
-    -->
 
+<?php endif; ?>
     <!-- Nav Item - Utilities Collapse Menu -->
     <!--
     <li class="nav-item">
