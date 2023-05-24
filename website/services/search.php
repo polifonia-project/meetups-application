@@ -74,4 +74,23 @@ curl_setopt_array($curl, array(
 $response = curl_exec($curl);
 
 curl_close($curl);
-echo $response;
+//echo $response;
+
+$responseObj = json_decode($response);
+//print_r($responseObj->results->bindings);
+$bindings = $responseObj->results->bindings;
+$outputObj = [];
+foreach ($bindings as $binding) {
+    $tempObject = [
+        'when' => $binding->time_expression_URI->value,
+        'purpose' => $binding->purpose->value,
+        'subject' => $binding->subject->value,
+        'evidence_text' => $binding->evidence_text->value,
+        'participants' => $binding->participants_label->value,
+        'location' => $binding->locations_label->value,
+        'lat' => $binding->lat->value,
+        'long' => $binding->long->value,
+    ];
+    $outputObj[] = $tempObject;
+}
+echo(json_encode($outputObj));

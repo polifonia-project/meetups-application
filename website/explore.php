@@ -93,7 +93,34 @@ $searchPanel = True;
                                     <h6 class="m-0 font-weight-bold text-primary">Meetups</h6>
                                 </div>
                                 <div class="card-body">
-                                    Table here
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="meetupsTable">
+                                            <thead>
+                                            <tr>
+                                                <th>When</th>
+                                                <th>Subject</th>
+                                                <th>Participants</th>
+                                                <th>Where</th>
+                                                <th>Purpose</th>
+                                            </tr>
+                                            </thead>
+                                            <!--
+                                            <tfoot>
+
+                                            <tr>
+                                                <th>MeetupID</th>
+                                                <th>Purpose</th>
+                                                <th>When</th>
+                                            </tr>
+
+                                            </tfoot>
+                                            -->
+                                            <tbody id="tbodyid">
+
+
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -175,6 +202,34 @@ $searchPanel = True;
     <!-- Page level custom scripts -->
 
     <script>
+        function createGeoJson(inputData) {
+            output = {
+                "type": "FeatureCollection",
+                "features": []
+            };
+            for (i = 0; i < inputData.length; i++) {
+                feature = {
+                    "type": "Feature",
+                    "properties": {
+                        "evidence":  inputData[i].evidence,
+                        "meetup": inputData[i].meetup,
+                        "participants": inputData[i].participants,
+                        "when": inputData[i].when,
+                        "purpose": inputData[i].purpose,
+                        "location": inputData[i].location,
+                        "index": i
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [inputData[i].long, inputData[i].lat]
+                    }
+                };
+                output.features.push(feature);
+            }
+            console.log(output);
+            return output;
+        }
+
         function markerOnClick(e) {
             var attributes = e.layer.feature.properties;
             console.log(attributes);
@@ -203,6 +258,7 @@ $searchPanel = True;
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
+        var pointsLayer = L.geoJSON().addTo(map);
 
         $(document).ready(function() {
             $('#searchForm').on('submit', function(event) {
@@ -214,7 +270,37 @@ $searchPanel = True;
                 let purpose = $("#purpose").val();
                 params = '?subject='+subject+'&participant='+participant+'&place='+place+'&purpose='+purpose;
                 $.getJSON('services/search.php'+params, function(result){
-                    console.log(result);
+                    //console.log(result);
+                    $("#tbodyid").empty();
+                    $.each(result, function(i, field){
+                        buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick=""><i class="fas fa-search-plus"></i></button> ';
+
+                        html = '<tr>';
+
+                        html += '<td>' + buttonHtml + '...</td>';
+                        html += '<td>' + field.subject + '</td>';
+                        html += '<td>' + field.participants + '</td>';
+                        html += '<td>' + field.location + '</td>';
+                        html += '<td>' + field.purpose + '</td>';
+
+                        html += '</tr>';
+                        $("#meetupsTable tbody").append(html);
+                    });
+                    $('#meetupsTable').DataTable();
+
+                    /*
+                    if(map.hasLayer(pointsLayer)) {
+                        map.removeLayer(pointsLayer);
+                    }
+                    */
+                    pointsLayer.clearLayers();
+                    $geoJsonData = createGeoJson(result);
+                    meetupsData = result;
+                    pointsLayer = L.geoJSON($geoJsonData, {
+                        onEachFeature: onEachFeature
+                    }).addTo(map);
+                    map.fitBounds(pointsLayer.getBounds());
+
                 });
             });
         });
