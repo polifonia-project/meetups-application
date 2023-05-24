@@ -60,22 +60,34 @@
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Subject:</h6>
-                input here
-                <hr>
-                <h6 class="collapse-header">Participant:</h6>
-                input here
-                <hr>
-                <h6 class="collapse-header">Purpose:</h6>
-                input here
-                <hr>
-                <h6 class="collapse-header">Place:</h6>
-                input here
-                <hr>
-                <p>
-                    <button class="btn btn-sm btn-primary" type="button"><i class="fas fa-sync"></i> Reload</button>
 
-                </p>
+                <form id="searchForm">
+                    <div class="form-group">
+                        <label for="subject"><h6 class="collapse-header sidebar-search-heading"><i class="fas fa-tags fa-2x text-gray-300"></i> Subject:</h6></label>
+                        <input type="text" class="form-control sidebar-search" id="subject">
+                    </div>
+                    <hr />
+                    <div class="form-group">
+                        <label for="participant"><h6 class="collapse-header sidebar-search-heading"><i class="fas fa-tags fa-2x text-gray-300"></i> Participant:</h6></label>
+                        <input type="text" class="form-control sidebar-search" id="participant">
+                    </div>
+                    <hr />
+                    <div class="form-group">
+                        <label for="purpose"><h6 class="collapse-header sidebar-search-heading"><i class="fas fa-tags fa-2x text-gray-300"></i> Purpose:</h6></label>
+                        <input type="text" class="form-control sidebar-search" id="purpose">
+                    </div>
+                    <hr />
+                    <div class="form-group">
+                        <label for="place"><h6 class="collapse-header sidebar-search-heading"><i class="fas fa-tags fa-2x text-gray-300"></i> Place:</h6></label>
+                        <input type="text" class="form-control sidebar-search" id="place">
+                    </div>
+                    <hr />
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-sync"></i> Reload</button>
+                    </div>
+                </form>
+
+
             </div>
         </div>
     </li>

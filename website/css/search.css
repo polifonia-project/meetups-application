@@ -1,0 +1,8 @@
+.sidebar-search {
+    margin: 0.5rem;
+    width: 92%;
+}
+
+.sidebar .nav-item .collapse .collapse-inner .collapse-header, .sidebar .nav-item .collapsing .collapse-inner .collapse-header {
+    padding: .4rem .4rem;
+}

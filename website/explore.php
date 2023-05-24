@@ -40,6 +40,8 @@ $searchPanel = True;
         }
     </style>
 
+    <link rel="stylesheet" href="css/search.css">
+
 </head>
 
 <body id="page-top">
@@ -63,23 +65,42 @@ $searchPanel = True;
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Tables</h1>
-                    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-                        For more information about DataTables, please visit the <a target="_blank"
-                            href="https://datatables.net">official DataTables documentation</a>.</p>
+                    <h1 class="h3 mb-2 text-gray-800">Explore</h1>
+                    <p class="mb-4">Use the search filters on the left to explore meetups and view them below either on a map or in tabular form.</p>
                     <p>
                         
                     </p>
-
-                    <!-- DataTales Example -->
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Mapping example</h6>
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <button class="nav-link active" id="nav-home-tab" data-toggle="tab" data-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Map</button>
+                            <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Table</button>
                         </div>
-                        <div class="card-body">
-                            <div id="map" style="width: 100%; height: 400px;"></div>
+                    </nav>
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Meetups</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="map" style="width: 100%; height: 400px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Meetups</h6>
+                                </div>
+                                <div class="card-body">
+                                    Table here
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- DataTales Example -->
+
 
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
@@ -153,7 +174,6 @@ $searchPanel = True;
 
     <!-- Page level custom scripts -->
 
-    <script src="data/1000_points.geojson"></script>
     <script>
         function markerOnClick(e) {
             var attributes = e.layer.feature.properties;
@@ -175,6 +195,8 @@ $searchPanel = True;
             }
         }
 
+
+
         const map = L.map('map').setView([52, -0.7], 8);
 
         const tiles = L.tileLayer('https://osm.gs.mil/tiles/humanitarian/{z}/{x}/{y}.png', {
@@ -182,11 +204,29 @@ $searchPanel = True;
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
 
+        $(document).ready(function() {
+            $('#searchForm').on('submit', function(event) {
+                event.preventDefault();
 
+                let subject = $("#subject").val();
+                let participant = $("#participant").val();
+                let place = $("#place").val();
+                let purpose = $("#purpose").val();
+                params = '?subject='+subject+'&participant='+participant+'&place='+place+'&purpose='+purpose;
+                $.getJSON('services/search.php'+params, function(result){
+                    console.log(result);
+                });
+            });
+        });
+
+
+        /*
         var pointsLayer = L.geoJSON(pointsData, {
+
             onEachFeature: onEachFeature
         }).addTo(map);
         pointsLayer.on("click",markerOnClick);
+        */
 
 
     </script>
