@@ -26,6 +26,10 @@ $searchPanel = True;
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js" ></script>
+
 
     <style>
         html, body {
@@ -307,7 +311,13 @@ $searchPanel = True;
             minZoom: 2,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
+
         var pointsLayer = L.geoJSON().addTo(map);
+        var clusterLayer = L.markerClusterGroup();
+        clusterLayer.addLayer(pointsLayer);
+        map.addLayer(clusterLayer);
+
+
 
         var table = $('#meetupsTable').DataTable( {
             "language": {
@@ -360,11 +370,14 @@ $searchPanel = True;
                     }
                     */
                     pointsLayer.clearLayers();
+                    clusterLayer.clearLayers();
                     $geoJsonData = createGeoJson(result);
                     meetupsData = result;
                     pointsLayer = L.geoJSON($geoJsonData, {
                         onEachFeature: onEachFeature
-                    }).addTo(map);
+                    });
+                    clusterLayer.addLayer(pointsLayer);
+                    map.addLayer(clusterLayer);
                     map.fitBounds(pointsLayer.getBounds());
 
                 });
