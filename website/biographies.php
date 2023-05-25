@@ -65,7 +65,6 @@
                                             <th>Name</th>
                                             <th>Born</th>
                                             <th>Died</th>
-                                            <th>Publish date</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -74,13 +73,11 @@
                                             <th>Name</th>
                                             <th>Born</th>
                                             <th>Died</th>
-                                            <th>Publish date</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
 
                                         <tr>
-                                            <td>loading...</td>
                                             <td>loading...</td>
                                             <td>loading...</td>
                                             <td>loading...</td>
@@ -161,8 +158,8 @@
         $.getJSON("services/biographies.php", function(result){
             $.each(result, function(i, field){
                 html = '<tr><td>' ;
-                html += '<a href="biography.php?id=' + field + '">' + field + '</a></td>';
-                html += '<td> - </td><td> - </td><td> - </td></tr>';
+                html += '<a href="biography.php?id=' + field.subject + '">' + field.subject_label + '</a></td>';
+                html += '<td>' + field.dob + '</td><td>' + field.dod + '</td></tr>';
                 $('#dataTable tr:last').after(html);
             });
             $('#dataTable').DataTable();

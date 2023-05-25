@@ -221,6 +221,7 @@ $searchPanel = True;
                         "when": inputData[i].when,
                         "purpose": inputData[i].purpose,
                         "subject": inputData[i].subject,
+                        "subject_label": inputData[i].subject_label,
                         "location": inputData[i].location,
                         "index": i
                     },
@@ -256,7 +257,7 @@ $searchPanel = True;
             if (feature.properties) {
                 //console.log(feature.properties);
                 html = "";
-                html += "<p><strong>Subject: </strong>" + feature.properties.subject + "</p>";
+                html += "<p><strong>Subject: </strong>" + feature.properties.subject_label + "</p>";
                 html += "<p><strong>Participants: </strong>" + feature.properties.participants + "</p>";
                 html += "<p><strong>Purpose: </strong>" + feature.properties.purpose + "</p>";
                 html += "<p><strong>Location: </strong>" + feature.properties.location + "</p>";
@@ -286,6 +287,7 @@ $searchPanel = True;
             html = '';
             html += '<p><strong>When</strong>: ...</p>';
             html += '<p><strong>Where</strong>: ' + meetupDetails.location;
+            html += '<p><strong>Subject</strong>: ' + meetupDetails.subject_label;
             html += '<p><strong>Participants</strong>: ' + meetupDetails.participants + '</p>';
             html += '<p><strong>Purpose</strong>: ' + meetupDetails.purpose + '</p>';
             html += '<p><strong>Evidence</strong>: ' + meetupDetails.evidence_text + '</p>';
@@ -301,7 +303,7 @@ $searchPanel = True;
         const map = L.map('map').setView([52, -0.7], 8);
 
         const tiles = L.tileLayer('https://osm.gs.mil/tiles/humanitarian/{z}/{x}/{y}.png', {
-            maxZoom: 19,
+            maxZoom: 14,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
         var pointsLayer = L.geoJSON().addTo(map);
@@ -319,13 +321,17 @@ $searchPanel = True;
                     //console.log(result);
                     $("#tbodyid").empty();
                     meetupsData = result;
+                    resultsCount = 0;
+                    $('#resultsCount').text(resultsCount);
+                    $("#resultsCountWarning").addClass("d-none");
                     $.each(result, function(i, field){
+                        resultsCount ++;
                         buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateDetailsPanel('+i+');"><i class="fas fa-search-plus"></i></button> ';
 
                         html = '<tr>';
 
                         html += '<td>' + buttonHtml + '...</td>';
-                        html += '<td>' + field.subject + '</td>';
+                        html += '<td>' + field.subject_label + '</td>';
                         html += '<td>' + field.participants + '</td>';
                         html += '<td>' + field.location + '</td>';
                         html += '<td>' + field.purpose + '</td>';
@@ -333,6 +339,11 @@ $searchPanel = True;
                         html += '</tr>';
                         $("#meetupsTable tbody").append(html);
                     });
+
+                    $('#resultsCount').text(resultsCount);
+                    if (resultsCount >= 500) {
+                        $("#resultsCountWarning").removeClass("d-none");
+                    }
                     $('#meetupsTable').DataTable();
 
                     /*

@@ -53,12 +53,12 @@
     <!-- Nav Item - Pages Collapse Menu -->
 
     <li class="nav-item">
-        <a class="nav-link " href="#" data-toggle="collapse" data-target="#collapseTwo"
+        <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseTwo"
            aria-expanded="true" aria-controls="collapseTwo">
             <i class="fas fa-filter"></i>
             <span>Filters</span>
         </a>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
 
                 <form id="searchForm">
@@ -80,6 +80,13 @@
                     <div class="form-group">
                         <label for="place"><h6 class="collapse-header sidebar-search-heading"><i class="fas fa-tags fa-2x text-gray-300"></i> Place:</h6></label>
                         <input type="text" class="form-control sidebar-search" id="place">
+                    </div>
+                    <hr />
+                    <div class="text-center">
+                        Results: <span id="resultsCount">0</span>
+                        <a id="resultsCountWarning" href="#" class="btn btn-warning btn-circle btn-sm d-none" data-toggle="tooltip" data-placement="top" title="Max search limit reached">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </a>
                     </div>
                     <hr />
                     <div class="text-center">

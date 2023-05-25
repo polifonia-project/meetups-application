@@ -11,7 +11,7 @@ PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#> 
 PREFIX geo: <https://www.w3.org/2003/01/geo/wgs84_pos>
 
-SELECT ?subject ?meetup ?evidence_text ?purpose 
+SELECT ?subject_label ?subject ?meetup ?evidence_text ?purpose 
 (GROUP_CONCAT( DISTINCT ?participant; separator=", " ) as ?participants_URI )
 (GROUP_CONCAT( DISTINCT ?participant_label; separator=", " ) as ?participants_label )
 (GROUP_CONCAT( DISTINCT ?location_uri; separator=", " ) as ?locations_URI )
@@ -26,6 +26,7 @@ WHERE
           mtp:hasAPurpose ?purpose_uri ;
           mtp:hasEvidenceText ?evidence_text ;
           mtp:hasPlace ?location_uri .
+  ?subject rdfs:label ?subject_label .        
   '.$purposeFilter.'
   '.$subjectFilter.'
   '.$participantFilter.'
@@ -45,7 +46,7 @@ WHERE
     LIMIT 1 
   }
 }
-GROUP BY ?subject ?meetup ?evidence_text ?purpose ?time_expression_URI ?lat ?long
+GROUP BY ?subject_label ?subject ?meetup ?evidence_text ?purpose ?time_expression_URI ?lat ?long
 LIMIT 500';
 
 //echo($sparql);
@@ -85,6 +86,7 @@ foreach ($bindings as $binding) {
         'when' => $binding->time_expression_URI->value,
         'purpose' => $binding->purpose->value,
         'subject' => $binding->subject->value,
+        'subject_label' => $binding->subject_label->value,
         'evidence_text' => $binding->evidence_text->value,
         'participants' => $binding->participants_label->value,
         'location' => $binding->locations_label->value,
