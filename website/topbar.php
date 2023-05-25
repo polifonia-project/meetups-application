@@ -2,13 +2,16 @@
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
     <!-- Sidebar Toggle (Topbar) -->
+
     <form class="form-inline">
         <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
             <i class="fa fa-bars"></i>
         </button>
     </form>
 
+
     <!-- Topbar Search -->
+    <!--
     <form
         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
         <div class="input-group">
@@ -21,11 +24,14 @@
             </div>
         </div>
     </form>
+    -->
 
     <!-- Topbar Navbar -->
+
     <ul class="navbar-nav ml-auto">
 
         <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+
         <li class="nav-item dropdown no-arrow d-sm-none">
             <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -61,7 +67,7 @@
             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                  aria-labelledby="alertsDropdown">
                 <h6 class="dropdown-header">
-                    Alerts Center
+                    Alerts
                 </h6>
                 <a class="dropdown-item d-flex align-items-center" href="#">
                     <div class="mr-3">
@@ -70,30 +76,30 @@
                         </div>
                     </div>
                     <div>
-                        <div class="small text-gray-500">December 12, 2019</div>
-                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                        <div class="small text-gray-500">May 24, 2023</div>
+                        <span class="font-weight-bold">A new version of the MEETUPS knowledge graph has been published</span>
                     </div>
                 </a>
                 <a class="dropdown-item d-flex align-items-center" href="#">
                     <div class="mr-3">
                         <div class="icon-circle bg-success">
-                            <i class="fas fa-donate text-white"></i>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="small text-gray-500">December 7, 2019</div>
-                        $290.29 has been deposited into your account!
-                    </div>
-                </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <div class="mr-3">
-                        <div class="icon-circle bg-warning">
                             <i class="fas fa-exclamation-triangle text-white"></i>
                         </div>
                     </div>
                     <div>
-                        <div class="small text-gray-500">December 2, 2019</div>
-                        Spending Alert: We've noticed unusually high spending for your account.
+                        <div class="small text-gray-500">May 17, 2023</div>
+                        Major updates to search features
+                    </div>
+                </a>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                    <div class="mr-3">
+                        <div class="icon-circle bg-success">
+                            <i class="fas fa-exclamation-triangle text-white"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="small text-gray-500">April 22, 2023</div>
+                        v0.3.0 now live with updated mapping functions
                     </div>
                 </a>
                 <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
@@ -101,14 +107,17 @@
         </li>
 
         <!-- Nav Item - Messages -->
+        <!--
         <li class="nav-item dropdown no-arrow mx-1">
             <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-envelope fa-fw"></i>
-                <!-- Counter - Messages -->
+
                 <span class="badge badge-danger badge-counter">7</span>
             </a>
+            -->
             <!-- Dropdown - Messages -->
+            <!--
             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                  aria-labelledby="messagesDropdown">
                 <h6 class="dropdown-header">
@@ -165,14 +174,14 @@
                 <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
             </div>
         </li>
-
+        -->
         <div class="topbar-divider d-none d-sm-block"></div>
 
         <!-- Nav Item - User Information -->
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Jason Carvalho</span>
                 <img class="img-profile rounded-circle"
                      src="img/undraw_profile.svg">
             </a>

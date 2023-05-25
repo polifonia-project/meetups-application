@@ -61,11 +61,95 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Meetups</h1>
-                    <p class="mb-4">Holding page...</p>
-                    <p>
-                        
-                    </p>
+                    <h1 class="h3 mb-2 text-gray-800">POLIFONIA - MEETUPS</h1>
+                    <p class="mb-4">This pilot focuses on supporting music historians and teachers by providing a
+                        tool that enables the exploration and visualisation of encounters between people in the
+                        musical world in Europe from c.1800 to c.1945</p>
+
+                    <hr />
+                    <h5 class="h5 mb-2 text-gray-800">Guide to usage</h5>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="card border-left-primary shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary" id="detailView">Browse biographies</h6>
+                                </div>
+                                <div class="card-body" id="meetupDetails">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <p>Select <em>Biographies</em> from the menu on the left to browse the full list of
+                                            musical biographies stored within MEETUPS. The <em>filter</em> option in the top tight can be
+                                                used to narrow your selection.</p>
+                                        </div>
+                                        <div class="col-7">
+                                            <img src="img/screen_biographies.png" class="img-fluid">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card border-left-danger shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary" id="detailView">View meetups within single biographies</h6>
+                                </div>
+                                <div class="card-body" id="meetupDetails">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <p>Selecting an individual biography will display further details on the biography. A full
+                                            list of meetups extracted from the biography are available to explore, along with summaries of the
+                                            most frequent participants, places and themes that occur within the meetups.</p>
+                                        </div>
+                                        <div class="col-7">
+                                            <img src="img/screen_meetupdetail.png" class="img-fluid">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="card border-left-warning shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary" id="detailView">Explore all meetups via a search interface</h6>
+                                </div>
+                                <div class="card-body" id="meetupDetails">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <p>Selecting <em>Explore</em> from the menu on the left offers a search interface
+                                            for exploring the full database of meetups. If you are interested in meetups that occurred
+                                                in a particular place or involved a particular participant, the search fields provided offer this functionality.</p>
+                                        </div>
+                                        <div class="col-7">
+                                            <img src="img/screen_exploretabular.png" class="img-fluid">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card border-left-success shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary" id="detailView">View in tabular or map form</h6>
+                                </div>
+                                <div class="card-body" id="meetupDetails">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <p>As well as exploring your search results in tabular form, the <em>Map</em> tab at the top of the page
+                                            can be used to give an alternative visualisation of your search results. The map offers familiar pan and zoom
+                                            controls. Clicking on individual map points will give an overview of the meetup that has been recorded at that location.</p>
+                                        </div>
+                                        <div class="col-7">
+                                            <img src="img/screen_exploremap.png" class="img-fluid">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
 
 
 
