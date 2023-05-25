@@ -252,7 +252,7 @@
                                             </tfoot>
                                             -->
                                             <tbody>
-                                                <tr><td></td><td></td><td></td><td></td></tr>
+                                                <!--<tr><td></td><td></td><td></td><td></td></tr>-->
 
                                             </tbody>
                                         </table>
@@ -329,9 +329,10 @@
     <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
     <!-- Page level custom scripts -->
-    <script src="js/demo/datatables-demo.js"></script>
 
 <script>
+    //*** FUNCTIONS ***
+
     function createGeoJson(inputData) {
         output = {
             "type": "FeatureCollection",
@@ -394,7 +395,16 @@
         map.flyTo([lat, long], zoomLevel);
     }
 
+    // *** END OF FUNCTIONS ***
+
     var meetupsData;
+
+    var table = $('#meetupsTable').DataTable( {
+        "language": {
+            "search": "Filter:"
+        }
+    } );
+    //table.clear() //clear content
 
     $( document ).ready(function() {
         $.getJSON("services/biography.php?id=<?= $_GET["id"]; ?>", function(result){
@@ -410,21 +420,24 @@
         });
 
         $.getJSON("services/meetups.php?id=<?= $_GET["id"]; ?>", function(result){
+
             $.each(result, function(i, field){
+
                 buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateModal('+i+');"><i class="fas fa-search-plus"></i></button> ';
-
+                /*
                 html = '<tr>';
-
                 html += '<td>' + buttonHtml + '...</td>';
                 html += '<td>' + field.location + '</td>';
                 html += '<td>' + field.participants + '</td>';
                 //html += '<td><a href="#">' + field.meetup.substring(field.meetup.lastIndexOf('meetup') + 7) + '</a></td>';
                 html += '<td>' + field.purpose.substring(field.purpose.lastIndexOf('/') + 1) + '</td>';
-
                 html += '</tr>';
                 $('#meetupsTable tr:last').after(html);
+                */
+                table.row.add([buttonHtml + ' ...', field.location, field.participants, field.purpose])
             });
-            $('#meetupsTable').DataTable();
+            //$('#meetupsTable').DataTable();
+            table.draw();
 
             $geoJsonData = createGeoJson(result);
             meetupsData = result;
@@ -485,6 +498,7 @@
 
         const tiles = L.tileLayer('https://osm.gs.mil/tiles/humanitarian/{z}/{x}/{y}.png', {
             maxZoom: 14,
+            minZoom: 2,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
 

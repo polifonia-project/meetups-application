@@ -304,11 +304,19 @@ $searchPanel = True;
 
         const tiles = L.tileLayer('https://osm.gs.mil/tiles/humanitarian/{z}/{x}/{y}.png', {
             maxZoom: 14,
+            minZoom: 2,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
         var pointsLayer = L.geoJSON().addTo(map);
 
+        var table = $('#meetupsTable').DataTable( {
+            "language": {
+                "search": "Filter:"
+            }
+        } );
+
         $(document).ready(function() {
+
             $('#searchForm').on('submit', function(event) {
                 event.preventDefault();
 
@@ -319,7 +327,7 @@ $searchPanel = True;
                 params = '?subject='+subject+'&participant='+participant+'&place='+place+'&purpose='+purpose;
                 $.getJSON('services/search.php'+params, function(result){
                     //console.log(result);
-                    $("#tbodyid").empty();
+                    table.clear();
                     meetupsData = result;
                     resultsCount = 0;
                     $('#resultsCount').text(resultsCount);
@@ -327,24 +335,24 @@ $searchPanel = True;
                     $.each(result, function(i, field){
                         resultsCount ++;
                         buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateDetailsPanel('+i+');"><i class="fas fa-search-plus"></i></button> ';
-
+                        /*
                         html = '<tr>';
-
                         html += '<td>' + buttonHtml + '...</td>';
                         html += '<td>' + field.subject_label + '</td>';
                         html += '<td>' + field.participants + '</td>';
                         html += '<td>' + field.location + '</td>';
                         html += '<td>' + field.purpose + '</td>';
-
                         html += '</tr>';
                         $("#meetupsTable tbody").append(html);
+                        */
+                        table.row.add([buttonHtml + ' ...', field.subject_label, field.participants, field.location, field.purpose])
                     });
+                    table.draw();
 
                     $('#resultsCount').text(resultsCount);
                     if (resultsCount >= 500) {
                         $("#resultsCountWarning").removeClass("d-none");
                     }
-                    $('#meetupsTable').DataTable();
 
                     /*
                     if(map.hasLayer(pointsLayer)) {

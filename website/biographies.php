@@ -154,15 +154,21 @@
 
 
 <script>
+    var table = $('#dataTable').DataTable( {
+        "language": {
+            "search": "Filter:"
+        }
+    } );
     $( document ).ready(function() {
+
         $.getJSON("services/biographies.php", function(result){
+            table.clear() //clear content
             $.each(result, function(i, field){
-                html = '<tr><td>' ;
-                html += '<a href="biography.php?id=' + field.subject + '">' + field.subject_label + '</a></td>';
-                html += '<td>' + field.dob + '</td><td>' + field.dod + '</td></tr>';
-                $('#dataTable tr:last').after(html);
+                subjectHtml = '<a href="biography.php?id=' + field.subject + '">' + field.subject_label + '</a>';
+                table.row.add([subjectHtml, field.dob, field.dod])
             });
-            $('#dataTable').DataTable();
+            table.draw() //update display
+
         });
     });
 
