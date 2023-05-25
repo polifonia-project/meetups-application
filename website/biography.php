@@ -25,6 +25,9 @@
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js" ></script>
 
     <style>
         html, body {
@@ -328,6 +331,8 @@
     <script src="vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
+
+
     <!-- Page level custom scripts -->
 
 <script>
@@ -443,7 +448,10 @@
             meetupsData = result;
             var pointsLayer = L.geoJSON($geoJsonData, {
                 onEachFeature: onEachFeature
-            }).addTo(map);
+            });
+            var clusterLayer = L.markerClusterGroup();
+            clusterLayer.addLayer(pointsLayer);
+            map.addLayer(clusterLayer);
             map.fitBounds(pointsLayer.getBounds());
 
 
