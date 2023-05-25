@@ -4,8 +4,9 @@
 
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
-        <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-handshake"></i>
+        <div class="sidebar-brand-icon">
+            <!-- <i class="fas fa-handshake"></i> -->
+            <img src="img/meetups_logo_white.png" height="42px">
         </div>
         <div class="sidebar-brand-text mx-3">MEETUPS </div>
     </a>
