@@ -130,7 +130,25 @@ $searchPanel = True;
                         </div>
                     </div>
 
-                    <!-- DataTales Example -->
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">
+                                        Timeline
+                                        <button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#collapseTimeline" aria-expanded="false" aria-controls="collapseTimeline">
+                                            <i class="fas fa-arrows-alt-v"></i>
+                                        </button>
+                                    </h6>
+                                </div>
+                                <div class="collapse" id="collapseTimeline">
+                                    <div class="card card-body">
+                                        <img src="img/timeline_dummy.png" class="img-fluid">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">

@@ -218,7 +218,7 @@
                                 </div>
                                 <div class="collapse" id="collapseTimeline">
                                     <div class="card card-body">
-                                        Timeline component here...
+                                        <img src="img/timeline_dummy.png" class="img-fluid">
                                     </div>
                                 </div>
                             </div>
