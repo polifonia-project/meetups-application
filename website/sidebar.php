@@ -91,7 +91,10 @@
                     </div>
                     <hr />
                     <div class="text-center">
-                        <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-sync"></i> Reload</button>
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <!--<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>-->
+                            <i class="fas fa-sync"></i> Reload
+                            </button>
                     </div>
                 </form>
 
