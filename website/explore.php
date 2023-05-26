@@ -357,6 +357,9 @@ $searchPanel = True;
                 let place = $("#place").val();
                 let purpose = $("#purpose").val();
                 params = '?subject='+subject+'&participant='+participant+'&place='+place+'&purpose='+purpose;
+                //add 'loading' spinner to reload button
+                $('#reloadSpinner').removeClass('d-none');
+                $('#reloadButtonMessage').html('Loading...');
                 $.getJSON('services/search.php'+params, function(result){
                     //console.log(result);
                     table.clear();
@@ -380,6 +383,10 @@ $searchPanel = True;
                         table.row.add([buttonHtml + ' ...', field.subject_label, field.participants, field.location, field.purpose])
                     });
                     table.draw();
+
+                    // Remove 'loading spoinner'
+                    $('#reloadSpinner').addClass('d-none');
+                    $('#reloadButtonMessage').html('<i class="fas fa-sync"></i> Reload');
 
                     clearDetailsPanel();
 
