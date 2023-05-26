@@ -306,6 +306,9 @@ $searchPanel = True;
             //$('#modalTitle').text('Meetup Details');
             buttonHtml = '<button type="button" class="btn btn-sm btn-primary" onclick="zoomToPoint('+meetupDetails.lat+','+meetupDetails.long+');"><i class="fas fa-map-marked-alt"></i> View on map</button> ';
 
+            subjectButtonHtml = '<a class="btn btn-primary btn-sm" href="biography.php?id='+meetupDetails.subject+'" role="button"><i class="fas fa-address-card"></i> View biography</a> ';
+
+
             html = '';
             html += '<p><strong>When</strong>: ...</p>';
             html += '<p><strong>Where</strong>: ' + meetupDetails.location;
@@ -313,7 +316,7 @@ $searchPanel = True;
             html += '<p><strong>Participants</strong>: ' + meetupDetails.participants + '</p>';
             html += '<p><strong>Purpose</strong>: ' + meetupDetails.purpose + '</p>';
             html += '<p><strong>Evidence</strong>: ' + meetupDetails.evidence_text + '</p>';
-            html += '<p>' + buttonHtml + '</p>'
+            html += '<p>' + subjectButtonHtml + ' ' + buttonHtml + '</p>'
             $('#meetupDetails').html(html);
             $('html, body').animate({
                 scrollTop: $("#detailView").offset().top
