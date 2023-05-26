@@ -320,6 +320,10 @@ $searchPanel = True;
             }, 500);
         }
 
+        function clearDetailsPanel() {
+            $('#meetupDetails').html('');
+        }
+
         var meetupsData;
 
         const map = L.map('map').setView([52, -0.7], 8);
@@ -376,6 +380,8 @@ $searchPanel = True;
                         table.row.add([buttonHtml + ' ...', field.subject_label, field.participants, field.location, field.purpose])
                     });
                     table.draw();
+
+                    clearDetailsPanel();
 
                     $('#resultsCount').text(resultsCount);
                     if (resultsCount >= 500) {
