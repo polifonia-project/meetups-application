@@ -24,12 +24,15 @@ $searchPanel = True;
 
     <!-- Custom styles for this page -->
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js" ></script>
 
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
 
     <style>
         html, body {
@@ -258,22 +261,6 @@ $searchPanel = True;
             return output;
         }
 
-        /*
-        function markerOnClick(e) {
-            var attributes = e.layer.feature.properties;
-            console.log(attributes);
-            // do some stuff…
-            var html = "<strong>Subject</strong>: "+attributes.subject;
-            html += "<br /><strong>Participant</strong>: " + attributes.participant;
-            html += "<br /><strong>Date</strong>: " + attributes.date;
-            html += "<br /><strong>Location</strong>: " + attributes.place;
-            html += "<br /><strong>Description</strong>: " + attributes.description;
-            //html += "<br /><strong>Type</strong>: " + attributes.Type;
-            $('#pointDetails').html(html);
-        }
-        */
-
-
         function onEachFeature(feature, layer) {
             // does this feature have a property named popupContent?
             if (feature.properties) {
@@ -297,7 +284,6 @@ $searchPanel = True;
                 scrollTop: $("#nav-tab").offset().top
             }, 2000);
             $('#nav-tab button[data-target="#nav-home"]').tab('show')
-
         }
 
         function populateDetailsPanel(index) {
@@ -307,7 +293,6 @@ $searchPanel = True;
             buttonHtml = '<button type="button" class="btn btn-sm btn-primary" onclick="zoomToPoint('+meetupDetails.lat+','+meetupDetails.long+');"><i class="fas fa-map-marked-alt"></i> View on map</button> ';
 
             subjectButtonHtml = '<a class="btn btn-primary btn-sm" href="biography.php?id='+meetupDetails.subject+'" role="button"><i class="fas fa-address-card"></i> View biography</a> ';
-
 
             html = '';
             html += '<p><strong>When</strong>: ...</p>';
@@ -327,20 +312,157 @@ $searchPanel = True;
             $('#meetupDetails').html('');
         }
 
-        var meetupsData;
+        /*
+        ****** END OF FUNCTIONS ******
+        */
 
-        const map = L.map('map').setView([52, -0.7], 8);
+        var meetupsData, meetupsGeoJson;
+        meetupsGeoJson = createGeoJson([]);
 
-        const tiles = L.tileLayer('https://osm.gs.mil/tiles/humanitarian/{z}/{x}/{y}.png', {
-            maxZoom: 14,
-            minZoom: 2,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
+        mapboxgl.accessToken = 'pk.eyJ1IjoiamFzZW1rIiwiYSI6ImNsaXQwYnNwNDAwOGUzbG8yMThuN3NlMWoifQ.3l8vpe1oFnPQeogCo7QihA';
+        const map = new mapboxgl.Map({
+            container: 'map', // container ID
+            // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+            //style: 'mapbox://styles/mapbox/streets-v12', // style URL
+            style: 'mapbox://styles/jasemk/cjrc7gzq720742smn987oynug',
+            center: [0, 50], // starting position [lng, lat]
+            zoom: 6 // starting zoom
+        });
 
-        var pointsLayer = L.geoJSON().addTo(map);
-        var clusterLayer = L.markerClusterGroup();
-        clusterLayer.addLayer(pointsLayer);
-        map.addLayer(clusterLayer);
+        map.on('load', () => {
+            // Add a new source from our GeoJSON data and
+            // set the 'cluster' option to true. GL-JS will
+            // add the point_count property to your source data.
+            map.addSource('earthquakes', {
+                type: 'geojson',
+                // Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
+                // from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
+                data: 'https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson',
+                cluster: true,
+                clusterMaxZoom: 14, // Max zoom to cluster points on
+                clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
+            });
+
+            map.addSource('meetups', {
+                type: 'geojson',
+                // Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
+                // from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
+                data: meetupsGeoJson,
+                cluster: true,
+                clusterMaxZoom: 14, // Max zoom to cluster points on
+                clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
+            });
+
+            map.addLayer({
+                id: 'clusters',
+                type: 'circle',
+                source: 'meetups',
+                filter: ['has', 'point_count'],
+                paint: {
+                // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
+                // with three steps to implement three types of circles:
+                //   * Blue, 20px circles when point count is less than 100
+                //   * Yellow, 30px circles when point count is between 100 and 750
+                //   * Pink, 40px circles when point count is greater than or equal to 750
+                    'circle-color': [
+                        'step',
+                        ['get', 'point_count'],
+                        '#51bbd6',
+                        100,
+                        '#f1f075',
+                        750,
+                        '#f28cb1'
+                    ],
+                    'circle-radius': [
+                        'step',
+                        ['get', 'point_count'],
+                        20,
+                        100,
+                        30,
+                        750,
+                        40
+                    ]
+                }
+            });
+
+            map.addLayer({
+                id: 'cluster-count',
+                type: 'symbol',
+                source: 'meetups',
+                filter: ['has', 'point_count'],
+                layout: {
+                    'text-field': ['get', 'point_count_abbreviated'],
+                    'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                    'text-size': 12
+                }
+            });
+
+            map.addLayer({
+                id: 'unclustered-point',
+                type: 'circle',
+                source: 'meetups',
+                filter: ['!', ['has', 'point_count']],
+                paint: {
+                    'circle-color': '#11b4da',
+                    'circle-radius': 4,
+                    'circle-stroke-width': 1,
+                    'circle-stroke-color': '#fff'
+                }
+            });
+
+            // inspect a cluster on click
+            map.on('click', 'clusters', (e) => {
+                const features = map.queryRenderedFeatures(e.point, {
+                    layers: ['clusters']
+                });
+                const clusterId = features[0].properties.cluster_id;
+                map.getSource('meetups').getClusterExpansionZoom(
+                    clusterId,
+                    (err, zoom) => {
+                        if (err) return;
+
+                        map.easeTo({
+                            center: features[0].geometry.coordinates,
+                            zoom: zoom
+                        });
+                    }
+                );
+            });
+
+            // When a click event occurs on a feature in
+            // the unclustered-point layer, open a popup at
+            // the location of the feature, with
+            // description HTML from its properties.
+            map.on('click', 'unclustered-point', (e) => {
+                const coordinates = e.features[0].geometry.coordinates.slice();
+                const mag = e.features[0].properties.mag;
+                const tsunami =
+                    e.features[0].properties.tsunami === 1 ? 'yes' : 'no';
+
+                // Ensure that if the map is zoomed out such that
+                // multiple copies of the feature are visible, the
+                // popup appears over the copy being pointed to.
+                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                }
+
+                new mapboxgl.Popup()
+                    .setLngLat(coordinates)
+                    .setHTML(
+                        `magnitude: ${mag}<br>Was there a tsunami?: ${tsunami}`
+                    )
+                    .addTo(map);
+            });
+
+            map.on('mouseenter', 'clusters', () => {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+            map.on('mouseleave', 'clusters', () => {
+                map.getCanvas().style.cursor = '';
+            });
+        });
+
+
 
 
 
@@ -373,16 +495,6 @@ $searchPanel = True;
                     $.each(result, function(i, field){
                         resultsCount ++;
                         buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateDetailsPanel('+i+');"><i class="fas fa-search-plus"></i></button> ';
-                        /*
-                        html = '<tr>';
-                        html += '<td>' + buttonHtml + '...</td>';
-                        html += '<td>' + field.subject_label + '</td>';
-                        html += '<td>' + field.participants + '</td>';
-                        html += '<td>' + field.location + '</td>';
-                        html += '<td>' + field.purpose + '</td>';
-                        html += '</tr>';
-                        $("#meetupsTable tbody").append(html);
-                        */
                         table.row.add([buttonHtml + ' ...', field.subject_label, field.participants, field.location, field.purpose])
                     });
                     table.draw();
@@ -398,34 +510,24 @@ $searchPanel = True;
                         $("#resultsCountWarning").removeClass("d-none");
                     }
 
-                    /*
-                    if(map.hasLayer(pointsLayer)) {
-                        map.removeLayer(pointsLayer);
-                    }
-                    */
-                    pointsLayer.clearLayers();
-                    clusterLayer.clearLayers();
+                    //pointsLayer.clearLayers();
+                    //clusterLayer.clearLayers();
                     $geoJsonData = createGeoJson(result);
+                    meetupsGeoJson = $geoJsonData;
+                    map.getSource('meetups').setData(meetupsGeoJson);
                     meetupsData = result;
+                    /*
                     pointsLayer = L.geoJSON($geoJsonData, {
                         onEachFeature: onEachFeature
                     });
-                    clusterLayer.addLayer(pointsLayer);
-                    map.addLayer(clusterLayer);
-                    map.fitBounds(pointsLayer.getBounds());
+                    */
+                    //clusterLayer.addLayer(pointsLayer);
+                    //map.addLayer(clusterLayer);
+                    //map.fitBounds(pointsLayer.getBounds());
 
                 });
             });
         });
-
-
-        /*
-        var pointsLayer = L.geoJSON(pointsData, {
-
-            onEachFeature: onEachFeature
-        }).addTo(map);
-        pointsLayer.on("click",markerOnClick);
-        */
 
 
     </script>
