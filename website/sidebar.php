@@ -64,22 +64,40 @@
 
                 <form id="searchForm">
                     <div class="form-group">
-                        <label for="subject"><h6 class="collapse-header sidebar-search-heading"><i class="fas fa-tags fa-2x text-gray-300"></i> Subject:</h6></label>
+                        <label for="subject"><h6 class="collapse-header sidebar-search-heading text-gray-600"><i class="fas fa-tags fa-2x text-gray-600"></i> Subject:</h6></label>
                         <input type="text" class="form-control sidebar-search" id="subject">
                     </div>
                     <hr />
                     <div class="form-group">
-                        <label for="participant"><h6 class="collapse-header sidebar-search-heading"><i class="fas fa-tags fa-2x text-gray-300"></i> Participant:</h6></label>
+                        <label for="participant"><h6 class="collapse-header sidebar-search-heading text-gray-600"><i class="fas fa-tags fa-2x text-gray-600"></i> Participant:</h6></label>
                         <input type="text" class="form-control sidebar-search" id="participant">
                     </div>
                     <hr />
                     <div class="form-group">
-                        <label for="purpose"><h6 class="collapse-header sidebar-search-heading"><i class="fas fa-tags fa-2x text-gray-300"></i> Purpose:</h6></label>
+                        <label for="purpose"><h6 class="collapse-header sidebar-search-heading text-gray-600"><i class="fas fa-tags fa-2x text-gray-600"></i> Purpose:</h6></label>
+
+                        <!--
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="music_making" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                Music Making
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="education" id="defaultCheck2">
+                            <label class="form-check-label" for="defaultCheck2">
+                                Education
+                            </label>
+                        </div>
+                        -->
+
                         <input type="text" class="form-control sidebar-search" id="purpose">
+
                     </div>
+
                     <hr />
                     <div class="form-group">
-                        <label for="place"><h6 class="collapse-header sidebar-search-heading"><i class="fas fa-tags fa-2x text-gray-300"></i> Place:</h6></label>
+                        <label for="place"><h6 class="collapse-header sidebar-search-heading text-gray-600"><i class="fas fa-tags fa-2x text-gray-600"></i> Place:</h6></label>
                         <input type="text" class="form-control sidebar-search" id="place">
                     </div>
                     <hr />

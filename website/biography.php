@@ -362,7 +362,7 @@
             };
             output.features.push(feature);
         }
-        console.log(output);
+        //console.log(output);
         return output;
     }
 
@@ -381,7 +381,7 @@
 
     function populateModal(index) {
         meetupDetails = meetupsData[index];
-        console.log(meetupDetails);
+        //console.log(meetupDetails);
         $('#modalTitle').text('Meetup Details');
         buttonHtml = '<button type="button" class="btn btn-sm btn-primary" onclick="zoomToPoint('+meetupDetails.lat+','+meetupDetails.long+');"><i class="fas fa-map-marked-alt"></i> View on map</button> ';
 
@@ -476,7 +476,14 @@
         $.getJSON("services/biography-stats.php?id=<?= $_GET["id"]; ?>&stat=people", function(result){
             html = '';
             $.each(result, function(i, field){
-                html += field.label + ' <em>(' + field.count + ')</em><br />';
+                console.log(field);
+                if (field.link) {
+                    console.log(field.link);
+                    html = '<a href="biography.php?id=' + field.link + '"><em>'+field.label+' (' + field.count + ')</em></a><br />';
+                }
+                else {
+                    html += field.label + ' <em>(' + field.count + ')</em><br />';
+                }
             });
             $('#topParticipants').html(html);
         });

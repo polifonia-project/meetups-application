@@ -36,16 +36,20 @@ LIMIT 2';
 
 $sparqlPeople = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT ( COUNT( ?label) as ?count ) ?label
+SELECT ( COUNT( ?label) as ?count ) ?label ?link
 FROM <http://data.open.ac.uk/context/meetups>
 WHERE
 { ?s rdf:type mtp:Meetup ;
       mtp:hasSubject <'.$biography.'> ;
       mtp:hasParticipant ?participant .
       FILTER  (!regex (str(?participant), \''.$biography.'\' ) ) .
-      ?participant rdfs:label ?label
+      ?participant rdfs:label ?label .
+      OPTIONAL { 
+        ?s2 mtp:hasSubject ?participant .
+        ?s2 mtp:hasSubject ?link
+      }
 }
-GROUP BY ?label
+GROUP BY ?label ?link
     ORDER BY DESC(?count) ?label
 LIMIT 2';
 
@@ -100,6 +104,7 @@ $outputObj = [];
 foreach ($bindings as $binding) {
     $item = [
         'label' => $binding->label->value,
+        'link' => $binding->link->value,
         'count' => $binding->count->value
     ];
     $outputObj[] = $item;
