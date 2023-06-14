@@ -25,11 +25,13 @@ $searchPanel = True;
     <!-- Custom styles for this page -->
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
+    <!--
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js" ></script>
+    -->
 
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
@@ -328,6 +330,18 @@ $searchPanel = True;
             center: [0, 50], // starting position [lng, lat]
             zoom: 6 // starting zoom
         });
+        // Add zoom and rotation controls to the map.
+        map.addControl(new mapboxgl.NavigationControl());
+
+        map.loadImage(
+            'https://docs.mapbox.com/mapbox-gl-js/assets/cat.png',
+            (error, image) => {
+                if (error) throw error;
+
+                // Add the image to the map style.
+                map.addImage('cat', image);
+            }
+        );
 
         map.on('load', () => {
             // Add a new source from our GeoJSON data and
@@ -399,14 +413,19 @@ $searchPanel = True;
 
             map.addLayer({
                 id: 'unclustered-point',
-                type: 'circle',
+                type: 'symbol',
                 source: 'meetups',
                 filter: ['!', ['has', 'point_count']],
-                paint: {
-                    'circle-color': '#11b4da',
-                    'circle-radius': 4,
-                    'circle-stroke-width': 1,
-                    'circle-stroke-color': '#fff'
+                'layout': {
+                    'icon-image': 'marker',
+                    // get the title name from the source's "title" property
+                    'text-field': ['get', 'title'],
+                    'text-font': [
+                        'Open Sans Semibold',
+                        'Arial Unicode MS Bold'
+                    ],
+                    'text-offset': [0, 1.25],
+                    'text-anchor': 'top'
                 }
             });
 
@@ -515,6 +534,7 @@ $searchPanel = True;
                     $geoJsonData = createGeoJson(result);
                     meetupsGeoJson = $geoJsonData;
                     map.getSource('meetups').setData(meetupsGeoJson);
+                    console.log(map.getSource('meetups').bounds);
                     meetupsData = result;
                     /*
                     pointsLayer = L.geoJSON($geoJsonData, {
