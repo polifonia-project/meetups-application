@@ -360,6 +360,18 @@ $searchPanel = True;
                 let place = $("#place").val();
                 let purpose = $("#purpose").val();
                 params = '?subject='+subject+'&participant='+participant+'&place='+place+'&purpose='+purpose;
+
+                //check for map view restrict filter
+                if($("#restricttomap").is(':checked')) {
+                    console.log(map.getBounds().toBBoxString());
+                    east = map.getBounds().getEast();
+                    west = map.getBounds().getWest();
+                    north = map.getBounds().getNorth();
+                    south = map.getBounds().getSouth();
+                    restrctmapparam = '&restricttomap=true&east='+east+'&west='+west+'&north='+north+'&south='+south;
+                    params += restrctmapparam;
+                }
+
                 //add 'loading' spinner to reload button
                 $('#reloadSpinner').removeClass('d-none');
                 $('#reloadButtonMessage').html('Loading...');

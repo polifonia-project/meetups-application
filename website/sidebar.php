@@ -98,7 +98,19 @@
                     <hr />
                     <div class="form-group">
                         <label for="place"><h6 class="collapse-header sidebar-search-heading text-gray-600"><i class="fas fa-tags fa-2x text-gray-600"></i> Place:</h6></label>
+                        <div class="text-sm pl-2"><em>text based search of meetup location</em></div>
                         <input type="text" class="form-control sidebar-search" id="place">
+                    </div>
+                    <hr />
+                    <div class="form-group">
+                        <label for="place"><h6 class="collapse-header sidebar-search-heading text-gray-600"><i class="fas fa-tags fa-2x text-gray-600"></i> Restrict to map view</h6></label>
+                        <div class="text-sm pl-2">
+                            <em>Restrict the search query to only meetups that are located within the current visible map area</em>
+                        </div>
+                        <div class="custom-control custom-switch ml-1">
+                            <input type="checkbox" class="custom-control-input" id="restricttomap">
+                            <label class="custom-control-label" for="restricttomap">Restrict to map view</label>
+                        </div>
                     </div>
                     <hr />
                     <div class="text-center">
