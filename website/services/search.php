@@ -6,6 +6,15 @@ $subjectFilter = (isset($_GET["subject"])?"FILTER (regex(str(?subject), \"".$_GE
 $participantFilter = (isset($_GET["participant"])?"FILTER (regex(str(?participant), \"".$_GET["participant"]."\"))":"");
 $placeFilter = (isset($_GET["place"])?"FILTER (regex(str(?location_label), \"".$_GET["place"]."\"))":"");
 
+$boundsFilter = "";
+if (isset($_GET["restricttomap"])) {
+    $westBound = "FILTER (?long > ".$_GET["west"].")";
+    $eastBound = "FILTER (?long < ".$_GET["east"].")";
+    $northBound = "FILTER (?lat < ".$_GET["north"].")";
+    $southBound = "FILTER (?lat > ".$_GET["south"].")";
+    $boundsFilter = $eastBound . " " . $westBound . " " . $northBound . " " . $southBound . " ";
+}
+
 $sparql = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#> 
@@ -31,6 +40,7 @@ WHERE
   '.$subjectFilter.'
   '.$participantFilter.'
   '.$placeFilter.'
+  '.$boundsFilter.'
   FILTER  (!regex (str(?participant), str(?subject) ) ) .
   ?participant rdfs:label ?participant_label .
   ?location_uri rdfs:label ?location_label ;
