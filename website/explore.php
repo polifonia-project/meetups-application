@@ -30,6 +30,23 @@ $searchPanel = True;
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js" ></script>
 
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+
+    <style>
+        #geocoder {
+            z-index: 1000;
+            position: relative;
+            left: 30px;
+            margin: 20px;
+        }
+        .mapboxgl-ctrl-geocoder {
+            min-width: 600px;
+        }
+    </style>
 
     <style>
         html, body {
@@ -41,6 +58,9 @@ $searchPanel = True;
             width: 600px;
             max-width: 100%;
             max-height: 100%;
+        }
+        .leaflet-bottom {
+            z-index: 1;
         }
     </style>
 
@@ -87,7 +107,11 @@ $searchPanel = True;
                                     <h6 class="m-0 font-weight-bold text-primary">Meetups</h6>
                                 </div>
                                 <div class="card-body">
-                                    <div id="map" style="width: 100%; height: 600px;"></div>
+
+                                    <pre id="result"></pre>
+                                    <div id="map" style="width: 100%; height: 600px;">
+                                        <div id="geocoder"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -327,6 +351,10 @@ $searchPanel = True;
             $('#meetupDetails').html('');
         }
 
+        /*
+        **** END OF FUNCTIONS
+         */
+
         var meetupsData;
 
         const map = L.map('map').setView([52, -0.7], 8);
@@ -335,7 +363,7 @@ $searchPanel = True;
             maxZoom: 14,
             minZoom: 2,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
+        }).setZIndex(1).addTo(map);
 
         var pointsLayer = L.geoJSON().addTo(map);
         var clusterLayer = L.markerClusterGroup();
@@ -351,6 +379,32 @@ $searchPanel = True;
         } );
 
         $(document).ready(function() {
+
+            mapboxgl.accessToken = 'pk.eyJ1IjoiamFzZW1rIiwiYSI6ImNsaXQwYnNwNDAwOGUzbG8yMThuN3NlMWoifQ.3l8vpe1oFnPQeogCo7QihA';
+            const geocoder = new MapboxGeocoder({
+                accessToken: mapboxgl.accessToken,
+                types: 'country,region,place,postcode,locality,neighborhood'
+            });
+
+            geocoder.addTo('#geocoder');
+
+            // Get the geocoder results container.
+            const results = document.getElementById('result');
+
+            // Add geocoder result to container.
+            geocoder.on('result', (e) => {
+                //results.innerText = JSON.stringify(e.result.bbox, null, 2);
+                map.fitBounds([
+                    [e.result.bbox[3], e.result.bbox[0]],
+                    [e.result.bbox[1], e.result.bbox[2]]
+                ])
+            });
+
+            // Clear results container when search is cleared.
+            geocoder.on('clear', () => {
+                results.innerText = '';
+            });
+
 
             $('#searchForm').on('submit', function(event) {
                 event.preventDefault();
