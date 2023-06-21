@@ -40,8 +40,9 @@ $searchPanel = True;
         #geocoder {
             z-index: 1000;
             position: relative;
-            left: 30px;
-            margin: 20px;
+            left: 40px;
+            top: 0px;
+            margin: 10px;
         }
         .mapboxgl-ctrl-geocoder {
             min-width: 600px;
@@ -261,6 +262,7 @@ $searchPanel = True;
                 feature = {
                     "type": "Feature",
                     "properties": {
+                        "meetup":  inputData[i].meetup,
                         "evidence_text":  inputData[i].evidence_text,
                         //"meetup": inputData[i].meetup,
                         "participants": inputData[i].participants,
@@ -357,7 +359,12 @@ $searchPanel = True;
 
         var meetupsData;
 
-        const map = L.map('map').setView([52, -0.7], 8);
+        //const map = L.map('map').setView([52, -0.7], 8);
+        const map = L.map('map', {
+            center: [52, -0.7],
+            zoom: 8,
+            scrollWheelZoom: false
+        });
 
         const tiles = L.tileLayer('https://osm.gs.mil/tiles/humanitarian/{z}/{x}/{y}.png', {
             maxZoom: 14,

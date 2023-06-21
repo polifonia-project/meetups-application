@@ -102,6 +102,7 @@ foreach ($bindings as $binding) {
         'location' => $binding->locations_label->value,
         'lat' => $binding->lat->value,
         'long' => $binding->long->value,
+        'meetup' => $binding->meetup->value
     ];
     $outputObj[] = $tempObject;
 }
