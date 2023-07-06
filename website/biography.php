@@ -34,12 +34,14 @@
             height: 100%;
             margin: 0;
         }
+
         .leaflet-container {
             height: 600px;
             width: 600px;
             max-width: 100%;
             max-height: 100%;
         }
+
     </style>
 
 </head>
@@ -179,21 +181,39 @@
                         </div>
                     </div>
 
-                    <div class="row">
-
-                        <div class="col-lg-12">
+<!-- ***** MAIN TABS FOR BIOGRAPHY/MEETUPS CONTENT -->
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <button class="nav-link active" id="nav-home-tab" data-toggle="tab" data-target="#biog-tab"
+                                    type="button" role="tab" aria-controls="biog-tab" aria-selected="true">Biography
+                            </button>
+                            <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#tabular-tab"
+                                    type="button" role="tab" aria-controls="tabular-tab" aria-selected="false">Meetups
+                            </button>
+                            <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#map-tab"
+                                    type="button" role="tab" aria-controls="map-tab" aria-selected="false">Map
+                            </button>
+                            <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#timeline-tab"
+                                    type="button" role="tab" aria-controls="timeline-tab" aria-selected="false">Timeline
+                            </button>
+                        </div>
+                    </nav>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="biog-tab" role="tabpanel" aria-labelledby="home-tab">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary"><span id="spanSubjectNameCardHeader"></span> <em>(<?= $_GET["id"]; ?>)</em></h6>
+                                    <h6 class="m-0 font-weight-bold text-primary"><span
+                                                id="spanSubjectNameCardHeader"></span> <em>(<?= $_GET["id"]; ?>)</em>
+                                    </h6>
                                 </div>
                                 <div class="card-body">
                                     <span id="spanSubjectImage"></span>
                                     <!--<img src="img/chopin.jpg" class="rounded float-right" alt="Frederic Chopin" width="250px">-->
                                     <p>
-                                        <strong>Date of birth: </strong><span id="spanBirthDate"></span><br />
+                                        <strong>Date of birth: </strong><span id="spanBirthDate"></span><br/>
                                     </p>
                                     <p>
-                                        <strong>Place of birth: </strong><span id="spanBirthPlace"></span><br />
+                                        <strong>Place of birth: </strong><span id="spanBirthPlace"></span><br/>
                                     </p>
                                     <p>
                                         <strong>Biography abstract: </strong>
@@ -203,31 +223,7 @@
                             </div>
                         </div>
 
-                    </div><!-- end of row -->
-
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">
-                                        Timeline
-                                        <button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#collapseTimeline" aria-expanded="false" aria-controls="collapseTimeline">
-                                            <i class="fas fa-arrows-alt-v"></i>
-                                        </button>
-                                    </h6>
-                                </div>
-                                <div class="collapse" id="collapseTimeline">
-                                    <div class="card card-body">
-                                        <img src="img/timeline_dummy.png" class="img-fluid">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-lg-6">
+                        <div class="tab-pane fade" id="tabular-tab" role="tabpanel" aria-labelledby="profile-tab">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-primary">Meetups</h6>
@@ -245,18 +241,15 @@
                                             </thead>
                                             <!--
                                             <tfoot>
-
                                             <tr>
                                                 <th>MeetupID</th>
                                                 <th>Purpose</th>
                                                 <th>When</th>
                                             </tr>
-
                                             </tfoot>
                                             -->
                                             <tbody>
-                                                <!--<tr><td></td><td></td><td></td><td></td></tr>-->
-
+                                            <!--<tr><td></td><td></td><td></td><td></td></tr>-->
                                             </tbody>
                                         </table>
                                     </div>
@@ -264,7 +257,7 @@
                             </div>
                         </div>
 
-                        <div class="col-lg-6">
+                        <div class="tab-pane fade" id="map-tab" role="tabpanel" aria-labelledby="messages-tab">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-primary">Map</h6>
@@ -275,7 +268,19 @@
                             </div>
                         </div>
 
-                    </div> <!-- end of row -->
+                        <div class="tab-pane fade" id="timeline-tab" role="tabpanel" aria-labelledby="settings-tab">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">
+                                        Timeline
+                                    </h6>
+                                </div>
+                                <div class="card card-body">
+                                    <img src="img/timeline_dummy.png" class="img-fluid">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
                 <!-- /.container-fluid -->
@@ -453,8 +458,6 @@
             clusterLayer.addLayer(pointsLayer);
             map.addLayer(clusterLayer);
             map.fitBounds(pointsLayer.getBounds());
-
-
         });
 
         $.getJSON("services/biography-stats.php?id=<?= $_GET["id"]; ?>&stat=place", function(result){
@@ -488,6 +491,11 @@
             $('#topParticipants').html(html);
         });
 
+        $('.nav-tabs').on('shown.bs.tab', function (event) {
+            setTimeout(function () {
+                map.invalidateSize();
+            },1);
+        });
 
     });
 </script>

@@ -264,7 +264,6 @@ $searchPanel = True;
                     "properties": {
                         "meetup":  inputData[i].meetup,
                         "evidence_text":  inputData[i].evidence_text,
-                        //"meetup": inputData[i].meetup,
                         "participants": inputData[i].participants,
                         "when": inputData[i].when,
                         "purpose": inputData[i].purpose,
