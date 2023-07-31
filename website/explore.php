@@ -170,8 +170,17 @@ $searchPanel = True;
                     </p>
                     <nav>
                         <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                            <button class="nav-link active" id="nav-home-tab" data-toggle="tab" data-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Map</button>
-                            <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Table</button>
+                            <button class="nav-link active" id="nav-home-tab" data-toggle="tab" data-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">
+                                Map
+                            </button>
+                            <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#nav-profile"
+                                    type="button" role="tab" aria-controls="nav-profile" aria-selected="false">
+                                Table
+                            </button>
+                            <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#timeline-tab"
+                                    type="button" role="tab" aria-controls="timeline-tab" aria-selected="false">
+                                Timeline
+                            </button>
                         </div>
                     </nav>
                     <div class="tab-content" id="nav-tabContent">
@@ -226,8 +235,21 @@ $searchPanel = True;
                                 </div>
                             </div>
                         </div>
+
+                        <div class="tab-pane fade" id="timeline-tab" role="tabpanel" aria-labelledby="settings-tab">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <!--<h6 class="m-0 font-weight-bold text-primary">Timeline</h6>-->
+                                </div>
+                                <div class="card card-body">
+                                    <canvas id="myChart"></canvas>
+                                    <!--<img src="img/timeline_dummy.png" class="img-fluid">-->
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
+                    <!--
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="card shadow mb-4">
@@ -247,6 +269,7 @@ $searchPanel = True;
                             </div>
                         </div>
                     </div>
+                    -->
 
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
