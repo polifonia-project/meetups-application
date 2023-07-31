@@ -41,7 +41,8 @@
     <hr class="sidebar-divider">
 
 
-<?php if (isset($searchPanel) && $searchPanel): ?>
+<?php //if (isset($searchPanel) && $searchPanel): ?>
+<?php if (false): ?>
 
     <!-- Heading -->
 

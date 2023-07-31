@@ -101,7 +101,6 @@
 
                     <div class="row">
 
-                        <!-- Earnings (Monthly) Card Example -->
                         <div class="col-xl-3 col-md-6 mb-4">
                             <div class="card border-left-primary shadow h-100 py-2">
                                 <div class="card-body">
@@ -121,7 +120,6 @@
                             </div>
                         </div>
 
-                        <!-- Earnings (Annual) Card Example -->
                         <div class="col-xl-3 col-md-6 mb-4">
                             <div class="card border-left-success shadow h-100 py-2">
                                 <div class="card-body">
@@ -141,7 +139,6 @@
                             </div>
                         </div>
 
-                        <!-- Tasks Card Example -->
                         <div class="col-xl-3 col-md-6 mb-4">
                             <div class="card border-left-info shadow h-100 py-2">
                                 <div class="card-body">
@@ -166,7 +163,6 @@
                             </div>
                         </div>
 
-                        <!-- Pending Requests Card Example -->
                         <div class="col-xl-3 col-md-6 mb-4">
                             <div class="card border-left-warning shadow h-100 py-2">
                                 <div class="card-body">
@@ -417,7 +413,7 @@
             //console.log(feature.properties);
             html = "<p><strong>Participants: </strong>" + feature.properties.participants + "</p>";
             html += "<p><strong>Purpose: </strong>" + feature.properties.purpose + "</p>";
-            buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateModal('+feature.properties.index+');"><i class="fas fa-search-plus"></i> View meetup</button> ';
+            buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateModal('+feature.properties.index+');"><i class="fas fa-search-plus"></i> View details</button> ';
             html += '<p>'+buttonHtml+'</p>';
 
             layer.bindPopup(html);

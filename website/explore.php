@@ -91,7 +91,80 @@ $searchPanel = True;
 
                     <!-- Page Heading -->
                     <h1 class="h3 mb-2 text-gray-800">Explore</h1>
-                    <p class="mb-4">Use the search filters on the left to explore meetups and view them below either on a map or in tabular form.</p>
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Filters</h6>
+                        </div>
+                        <div class="card-body">
+                            <form id="searchForm">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="subject"> Subject:</label>
+                                            <input type="text" class="form-control" id="subject">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="participant"> Participant:</label>
+                                            <input type="text" class="form-control" id="participant">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="purpose"> Purpose:</label>
+                                            <input type="text" class="form-control" id="purpose">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="place"> Place:</label>
+                                            <!--<div class="text-sm pl-2"><em>text based search of meetup location</em></div>-->
+                                            <input type="text" class="form-control" id="place">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <!--<label for="place"></i> Restrict to map view</label>-->
+                                            <div class="text-sm pl-2">
+                                                <em>Restrict the search query to only meetups that are located within the current visible map area</em>
+                                            </div>
+                                            <div class="custom-control custom-switch ml-1">
+                                                <input type="checkbox" class="custom-control-input" id="restricttomap">
+                                                <label class="custom-control-label" for="restricttomap">Restrict to map view</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="">
+                                            Results: <span id="resultsCount">0</span>
+                                            <a id="resultsCountWarning" href="#" class="btn btn-warning btn-circle btn-sm d-none" data-toggle="tooltip" data-placement="top" title="Max search limit reached">
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                            </a>
+                                        </div>
+
+                                        <div class="">
+                                            <button type="submit" class="btn btn-primary btn-sm">
+                                                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true" id="reloadSpinner"></span>
+                                                <span id="reloadButtonMessage"><i class="fas fa-sync"></i> Reload</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </form>
+
+                        </div>
+                    </div>
+                    <!--<p class="mb-4">Use the search filters on the left to explore meetups and view them below either on a map or in tabular form.</p>-->
                     <p>
                         
                     </p>
