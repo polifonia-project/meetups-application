@@ -29,6 +29,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js" ></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js" integrity="sha512-42PE0rd+wZ2hNXftlM78BSehIGzezNeQuzihiBCvUEB3CVxHvsShF86wBWwQORNxNINlBPuq7rG4WWhNiTVHFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         html, body {
             height: 100%;
@@ -41,7 +44,10 @@
             max-width: 100%;
             max-height: 100%;
         }
-
+        #myChart {
+            width: 100%;
+            height: 100px;
+        }
     </style>
 
 </head>
@@ -188,7 +194,10 @@
                                     type="button" role="tab" aria-controls="biog-tab" aria-selected="true">Biography
                             </button>
                             <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#tabular-tab"
-                                    type="button" role="tab" aria-controls="tabular-tab" aria-selected="false">Meetups
+                                    type="button" role="tab" aria-controls="tabular-tab" aria-selected="false">Meetups (data view)
+                            </button>
+                            <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#reading-tab"
+                                    type="button" role="tab" aria-controls="reading-tab" aria-selected="false">Meetups (reading view)
                             </button>
                             <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#map-tab"
                                     type="button" role="tab" aria-controls="map-tab" aria-selected="false">Map
@@ -226,7 +235,7 @@
                         <div class="tab-pane fade" id="tabular-tab" role="tabpanel" aria-labelledby="profile-tab">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Meetups</h6>
+                                    <!--<h6 class="m-0 font-weight-bold text-primary">Meetups (data view)</h6>-->
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
@@ -257,10 +266,42 @@
                             </div>
                         </div>
 
+                        <div class="tab-pane fade" id="reading-tab" role="tabpanel" aria-labelledby="profile2-tab">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <!--<h6 class="m-0 font-weight-bold text-primary">Meetups (reading view)</h6>-->
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="readingTable">
+                                            <thead>
+                                            <tr>
+                                                <th>Extract</th>
+                                                <th>Details</th>
+                                            </tr>
+                                            </thead>
+                                            <!--
+                                            <tfoot>
+                                            <tr>
+                                                <th>MeetupID</th>
+                                                <th>Purpose</th>
+                                                <th>When</th>
+                                            </tr>
+                                            </tfoot>
+                                            -->
+                                            <tbody>
+                                            <!--<tr><td></td><td></td><td></td><td></td></tr>-->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="tab-pane fade" id="map-tab" role="tabpanel" aria-labelledby="messages-tab">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Map</h6>
+                                    <!--6 class="m-0 font-weight-bold text-primary">Map</h6>-->
                                 </div>
                                 <div class="card-body">
                                     <div id="map" style="width: 100%; height: 600px;"></div>
@@ -271,12 +312,11 @@
                         <div class="tab-pane fade" id="timeline-tab" role="tabpanel" aria-labelledby="settings-tab">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">
-                                        Timeline
-                                    </h6>
+                                    <!--<h6 class="m-0 font-weight-bold text-primary">Timeline</h6>-->
                                 </div>
                                 <div class="card card-body">
-                                    <img src="img/timeline_dummy.png" class="img-fluid">
+                                    <canvas id="myChart"></canvas>
+                                    <!--<img src="img/timeline_dummy.png" class="img-fluid">-->
                                 </div>
                             </div>
                         </div>
@@ -384,11 +424,17 @@
         }
     }
 
+    function getViewOnMapButton(data) {
+        buttonHtml = '<button type="button" class="btn btn-sm btn-primary" onclick="zoomToPoint('+data.lat+','+data.long+');"><i class="fas fa-map-marked-alt"></i> View on map</button> ';
+        return buttonHtml;
+    }
+
     function populateModal(index) {
         meetupDetails = meetupsData[index];
         //console.log(meetupDetails);
         $('#modalTitle').text('Meetup Details');
-        buttonHtml = '<button type="button" class="btn btn-sm btn-primary" onclick="zoomToPoint('+meetupDetails.lat+','+meetupDetails.long+');"><i class="fas fa-map-marked-alt"></i> View on map</button> ';
+        //buttonHtml = '<button type="button" class="btn btn-sm btn-primary" onclick="zoomToPoint('+meetupDetails.lat+','+meetupDetails.long+');"><i class="fas fa-map-marked-alt"></i> View on map</button> ';
+        buttonHtml = getViewOnMapButton(meetupDetails);
 
         html = '';
         html += '<p><strong>When</strong>: ...</p>';
@@ -403,9 +449,59 @@
     function zoomToPoint(lat, long) {
         zoomLevel = 8;
         map.flyTo([lat, long], zoomLevel);
+
+        mapTab.show()
+    }
+
+    function getRandomDate(startDate, endDate) {
+        // Calculate the range in milliseconds
+        const startMs = startDate.getTime();
+        const endMs = endDate.getTime();
+        const rangeMs = endMs - startMs;
+
+        // Generate a random number within the range
+        const randomMs = Math.floor(Math.random() * rangeMs);
+
+        // Create a new date by adding the random number of milliseconds to the start date
+        const randomDateMs = startMs + randomMs;
+        const randomDate = new Date(randomDateMs);
+
+        return randomDate;
+    }
+
+    function formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
+
+    function getChartDataFromGeoJSON(geojson) {
+        chartData = [];
+        const startDate = new Date('1875-01-01');
+        const endDate = new Date('1945-12-31');
+        for (i=0; i<geojson.features.length; i++) {
+            item = {
+                x: formatDate(getRandomDate(startDate, endDate)),
+                y: 0
+            };
+            chartData.push(item);
+        }
+        console.log(chartData);
+        return chartData;
     }
 
     // *** END OF FUNCTIONS ***
+
+    const img = new Image(16, 16);
+    img.src = 'https://i.stack.imgur.com/Q94Tt.png';
 
     var meetupsData;
 
@@ -414,9 +510,67 @@
             "search": "Filter:"
         }
     } );
+
+    var tableReading = $('#readingTable').DataTable( {
+        "language": {
+            "search": "Filter:"
+        },
+
+    } );
     //table.clear() //clear content
 
+    var mapTab;
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var chartData = [
+        { x: "1820-03-22", y: 0 },
+        { x: "2020-04-01", y: 0 },
+        { x: "2020-04-02", y: 0 },
+        { x: "2020-04-03", y: 0 },
+        { x: "2018-04-08", y: 0 },
+        { x: "2003-04-12", y: 0 },
+        { x: "2020-04-15", y: 0 }
+    ];
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+                data: chartData,
+                pointStyle: img,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            legend: {
+                display: false
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        display: false,
+                    },
+                    gridLines: {
+                        display: false
+                    }
+                }],
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                        unit: 'year',
+                        tooltipFormat: 'MMM DD'
+                    },
+                    gridLines: {
+                        display:false
+                    }
+                }]
+            }
+        }
+    });
+
     $( document ).ready(function() {
+        var mapTabTriggerEl = document.querySelector('#map-tab')
+        mapTab = new bootstrap.Tab(mapTabTriggerEl)
+
         $.getJSON("services/biography.php?id=<?= $_GET["id"]; ?>", function(result){
             $('#spanSubjectName').text(result.name);
             $('#spanSubjectNameCardHeader').text(result.name);
@@ -445,11 +599,31 @@
                 $('#meetupsTable tr:last').after(html);
                 */
                 table.row.add([buttonHtml + ' ...', field.location, field.participants, field.purpose])
+                readingFieldsHTML = '';
+                readingFieldsHTML += '<strong>When: </strong>...';
+                readingFieldsHTML += '<br /><strong>Where: </strong>'+field.location;
+                readingFieldsHTML += '<br /><strong>Participants: </strong>'+field.participants;
+                readingFieldsHTML += '<br /><strong>Purpose: </strong>'+field.purpose;
+
+                evidenceHTML = '<p>' + field.evidence + '</p>' + getViewOnMapButton(field);
+                tableReading.row.add([evidenceHTML, readingFieldsHTML])
+                //console.log(field);
             });
             //$('#meetupsTable').DataTable();
             table.draw();
+            tableReading.draw();
 
             $geoJsonData = createGeoJson(result);
+            chartData = getChartDataFromGeoJSON($geoJsonData);
+            var tempData = {
+                datasets: [{
+                    data: chartData,
+                    pointStyle: img,
+                    borderWidth: 1
+                }]
+            };
+            myChart.config.data = tempData;
+            myChart.update();
             meetupsData = result;
             var pointsLayer = L.geoJSON($geoJsonData, {
                 onEachFeature: onEachFeature
