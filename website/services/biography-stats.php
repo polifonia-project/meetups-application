@@ -34,6 +34,7 @@ GROUP BY ?label
 ORDER BY DESC(?count)
 LIMIT 2';
 
+/*
 $sparqlPeople = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT ( COUNT( ?label) as ?count ) ?label ?link
@@ -51,6 +52,31 @@ WHERE
 }
 GROUP BY ?label ?link
     ORDER BY DESC(?count) ?label
+LIMIT 2';
+*/
+
+$sparqlPeople = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+select ( count( ?participant) as ?count ) ?label ?link
+    from <http://data.open.ac.uk/context/meetups>
+where
+{
+    VALUES ?subject { <'.$biography.'> }
+    []  mtp:hasSubject ?subject ;
+      mtp:hasParticipant ?participant .
+    FILTER (?participant != ?subject ) .
+  ?participant rdfs:label ?label .
+        OPTIONAL {
+        FILTER EXISTS {
+            [] mtp:hasSubject ?participant .
+    }
+    BIND (?participant AS ?link)
+  }
+} 
+GROUP BY ?label ?link
+    ORDER BY DESC(?count) ?participant 
 LIMIT 2';
 
 $sparql = '';
