@@ -32,6 +32,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js" integrity="sha512-42PE0rd+wZ2hNXftlM78BSehIGzezNeQuzihiBCvUEB3CVxHvsShF86wBWwQORNxNINlBPuq7rG4WWhNiTVHFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+
+
+
     <style>
         html, body {
             height: 100%;
@@ -311,7 +314,8 @@
                                     <!--<h6 class="m-0 font-weight-bold text-primary">Timeline</h6>-->
                                 </div>
                                 <div class="card card-body">
-                                    <canvas id="myChart"></canvas>
+                                    <!-- <canvas id="myChart"></canvas> -->
+                                    <div id="timeline"></div>
                                     <!--<img src="img/timeline_dummy.png" class="img-fluid">-->
                                 </div>
                             </div>
@@ -371,6 +375,11 @@
     <!-- Page level plugins -->
     <script src="vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+<script src="js/timeline/resize.js"></script>
+<link rel="stylesheet" href="js/timeline/simpleTimeline.css">
+
+<script src="js/timeline/simpleTimeline.js"></script>
 
 
 
@@ -517,6 +526,7 @@
 
     var mapTab;
 
+    /*
     var ctx = document.getElementById('myChart').getContext('2d');
     var chartData = [
         { x: "1820-03-22", y: 0 },
@@ -562,8 +572,51 @@
             }
         }
     });
+*/
+
+
+    //********** TIMELINE STUFF *************
+    /* [ // array of layers (horizontal bar groups)
+  [ // array of data elements
+    { // data element (bar)
+      id: string, // unique identifier
+      start: number, // start < end
+      end: number, // end > start
+      label: string, // optional (if empty, id is displayed)
+      css: object, // optional, passed to jQuery css() method
+      className: string // optional CSS class name(s)
+    },
+    ... // optional: more data elements
+  ],
+  ... // optional: more layers
+];
+*/
+    var data = [
+        [{ id: 'Dingo', start: -50000, end: -32000, className: 'styleA' },
+            { id: 'Ringo', start: -3000, end: 0, className: 'styleA' }],
+
+        [{ id: 'Looong', start: -42000, end: -1492, className: 'styleB' },
+            { id: 'Hoko', start: -980, end: -332, className: 'styleB' }],
+
+        [{ id: 'Wunz', start: -4700, end: -2000, className: 'styleC' },
+            { id: 'Inzi', start: -2000, end: -1000, className: 'styleC' },
+            { id: 'Misi', start: -2000, end: 1500, className: 'styleC' }]
+    ];
+
+    var options = {
+        phases: [
+            { start: -50000, end: -30000, indicatorsEvery: 20000, share: .2 },
+            { start: -30000, end: -5000, indicatorsEvery: 25000, share: .07, className: 'timeline-unused-phase' },
+            { start: -5000, end: 2000, indicatorsEvery: 1000, share: .73 }
+        ]
+    };
+    //********** TIMELINE STUFF END *************
+
 
     $( document ).ready(function() {
+        $('#timeline').simpleTimeline(options, data)
+
+
         var mapTabTriggerEl = document.querySelector('#map-tab')
         mapTab = new bootstrap.Tab(mapTabTriggerEl)
 
@@ -610,7 +663,8 @@
             tableReading.draw();
 
             $geoJsonData = createGeoJson(result);
-            chartData = getChartDataFromGeoJSON($geoJsonData);
+            //chartData = getChartDataFromGeoJSON($geoJsonData);
+            /*
             var tempData = {
                 datasets: [{
                     data: chartData,
@@ -618,8 +672,10 @@
                     borderWidth: 1
                 }]
             };
-            myChart.config.data = tempData;
-            myChart.update();
+            */
+
+            //myChart.config.data = tempData;
+            //myChart.update();
             meetupsData = result;
             var pointsLayer = L.geoJSON($geoJsonData, {
                 onEachFeature: onEachFeature
