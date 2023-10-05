@@ -503,11 +503,35 @@
         return chartData;
     }
 
-    function formatDateString(beginDate, endDate) {
-        if (beginDate != endDate) {
-            return (beginDate + ' - ' + endDate);
+    function formatDateString(beginDate, endDate, time_evidence) {
+        //if (beginDate != endDate) {
+        //    return (beginDate + ' - ' + endDate);
+        //}
+        //return beginDate;
+        var returnString = '';
+        var helperString = '';
+        if (time_evidence == null) {
+            returnString = 'unknown';
         }
-        return beginDate;
+        else {
+            returnString = time_evidence;
+        }
+
+        if (beginDate != null) {
+            if (beginDate == endDate) {
+                helperString = beginDate;
+            }
+            else {
+                helperString = beginDate + ' -> ' + endDate;
+            }
+        }
+
+        if (helperString) {
+            returnString += ' <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="' + helperString + '">';
+            returnString += '<i class="fas fa-info-circle"></i></a>'
+        }
+
+        return returnString;
     }
 
     // *** END OF FUNCTIONS ***
@@ -621,6 +645,12 @@
 
 
     $( document ).ready(function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+
+
         $('#timeline').simpleTimeline(options, data)
 
 
@@ -640,10 +670,10 @@
         });
 
         $.getJSON("services/meetups.php?id=<?= $_GET["id"]; ?>", function(result){
-            console.log(result);
+            //console.log(result);
 
             $.each(result, function(i, field){
-                console.log(field);
+                //console.log(field);
                 buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateModal('+i+');"><i class="fas fa-search-plus"></i></button> ';
                 /*
                 html = '<tr>';
@@ -655,9 +685,9 @@
                 html += '</tr>';
                 $('#meetupsTable tr:last').after(html);
                 */
-                table.row.add([buttonHtml + ' ...', field.location, field.participants, field.purpose])
+                table.row.add([buttonHtml + formatDateString(field.beginDate, field.endDate, field.time_evidence), field.location, field.participants, field.purpose])
                 readingFieldsHTML = '';
-                readingFieldsHTML += '<strong>When: </strong>'+formatDateString(field.beginDate, field.endDate);
+                readingFieldsHTML += '<strong>When: </strong>'+formatDateString(field.beginDate, field.endDate, field.time_evidence);
                 readingFieldsHTML += '<br /><strong>Where: </strong>'+field.location;
                 readingFieldsHTML += '<br /><strong>Participants: </strong>'+field.participants;
                 readingFieldsHTML += '<br /><strong>Purpose: </strong>'+field.purpose;

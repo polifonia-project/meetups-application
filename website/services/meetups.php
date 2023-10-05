@@ -24,7 +24,7 @@ SELECT ?meetup ?evidence_text ?purpose
 (GROUP_CONCAT( DISTINCT ?participant_label; separator=", " ) as ?participants_label )
 (GROUP_CONCAT( DISTINCT ?location_uri; separator=", " ) as ?locations_URI )
 (GROUP_CONCAT( DISTINCT ?location_label; separator=", " ) as ?locations_label )
-?time_expression_URI ?beginDate ?endDate ?lat ?long
+?time_expression_URI ?beginDate ?endDate ?time_evidence_text ?lat ?long
 FROM <http://data.open.ac.uk/context/meetups>
 WHERE
 { VALUES ?subject { <'.$biography.'> }
@@ -46,10 +46,11 @@ WHERE
   FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
   OPTIONAL { 
     ?time_expression_URI	time:hasBeginning ?beginDate;
-                     		time:hasEnd ?endDate .
+                     		time:hasEnd ?endDate ;
+                     		mtp:hasEvidenceText ?time_evidence_text .
   } .
 }
-GROUP BY ?meetup ?evidence_text ?purpose ?time_expression_URI ?beginDate ?endDate ?lat ?long ';
+GROUP BY ?meetup ?evidence_text ?purpose ?time_expression_URI ?beginDate ?endDate ?time_evidence_text ?lat ?long ';
 
 $sparql_encoded = urlencode($sparql);
 $curl = curl_init();
@@ -86,6 +87,7 @@ foreach ($bindings as $binding) {
         'when' => $binding->time_expression_URI->value,
         'beginDate' => $binding->beginDate->value,
         'endDate' => $binding->endDate->value,
+        'time_evidence' => $binding->time_evidence_text->value,
         'evidence' => $binding->evidence_text->value,
         'participants' => $binding->participants_label->value,
         'location' => $binding->locations_label->value,
