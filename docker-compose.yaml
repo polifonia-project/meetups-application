@@ -15,9 +15,9 @@ services:
       # So you don't have to use root, but you can if you like
       MYSQL_USER: 'meetups'
       # You can use whatever password you like
-      MYSQL_PASSWORD: 'Klj56tFg9'
+      MYSQL_PASSWORD: '<password>'
       # Password for root access
-      MYSQL_ROOT_PASSWORD: 'Zjg0MzcyMTczYTA4'
+      MYSQL_ROOT_PASSWORD: '<password>'
     ports:
       # <Port exposed> : <MySQL Port running inside container>
       - '3306:3306'
