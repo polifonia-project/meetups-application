@@ -3,7 +3,7 @@
 // Database configuration
 define('DB_HOST', 'localhost');
 define('DB_USERNAME', 'meetups');
-define('DB_PASSWORD', 'Klj56tFg9');
+define('DB_PASSWORD', '<password-here>');
 define('DB_NAME', 'meetups');
 define('DB_USER_TBL', 'users');
 
