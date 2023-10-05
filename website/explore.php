@@ -213,6 +213,7 @@ $searchPanel = True;
                                                 <th>Participants</th>
                                                 <th>Where</th>
                                                 <th>Purpose</th>
+                                                <th>Actions</th>
                                             </tr>
                                             </thead>
                                             <!--
@@ -448,6 +449,37 @@ $searchPanel = True;
             $('#meetupDetails').html('');
         }
 
+        function formatDateString(beginDate, endDate, time_evidence) {
+            //if (beginDate != endDate) {
+            //    return (beginDate + ' - ' + endDate);
+            //}
+            //return beginDate;
+            var returnString = '';
+            var helperString = '';
+            if (time_evidence == null) {
+                returnString = 'unknown';
+            }
+            else {
+                returnString = time_evidence;
+            }
+
+            if (beginDate != null) {
+                if (beginDate == endDate) {
+                    helperString = beginDate;
+                }
+                else {
+                    helperString = beginDate + ' -> ' + endDate;
+                }
+            }
+
+            if (helperString) {
+                returnString += ' <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="' + helperString + '">';
+                returnString += '<i class="fas fa-info-circle"></i></a>'
+            }
+
+            return returnString;
+        }
+
         /*
         **** END OF FUNCTIONS
          */
@@ -540,7 +572,7 @@ $searchPanel = True;
                     $("#resultsCountWarning").addClass("d-none");
                     $.each(result, function(i, field){
                         resultsCount ++;
-                        buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateDetailsPanel('+i+');"><i class="fas fa-search-plus"></i></button> ';
+                        buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateDetailsPanel('+i+');"><i class="fas fa-search-plus"></i> View details</button> ';
                         /*
                         html = '<tr>';
                         html += '<td>' + buttonHtml + '...</td>';
@@ -551,7 +583,7 @@ $searchPanel = True;
                         html += '</tr>';
                         $("#meetupsTable tbody").append(html);
                         */
-                        table.row.add([buttonHtml + ' ...', field.subject_label, field.participants, field.location, field.purpose])
+                        table.row.add([formatDateString(field.beginDate, field.endDate, field.time_evidence), field.subject_label, field.participants, field.location, field.purpose, buttonHtml])
                     });
                     table.draw();
 
