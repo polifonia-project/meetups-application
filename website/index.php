@@ -25,6 +25,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
 
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="1046738803397-ln8fihj72b9fvp97lvt8bhh4agn3lpqa.apps.googleusercontent.com">
+
     <style>
         html, body {
             height: 100%;
@@ -65,6 +68,8 @@
                     <p class="mb-4">This pilot focuses on supporting music historians and teachers by providing a
                         tool that enables the exploration and visualisation of encounters between people in the
                         musical world in Europe from c.1800 to c.1945</p>
+
+                    <div class="g-signin2" data-onsuccess="onSignIn"></div>
 
                     <hr />
                     <h5 class="h5 mb-2 text-gray-800">Guide to usage</h5>
@@ -219,6 +224,16 @@
     <!-- Page level custom scripts -->
 
     <script src="data/1000_points.geojson"></script>
+
+<script>
+    function onSignIn(googleUser) {
+        var profile = googleUser.getBasicProfile();
+        console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+        console.log('Name: ' + profile.getName());
+        console.log('Image URL: ' + profile.getImageUrl());
+        console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+    }
+</script>
 
 
 

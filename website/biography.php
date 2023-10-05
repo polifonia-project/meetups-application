@@ -503,6 +503,13 @@
         return chartData;
     }
 
+    function formatDateString(beginDate, endDate) {
+        if (beginDate != endDate) {
+            return (beginDate + ' - ' + endDate);
+        }
+        return beginDate;
+    }
+
     // *** END OF FUNCTIONS ***
 
     const img = new Image(16, 16);
@@ -633,9 +640,10 @@
         });
 
         $.getJSON("services/meetups.php?id=<?= $_GET["id"]; ?>", function(result){
+            console.log(result);
 
             $.each(result, function(i, field){
-
+                console.log(field);
                 buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateModal('+i+');"><i class="fas fa-search-plus"></i></button> ';
                 /*
                 html = '<tr>';
@@ -649,7 +657,7 @@
                 */
                 table.row.add([buttonHtml + ' ...', field.location, field.participants, field.purpose])
                 readingFieldsHTML = '';
-                readingFieldsHTML += '<strong>When: </strong>...';
+                readingFieldsHTML += '<strong>When: </strong>'+formatDateString(field.beginDate, field.endDate);
                 readingFieldsHTML += '<br /><strong>Where: </strong>'+field.location;
                 readingFieldsHTML += '<br /><strong>Participants: </strong>'+field.participants;
                 readingFieldsHTML += '<br /><strong>Purpose: </strong>'+field.purpose;
@@ -745,7 +753,7 @@
 
         const map = L.map('map').setView([52, -0.7], 8);
 
-        const tiles = L.tileLayer('https://osm.gs.mil/tiles/humanitarian/{z}/{x}/{y}.png', {
+        const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 14,
             minZoom: 2,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
