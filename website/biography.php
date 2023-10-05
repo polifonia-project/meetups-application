@@ -245,6 +245,7 @@
                                                 <th>Where</th>
                                                 <th>Participants</th>
                                                 <th>Purpose</th>
+                                                <th>Actions</th>
                                             </tr>
                                             </thead>
                                             <!--
@@ -442,7 +443,7 @@
         buttonHtml = getViewOnMapButton(meetupDetails);
 
         html = '';
-        html += '<p><strong>When</strong>: ...</p>';
+        html += '<p><strong>When</strong>: ' + formatDateString(meetupDetails.beginDate, meetupDetails.endDate, meetupDetails.time_evidence) + '</p>';
         html += '<p><strong>Where</strong>: ' + meetupDetails.location;
         html += '<p><strong>Participants</strong>: ' + meetupDetails.participants + '</p>';
         html += '<p><strong>Purpose</strong>: ' + meetupDetails.purpose + '</p>';
@@ -674,7 +675,7 @@
 
             $.each(result, function(i, field){
                 //console.log(field);
-                buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateModal('+i+');"><i class="fas fa-search-plus"></i></button> ';
+                buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateModal('+i+');"><i class="fas fa-search-plus"></i> View details</button> ';
                 /*
                 html = '<tr>';
                 html += '<td>' + buttonHtml + '...</td>';
@@ -685,7 +686,11 @@
                 html += '</tr>';
                 $('#meetupsTable tr:last').after(html);
                 */
-                table.row.add([buttonHtml + formatDateString(field.beginDate, field.endDate, field.time_evidence), field.location, field.participants, field.purpose])
+
+                // TABLE VIEW
+                table.row.add([formatDateString(field.beginDate, field.endDate, field.time_evidence), field.location, field.participants, field.purpose, buttonHtml])
+
+                // READING VIEW
                 readingFieldsHTML = '';
                 readingFieldsHTML += '<strong>When: </strong>'+formatDateString(field.beginDate, field.endDate, field.time_evidence);
                 readingFieldsHTML += '<br /><strong>Where: </strong>'+field.location;

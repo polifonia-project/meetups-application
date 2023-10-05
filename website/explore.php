@@ -461,7 +461,7 @@ $searchPanel = True;
             scrollWheelZoom: false
         });
 
-        const tiles = L.tileLayer('https://osm.gs.mil/tiles/humanitarian/{z}/{x}/{y}.png', {
+        const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 14,
             minZoom: 2,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
