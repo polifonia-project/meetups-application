@@ -8,8 +8,8 @@ define('DB_NAME', 'meetups');
 define('DB_USER_TBL', 'users');
 
 // Google API configuration
-define('GOOGLE_CLIENT_ID', '1046738803397-ln8fihj72b9fvp97lvt8bhh4agn3lpqa.apps.googleusercontent.com');
-define('GOOGLE_CLIENT_SECRET', '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');
+define('GOOGLE_CLIENT_ID', '<insert-here>');
+define('GOOGLE_CLIENT_SECRET', '<insert-here>');
 define('GOOGLE_REDIRECT_URL', 'Callback_URL');
 
 // Start session
