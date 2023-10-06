@@ -362,7 +362,9 @@ $searchPanel = True;
                         "meetup":  inputData[i].meetup,
                         "evidence_text":  inputData[i].evidence_text,
                         "participants": inputData[i].participants,
-                        "when": inputData[i].when,
+                        "time_evidence": inputData[i].time_evidence,
+                        "beginDate": inputData[i].beginDate,
+                        "endDate": inputData[i].endDate,
                         "purpose": inputData[i].purpose,
                         "subject": inputData[i].subject,
                         "subject_label": inputData[i].subject_label,
@@ -403,6 +405,7 @@ $searchPanel = True;
                 html = "";
                 html += "<p><strong>Subject: </strong>" + feature.properties.subject_label + "</p>";
                 html += "<p><strong>Participants: </strong>" + feature.properties.participants + "</p>";
+                html += "<p><strong>When: </strong>" + formatDateString(feature.properties.beginDate, feature.properties.endDate, feature.properties.time_evidence) + "</p>";
                 html += "<p><strong>Purpose: </strong>" + feature.properties.purpose + "</p>";
                 html += "<p><strong>Location: </strong>" + feature.properties.location + "</p>";
                 buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateDetailsPanel('+feature.properties.index+');"><i class="fas fa-search-plus"></i> View meetup</button> ';
@@ -432,7 +435,7 @@ $searchPanel = True;
 
 
             html = '';
-            html += '<p><strong>When</strong>: ...</p>';
+            html += '<p><strong>When</strong>: ' + formatDateString(meetupDetails.beginDate, meetupDetails.endDate, meetupDetails.time_evidence) + '</p>';
             html += '<p><strong>Where</strong>: ' + meetupDetails.location;
             html += '<p><strong>Subject</strong>: ' + meetupDetails.subject_label;
             html += '<p><strong>Participants</strong>: ' + meetupDetails.participants + '</p>';
