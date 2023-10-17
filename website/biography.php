@@ -455,8 +455,11 @@
     function zoomToPoint(lat, long) {
         zoomLevel = 8;
         map.flyTo([lat, long], zoomLevel);
-
-        mapTab.show()
+        $('html, body').animate({
+            scrollTop: $("#nav-tab").offset().top
+        }, 2000);
+        $('#nav-tab button[data-target="#map-tab"]').tab('show')
+        //mapTab.show()
     }
 
     function getRandomDate(startDate, endDate) {
@@ -504,6 +507,12 @@
         return chartData;
     }
 
+    function convertRDFDateToUKDate(input) {
+        output = input.substring(8,10) + '/' + input.substring(5,7) + '/' + input.substring(0,4);
+
+        return output;
+    }
+
     function formatDateString(beginDate, endDate, time_evidence) {
         //if (beginDate != endDate) {
         //    return (beginDate + ' - ' + endDate);
@@ -520,10 +529,10 @@
 
         if (beginDate != null) {
             if (beginDate == endDate) {
-                helperString = beginDate;
+                helperString = convertRDFDateToUKDate(beginDate);
             }
             else {
-                helperString = beginDate + ' -> ' + endDate;
+                helperString = convertRDFDateToUKDate(beginDate) + ' -> ' + convertRDFDateToUKDate(endDate);
             }
         }
 
