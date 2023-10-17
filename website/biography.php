@@ -323,6 +323,14 @@
                         </div>
                     </div>
 
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary" id="detailView">Detail view</h6>
+                        </div>
+                        <div class="card-body" id="meetupDetails">
+                        </div>
+                    </div>
+
                 </div>
                 <!-- /.container-fluid -->
 
@@ -423,7 +431,7 @@
             //console.log(feature.properties);
             html = "<p><strong>Participants: </strong>" + feature.properties.participants + "</p>";
             html += "<p><strong>Purpose: </strong>" + feature.properties.purpose + "</p>";
-            buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateModal('+feature.properties.index+');"><i class="fas fa-search-plus"></i> View details</button> ';
+            buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" onclick="populateDetailsPanel('+feature.properties.index+');"><i class="fas fa-search-plus"></i> View details</button> ';
             html += '<p>'+buttonHtml+'</p>';
 
             layer.bindPopup(html);
@@ -450,6 +458,29 @@
         html += '<p><strong>Evidence</strong>: ' + meetupDetails.evidence + '</p>';
         html += '<p>' + buttonHtml + '</p>'
         $('#meetupModalBody').html(html);
+    }
+
+    function populateDetailsPanel(index) {
+        meetupDetails = meetupsData[index];
+        //console.log(meetupDetails);
+        //$('#modalTitle').text('Meetup Details');
+        buttonHtml = '<button type="button" class="btn btn-sm btn-primary" onclick="zoomToPoint('+meetupDetails.lat+','+meetupDetails.long+');"><i class="fas fa-map-marked-alt"></i> View on map</button> ';
+
+        subjectButtonHtml = '<a class="btn btn-primary btn-sm" href="biography.php?id='+meetupDetails.subject+'" role="button"><i class="fas fa-address-card"></i> View biography</a> ';
+
+
+        html = '';
+        html += '<p><strong>When</strong>: ' + formatDateString(meetupDetails.beginDate, meetupDetails.endDate, meetupDetails.time_evidence) + '</p>';
+        html += '<p><strong>Where</strong>: ' + meetupDetails.location;
+        //html += '<p><strong>Subject</strong>: ' + meetupDetails.subject_label;
+        html += '<p><strong>Participants</strong>: ' + meetupDetails.participants + '</p>';
+        html += '<p><strong>Purpose</strong>: ' + meetupDetails.purpose + '</p>';
+        html += '<p><strong>Evidence</strong>: ' + meetupDetails.evidence + '</p>';
+        html += '<p>' + subjectButtonHtml + ' ' + buttonHtml + '</p>'
+        $('#meetupDetails').html(html);
+        $('html, body').animate({
+            scrollTop: $("#detailView").offset().top
+        }, 500);
     }
 
     function zoomToPoint(lat, long) {
@@ -683,7 +714,8 @@
 
             $.each(result, function(i, field){
                 //console.log(field);
-                buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateModal('+i+');"><i class="fas fa-search-plus"></i> View details</button> ';
+                buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" onclick="populateDetailsPanel('+i+');"><i class="fas fa-search-plus"></i> View details</button> ';
+                //buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateModal('+i+');"><i class="fas fa-search-plus"></i> View details</button> ';
                 /*
                 html = '<tr>';
                 html += '<td>' + buttonHtml + '...</td>';
