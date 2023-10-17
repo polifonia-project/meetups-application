@@ -452,6 +452,11 @@ $searchPanel = True;
             $('#meetupDetails').html('');
         }
 
+        function convertRDFDateToUKDate(input) {
+            output = input.substring(8,10) + '/' + input.substring(5,7) + '/' + input.substring(0,4);
+            return output;
+        }
+
         function formatDateString(beginDate, endDate, time_evidence) {
             //if (beginDate != endDate) {
             //    return (beginDate + ' - ' + endDate);
@@ -468,10 +473,10 @@ $searchPanel = True;
 
             if (beginDate != null) {
                 if (beginDate == endDate) {
-                    helperString = beginDate;
+                    helperString = convertRDFDateToUKDate(beginDate);
                 }
                 else {
-                    helperString = beginDate + ' -> ' + endDate;
+                    helperString = convertRDFDateToUKDate(beginDate) + ' -> ' + convertRDFDateToUKDate(endDate);
                 }
             }
 

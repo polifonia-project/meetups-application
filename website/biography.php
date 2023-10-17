@@ -509,7 +509,6 @@
 
     function convertRDFDateToUKDate(input) {
         output = input.substring(8,10) + '/' + input.substring(5,7) + '/' + input.substring(0,4);
-
         return output;
     }
 
