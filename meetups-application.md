@@ -15,7 +15,6 @@ resource: https://polifonia.kmi.open.ac.uk/MEETUPS/
 release-date: 18/10/2023
 release-number: v0.5.4
 release-link: https://github.com/polifonia-project/meetups-application/releases
-doi:
 changelog: https://github.com/polifonia-project/meetups-application/releases
 licence:
   - Apache-2.0
