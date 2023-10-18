@@ -3,9 +3,9 @@ component-id: meetups-application
 type: WebApplication
 name: MEETUPS web application
 description: The MEETUPS pilot application.
-image:
+image: https://polifonia.kmi.open.ac.uk/MEETUPS/img/screen_exploremap.png
 logo: https://polifonia.kmi.open.ac.uk/MEETUPS/img/meetups_logo_white.png
-demo:
+demo: https://polifonia.kmi.open.ac.uk/MEETUPS/
 work-package: 
   - WP5
 pilot: MEETUPS
