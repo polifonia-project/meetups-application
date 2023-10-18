@@ -25,11 +25,11 @@ contributors:
   - Alba Morales-Tirado <https://github.com/albamoralest>
   - Enrico Daga <https://github.com/enridaga>
 related-components:
-  - reuses
+  - reuses:
     - meetups-knowledge-graph
   - informed-by:
     - meetups-ui-design 
-  - persona
+  - persona:
     - Ortenz
     - David
     - Sophie
