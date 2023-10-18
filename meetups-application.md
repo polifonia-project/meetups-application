@@ -12,8 +12,8 @@ pilot:
   - MEETUPS
 project: polifonia-project
 resource: https://polifonia.kmi.open.ac.uk/MEETUPS/
-release-date: 25/05/2023
-release-number: v0.3.6
+release-date: 18/10/2023
+release-number: v0.5.4
 release-link: https://github.com/polifonia-project/meetups-application/releases
 doi:
 changelog: https://github.com/polifonia-project/meetups-application/releases
