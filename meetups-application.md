@@ -16,6 +16,7 @@ release-date: 18/10/2023
 release-number: v0.5.4
 release-link: https://github.com/polifonia-project/meetups-application/releases
 changelog: https://github.com/polifonia-project/meetups-application/releases
+doi: 10.5281/zenodo.10017423
 licence:
   - Apache-2.0
 copyright: "Copyright (c) 2023 The Open University"
