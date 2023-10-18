@@ -17,7 +17,7 @@ release-number: v0.3.6
 release-link: https://github.com/polifonia-project/meetups-application/releases
 doi:
 changelog: https://github.com/polifonia-project/meetups-application/releases
-license:
+licence:
   - Apache-2.0
 copyright: "Copyright (c) 2023 The Open University"
 contributors:
