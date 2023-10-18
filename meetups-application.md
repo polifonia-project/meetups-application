@@ -8,7 +8,8 @@ logo: https://polifonia.kmi.open.ac.uk/MEETUPS/img/meetups_logo_white.png
 demo: https://polifonia.kmi.open.ac.uk/MEETUPS/
 work-package: 
   - WP5
-pilot: MEETUPS
+pilot:
+  - MEETUPS
 project: polifonia-project
 resource: https://polifonia.kmi.open.ac.uk/MEETUPS/
 release-date: 25/05/2023
