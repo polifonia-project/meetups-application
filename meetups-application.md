@@ -4,7 +4,7 @@ type: WebApplication
 name: MEETUPS web application
 description: The MEETUPS pilot application.
 image:
-logo:
+logo: <https://polifonia.kmi.open.ac.uk/MEETUPS/img/meetups_logo_white.png>
 demo:
 work-package: 
   - WP5
