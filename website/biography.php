@@ -20,6 +20,20 @@
     <!-- Custom styles for this template -->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.6/underscore-min.js"
+            integrity="sha512-2V49R8ndaagCOnwmj8QnbT1Gz/rie17UouD9Re5WxbzRVUGoftCu5IuqqtAM9+UC3fwfHCSJR1hkzNQh/2wdtg=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"></script>
+    <script
+            src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
+    <script
+            src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"
+            integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0="
+            crossorigin="anonymous"></script>
+
+
     <!-- Custom styles for this page -->
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
@@ -32,6 +46,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js" integrity="sha512-42PE0rd+wZ2hNXftlM78BSehIGzezNeQuzihiBCvUEB3CVxHvsShF86wBWwQORNxNINlBPuq7rG4WWhNiTVHFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+
+
+
+    <link href="css/jquery.dateline.css" rel="stylesheet">
+    <script src="js/jquery.dateline.js"></script>
 
 
 
@@ -371,25 +402,6 @@
         </div>
     </div>
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
-
-    <!-- Page level plugins -->
-    <script src="vendor/datatables/jquery.dataTables.min.js"></script>
-    <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
-<script src="js/timeline/resize.js"></script>
-<link rel="stylesheet" href="js/timeline/simpleTimeline.css">
-
-<script src="js/timeline/simpleTimeline.js"></script>
-
 <script src="js/meetups.js"></script>
 
 
@@ -563,90 +575,30 @@
 
     var mapTab;
 
-    /*
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var chartData = [
-        { x: "1820-03-22", y: 0 },
-        { x: "2020-04-01", y: 0 },
-        { x: "2020-04-02", y: 0 },
-        { x: "2020-04-03", y: 0 },
-        { x: "2018-04-08", y: 0 },
-        { x: "2003-04-12", y: 0 },
-        { x: "2020-04-15", y: 0 }
-    ];
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            datasets: [{
-                data: chartData,
-                pointStyle: img,
-                borderWidth: 1
-            }]
-        },
-        options: {
-            legend: {
-                display: false
-            },
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        display: false,
-                    },
-                    gridLines: {
-                        display: false
-                    }
-                }],
-                xAxes: [{
-                    type: 'time',
-                    time: {
-                        unit: 'year',
-                        tooltipFormat: 'MMM DD'
-                    },
-                    gridLines: {
-                        display:false
-                    }
-                }]
-            }
+
+
+
+    myEvents = [
+        {
+            "id": 1,
+            "start": "2008-01-01",
+            "text":" Event 1",
+            "class": "class-1"
+        },{
+            "id": 2,
+            "start": "2018-01-01",
+            "text": "Event 2",
+            "class": "class-2"
+        },{
+            "id": 3,
+            "start": "2019-01-01",
+            "stop": "2019-05-01",
+            "text": "Event 3",
+            "class": "class-3"
         }
-    });
-*/
-
-
-    //********** TIMELINE STUFF *************
-    /* [ // array of layers (horizontal bar groups)
-  [ // array of data elements
-    { // data element (bar)
-      id: string, // unique identifier
-      start: number, // start < end
-      end: number, // end > start
-      label: string, // optional (if empty, id is displayed)
-      css: object, // optional, passed to jQuery css() method
-      className: string // optional CSS class name(s)
-    },
-    ... // optional: more data elements
-  ],
-  ... // optional: more layers
-];
-*/
-    var data = [
-        [{ id: 'Dingo', start: -50000, end: -32000, className: 'styleA' },
-            { id: 'Ringo', start: -3000, end: 0, className: 'styleA' }],
-
-        [{ id: 'Looong', start: -42000, end: -1492, className: 'styleB' },
-            { id: 'Hoko', start: -980, end: -332, className: 'styleB' }],
-
-        [{ id: 'Wunz', start: -4700, end: -2000, className: 'styleC' },
-            { id: 'Inzi', start: -2000, end: -1000, className: 'styleC' },
-            { id: 'Misi', start: -2000, end: 1500, className: 'styleC' }]
     ];
+    myEvents = [];
 
-    var options = {
-        phases: [
-            { start: -50000, end: -30000, indicatorsEvery: 20000, share: .2 },
-            { start: -30000, end: -5000, indicatorsEvery: 25000, share: .07, className: 'timeline-unused-phase' },
-            { start: -5000, end: 2000, indicatorsEvery: 1000, share: .73 }
-        ]
-    };
     //********** TIMELINE STUFF END *************
 
 
@@ -657,7 +609,8 @@
         })
 
 
-        $('#timeline').simpleTimeline(options, data)
+
+
 
 
         var mapTabTriggerEl = document.querySelector('#map-tab')
@@ -706,10 +659,55 @@
                 evidenceHTML = '<p>' + field.evidence + '</p>' + getViewOnMapButton(field);
                 tableReading.row.add([evidenceHTML, readingFieldsHTML])
                 //console.log(field);
+
+
+                //Add events to timeline data object
+                stopDate =  null;
+                if (field.endDate != null){
+                    beginYear = Math.floor(field.beginDate.split("-")[0]);
+                    endYear = Math.floor(field.endDate.split("-")[0])
+                    if (endYear - beginYear > 0){
+                        stopDate = field.endDate
+                    }
+                }
+
+                eventText = field.time_evidence;
+                eventText += ' - '+field.participants;
+                singleEvent = {
+                    "id": 1,
+                    "start": field.beginDate,
+                    "stop": stopDate,
+                    "text": eventText,
+                    "class": "col-red"
+                };
+                myEvents.push(singleEvent);
             });
             //$('#meetupsTable').DataTable();
             table.draw();
             tableReading.draw();
+
+
+            $('#timeline').dateline({
+                events: myEvents,
+                begin: "1800-01-01",
+                end: "2000-12-31",
+                bands: [
+                    {
+                        size: '60%',
+                        scale: Dateline.YEAR,
+                        interval: 50,
+                        multiple: 2
+                    },
+                    {
+                        size: '40%',
+                        scale: Dateline.DECADE,
+                        interval: 60,
+                        multiple: 2,
+                        layout: 'overview'
+                    }
+                ]
+            });
+
 
             $geoJsonData = createGeoJson(result);
             //chartData = getChartDataFromGeoJSON($geoJsonData);
