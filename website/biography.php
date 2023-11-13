@@ -84,6 +84,15 @@
         }
     </style>
 
+    <style>
+        #chart-wrapper {
+            display: inline-block;
+            position: relative;
+            width: 100%;
+            height: 200px;
+        }
+    </style>
+
 </head>
 
 <body id="page-top">
@@ -351,6 +360,18 @@
                                     <!--<img src="img/timeline_dummy.png" class="img-fluid">-->
                                 </div>
                             </div>
+
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <!--<h6 class="m-0 font-weight-bold text-primary">Timeline</h6>-->
+                                </div>
+                                <div class="card card-body">
+                                    <div id="chart-wrapper">
+                                        <canvas id="timeFrequencyChart"></canvas>
+                                    </div>
+                                    <!--<img src="img/timeline_dummy.png" class="img-fluid">-->
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -600,6 +621,30 @@
     myEvents = [];
 
     //********** TIMELINE STUFF END *************
+
+
+    //**************** DUMMY FREQUENCY CHART *************
+    const ctx = document.getElementById('timeFrequencyChart');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['1850', '1860', '1870', '1880', '1890', '1900'],
+            datasets: [{
+                label: 'FREQUENCY',
+                data: [12, 19, 3, 5, 2, 3],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    //**************** END DUMMY FREQUENCY CHART *************
 
 
     $( document ).ready(function() {
