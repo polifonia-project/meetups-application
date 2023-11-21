@@ -60,9 +60,10 @@
 
 
 
-
-    <link href="css/jquery.dateline.css" rel="stylesheet">
-    <script src="js/jquery.dateline.js"></script>
+    <script src="../../dist/vis.js"></script>
+    <link href="../../dist/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+    <!-- <link href="css/jquery.dateline.css" rel="stylesheet"> -->
+    <!-- <script src="js/jquery.dateline.js"></script> -->
 
 
 
