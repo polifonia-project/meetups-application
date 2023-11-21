@@ -60,9 +60,10 @@
 
 
 
-
-    <link href="css/jquery.dateline.css" rel="stylesheet">
-    <script src="js/jquery.dateline.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
+    <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+    <!-- <link href="css/jquery.dateline.css" rel="stylesheet"> -->
+    <!-- <script src="js/jquery.dateline.js"></script> -->
 
 
 
@@ -341,7 +342,6 @@
                         <div class="tab-pane fade" id="map-tab" role="tabpanel" aria-labelledby="messages-tab">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <!--6 class="m-0 font-weight-bold text-primary">Map</h6>-->
                                 </div>
                                 <div class="card-body">
                                     <div id="map" style="width: 100%; height: 600px;"></div>
@@ -352,24 +352,19 @@
                         <div class="tab-pane fade" id="timeline-tab" role="tabpanel" aria-labelledby="settings-tab">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <!--<h6 class="m-0 font-weight-bold text-primary">Timeline</h6>-->
                                 </div>
                                 <div class="card card-body">
-                                    <!-- <canvas id="myChart"></canvas> -->
                                     <div id="timeline"></div>
-                                    <!--<img src="img/timeline_dummy.png" class="img-fluid">-->
                                 </div>
                             </div>
 
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <!--<h6 class="m-0 font-weight-bold text-primary">Timeline</h6>-->
                                 </div>
                                 <div class="card card-body">
                                     <div id="chart-wrapper">
                                         <canvas id="timeFrequencyChart"></canvas>
                                     </div>
-                                    <!--<img src="img/timeline_dummy.png" class="img-fluid">-->
                                 </div>
                             </div>
                         </div>
@@ -573,6 +568,50 @@
         return chartData;
     }
 
+    // Define a function that takes an array of numbers as a parameter
+    function countFrequencies(inputArray) {
+        // Create an empty object to store the frequencies
+        let frequencies = {};
+        // Loop through the array of numbers
+        for (let number of inputArray) {
+            // If the number is already a key in the object, increment its value by one
+            if (frequencies[number]) {
+                frequencies[number]++;
+            }
+            // Otherwise, create a new key with the number and set its value to one
+            else {
+                frequencies[number] = 1;
+            }
+        }
+        // Return the object with the frequencies
+        return frequencies;
+    }
+
+    function generateDateFrequencyData(inputData) {
+        // create array of years
+        var years = [];
+        $.each(inputData, function(i, field){
+            //console.log(field.beginDate);
+            if (field.beginDate != null){
+                if (field.endDate != null) {
+                    beginYear = Number(field.beginDate.substring(0,4));
+                    endYear = Number(field.endDate.substring(0,4));
+                    for (let i = beginYear; i <= endYear; i++) {
+                        years.push(i); // If we have a time range, push all the years in that range into the list of years array
+                    }
+                }
+                else {
+                    year = Number(field.beginDate.substring(0,4));
+                    years.push(year);
+                }
+            }
+        });
+        //console.log(years);
+        frequencies = countFrequencies(years);
+        console.log(frequencies);
+        return frequencies;
+    }
+
     // *** END OF FUNCTIONS ***
 
     const img = new Image(16, 16);
@@ -597,36 +636,30 @@
     var mapTab;
 
 
+    //********** VISJS TIMELINE STUFF START *************
 
+    // DOM element where the Timeline will be attached
+    var timelineContainer = document.getElementById('timeline');
+    // Create a DataSet (allows two way data-binding)
+    var timelineItems = new vis.DataSet([
+        {id: 1, content: 'item 1', start: '2013-04-20'},
+        {id: 2, content: 'item 2', start: '2013-04-14'},
+        {id: 3, content: 'item 3', start: '2013-04-18'},
+        {id: 4, content: 'item 4', start: '2013-04-16', end: '2013-04-19'},
+        {id: 5, content: 'item 5', start: '2013-04-25'},
+        {id: 6, content: 'item 6', start: '2013-04-27'}
+    ]);
+    // Configuration for the Timeline
+    var timelineOptions = {};
 
-    myEvents = [
-        {
-            "id": 1,
-            "start": "2008-01-01",
-            "text":" Event 1",
-            "class": "class-1"
-        },{
-            "id": 2,
-            "start": "2018-01-01",
-            "text": "Event 2",
-            "class": "class-2"
-        },{
-            "id": 3,
-            "start": "2019-01-01",
-            "stop": "2019-05-01",
-            "text": "Event 3",
-            "class": "class-3"
-        }
-    ];
     myEvents = [];
-
     //********** TIMELINE STUFF END *************
 
 
     //**************** DUMMY FREQUENCY CHART *************
     const ctx = document.getElementById('timeFrequencyChart');
 
-    new Chart(ctx, {
+    myChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: ['1850', '1860', '1870', '1880', '1890', '1900'],
@@ -637,6 +670,7 @@
             }]
         },
         options: {
+            responsive: true,
             scales: {
                 y: {
                     beginAtZero: true
@@ -675,8 +709,11 @@
 
         $.getJSON("services/meetups.php?id=<?= $_GET["id"]; ?>", function(result){
             //console.log(result);
+            let dateFrequencyData = generateDateFrequencyData(result);
 
+            let counter = 0;
             $.each(result, function(i, field){
+                counter += 1;
                 //console.log(field);
                 buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" onclick="populateDetailsPanel('+i+');"><i class="fas fa-search-plus"></i> View details</button> ';
                 //buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateModal('+i+');"><i class="fas fa-search-plus"></i> View details</button> ';
@@ -707,6 +744,7 @@
 
 
                 //Add events to timeline data object
+                // If start date and end date are in teh same year, for now, make the end date null so it looks like a point vs range
                 stopDate =  null;
                 if (field.endDate != null){
                     beginYear = Math.floor(field.beginDate.split("-")[0]);
@@ -719,39 +757,61 @@
                 eventText = field.time_evidence;
                 eventText += ' - '+field.participants;
                 singleEvent = {
-                    "id": 1,
+                    "id": counter,
                     "start": field.beginDate,
-                    "stop": stopDate,
-                    "text": eventText,
-                    "class": "col-red"
+                    "end": stopDate,
+                    "content": eventText,
                 };
-                myEvents.push(singleEvent);
+                if (field.beginDate != null) {
+                    myEvents.push(singleEvent);
+                }
+
             });
             //$('#meetupsTable').DataTable();
             table.draw();
             tableReading.draw();
 
+            // Create a Timeline
+            var timelineItems = new vis.DataSet(myEvents);
+            var timeline = new vis.Timeline(timelineContainer, timelineItems, timelineOptions);
 
-            $('#timeline').dateline({
-                events: myEvents,
-                begin: "1800-01-01",
-                end: "2000-12-31",
-                bands: [
-                    {
-                        size: '60%',
-                        scale: Dateline.YEAR,
-                        interval: 50,
-                        multiple: 2
-                    },
-                    {
-                        size: '40%',
-                        scale: Dateline.DECADE,
-                        interval: 60,
-                        multiple: 2,
-                        layout: 'overview'
+
+
+
+            // *********** CREATE Frequency chart with loaded data here... ***********
+            newData = [];
+            newLabels = []
+            for (key in dateFrequencyData){
+                newLabels.push(key);
+                newData.push(dateFrequencyData[key]);
+            }
+            console.log("HERE COMES THE DATA");
+            console.log(newLabels);
+            console.log(newData);
+            //newData = [1, 2, 3, 5, 9, 15];
+            myChart.destroy();
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    //labels: ['1850', '1860', '1870', '1880', '1890', '1900'],
+                    labels: newLabels,
+                    datasets: [{
+                        label: 'FREQUENCY',
+                        data: newData,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
                     }
-                ]
+                }
             });
+            myChart.update();
+            // *********** END Frequency chart loading ***********
 
 
             $geoJsonData = createGeoJson(result);
