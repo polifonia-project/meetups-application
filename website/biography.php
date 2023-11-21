@@ -639,9 +639,9 @@
     //********** VISJS TIMELINE STUFF START *************
 
     // DOM element where the Timeline will be attached
-    var timelineContainer = document.getElementById('timeline');
+    let timelineContainer = document.getElementById('timeline');
     // Create a DataSet (allows two way data-binding)
-    var timelineItems = new vis.DataSet([
+    let timelineItems = new vis.DataSet([
         {id: 1, content: 'item 1', start: '2013-04-20'},
         {id: 2, content: 'item 2', start: '2013-04-14'},
         {id: 3, content: 'item 3', start: '2013-04-18'},
@@ -650,7 +650,9 @@
         {id: 6, content: 'item 6', start: '2013-04-27'}
     ]);
     // Configuration for the Timeline
-    var timelineOptions = {};
+    var timelineOptions = {
+        clickToUse: true
+    };
 
     myEvents = [];
     //********** TIMELINE STUFF END *************
@@ -714,7 +716,6 @@
             let counter = 0;
             $.each(result, function(i, field){
                 counter += 1;
-                //console.log(field);
                 buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" onclick="populateDetailsPanel('+i+');"><i class="fas fa-search-plus"></i> View details</button> ';
                 //buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateModal('+i+');"><i class="fas fa-search-plus"></i> View details</button> ';
                 /*
@@ -740,7 +741,6 @@
 
                 evidenceHTML = '<p>' + field.evidence + '</p>' + getViewOnMapButton(field);
                 tableReading.row.add([evidenceHTML, readingFieldsHTML])
-                //console.log(field);
 
 
                 //Add events to timeline data object
@@ -753,7 +753,7 @@
                         stopDate = field.endDate
                     }
                 }
-
+                console.log(field);
                 eventText = field.time_evidence;
                 eventText += ' - '+field.participants;
                 singleEvent = {
@@ -761,21 +761,23 @@
                     "start": field.beginDate,
                     "end": stopDate,
                     "content": eventText,
+                    "title": "Purpose: " + field.purpose
                 };
                 if (field.beginDate != null) {
                     myEvents.push(singleEvent);
                 }
 
             });
-            //$('#meetupsTable').DataTable();
+            // Create a Timeline
+            timelineItems = new vis.DataSet(myEvents);
+            var timeline = new vis.Timeline(timelineContainer, timelineItems, timelineOptions);
+            timeline.on('select', function (properties) {
+                console.log(properties);
+            });
+
+
             table.draw();
             tableReading.draw();
-
-            // Create a Timeline
-            var timelineItems = new vis.DataSet(myEvents);
-            var timeline = new vis.Timeline(timelineContainer, timelineItems, timelineOptions);
-
-
 
 
             // *********** CREATE Frequency chart with loaded data here... ***********
@@ -785,9 +787,9 @@
                 newLabels.push(key);
                 newData.push(dateFrequencyData[key]);
             }
-            console.log("HERE COMES THE DATA");
-            console.log(newLabels);
-            console.log(newData);
+            //console.log("HERE COMES THE DATA");
+            //console.log(newLabels);
+            //console.log(newData);
             //newData = [1, 2, 3, 5, 9, 15];
             myChart.destroy();
             myChart = new Chart(ctx, {
