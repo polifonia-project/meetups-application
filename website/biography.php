@@ -60,8 +60,8 @@
 
 
 
-    <script src="../../dist/vis.js"></script>
-    <link href="../../dist/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
+    <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
     <!-- <link href="css/jquery.dateline.css" rel="stylesheet"> -->
     <!-- <script src="js/jquery.dateline.js"></script> -->
 
@@ -636,29 +636,23 @@
     var mapTab;
 
 
+    //********** VISJS TIMELINE STUFF START *************
 
+    // DOM element where the Timeline will be attached
+    var timelineContainer = document.getElementById('timeline');
+    // Create a DataSet (allows two way data-binding)
+    var timelineItems = new vis.DataSet([
+        {id: 1, content: 'item 1', start: '2013-04-20'},
+        {id: 2, content: 'item 2', start: '2013-04-14'},
+        {id: 3, content: 'item 3', start: '2013-04-18'},
+        {id: 4, content: 'item 4', start: '2013-04-16', end: '2013-04-19'},
+        {id: 5, content: 'item 5', start: '2013-04-25'},
+        {id: 6, content: 'item 6', start: '2013-04-27'}
+    ]);
+    // Configuration for the Timeline
+    var timelineOptions = {};
 
-    myEvents = [
-        {
-            "id": 1,
-            "start": "2008-01-01",
-            "text":" Event 1",
-            "class": "class-1"
-        },{
-            "id": 2,
-            "start": "2018-01-01",
-            "text": "Event 2",
-            "class": "class-2"
-        },{
-            "id": 3,
-            "start": "2019-01-01",
-            "stop": "2019-05-01",
-            "text": "Event 3",
-            "class": "class-3"
-        }
-    ];
     myEvents = [];
-
     //********** TIMELINE STUFF END *************
 
 
@@ -715,9 +709,11 @@
 
         $.getJSON("services/meetups.php?id=<?= $_GET["id"]; ?>", function(result){
             //console.log(result);
-            var dateFrequencyData = generateDateFrequencyData(result);
+            let dateFrequencyData = generateDateFrequencyData(result);
 
+            let counter = 0;
             $.each(result, function(i, field){
+                counter += 1;
                 //console.log(field);
                 buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" onclick="populateDetailsPanel('+i+');"><i class="fas fa-search-plus"></i> View details</button> ';
                 //buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateModal('+i+');"><i class="fas fa-search-plus"></i> View details</button> ';
@@ -748,6 +744,7 @@
 
 
                 //Add events to timeline data object
+                // If start date and end date are in teh same year, for now, make the end date null so it looks like a point vs range
                 stopDate =  null;
                 if (field.endDate != null){
                     beginYear = Math.floor(field.beginDate.split("-")[0]);
@@ -760,39 +757,26 @@
                 eventText = field.time_evidence;
                 eventText += ' - '+field.participants;
                 singleEvent = {
-                    "id": 1,
+                    "id": counter,
                     "start": field.beginDate,
-                    "stop": stopDate,
-                    "text": eventText,
-                    "class": "col-red"
+                    "end": stopDate,
+                    "content": eventText,
                 };
-                myEvents.push(singleEvent);
+                if (field.beginDate != null) {
+                    myEvents.push(singleEvent);
+                }
+
             });
             //$('#meetupsTable').DataTable();
             table.draw();
             tableReading.draw();
 
+            // Create a Timeline
+            var timelineItems = new vis.DataSet(myEvents);
+            var timeline = new vis.Timeline(timelineContainer, timelineItems, timelineOptions);
 
-            $('#timeline').dateline({
-                events: myEvents,
-                begin: "1800-01-01",
-                end: "2000-12-31",
-                bands: [
-                    {
-                        size: '60%',
-                        scale: Dateline.YEAR,
-                        interval: 50,
-                        multiple: 2
-                    },
-                    {
-                        size: '40%',
-                        scale: Dateline.DECADE,
-                        interval: 60,
-                        multiple: 2,
-                        layout: 'overview'
-                    }
-                ]
-            });
+
+
 
             // *********** CREATE Frequency chart with loaded data here... ***********
             newData = [];
