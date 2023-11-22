@@ -715,7 +715,6 @@
 
             let counter = 0;
             $.each(result, function(i, field){
-                counter += 1;
                 buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" onclick="populateDetailsPanel('+i+');"><i class="fas fa-search-plus"></i> View details</button> ';
                 //buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateModal('+i+');"><i class="fas fa-search-plus"></i> View details</button> ';
                 /*
@@ -757,7 +756,7 @@
                 eventText = field.time_evidence;
                 eventText += ' - '+field.participants;
                 singleEvent = {
-                    "id": counter,
+                    "id": i,
                     "start": field.beginDate,
                     "end": stopDate,
                     "content": eventText,
@@ -773,6 +772,7 @@
             var timeline = new vis.Timeline(timelineContainer, timelineItems, timelineOptions);
             timeline.on('select', function (properties) {
                 console.log(properties);
+                populateDetailsPanel(properties.items[0]);
             });
 
 
