@@ -46,6 +46,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js" integrity="sha512-42PE0rd+wZ2hNXftlM78BSehIGzezNeQuzihiBCvUEB3CVxHvsShF86wBWwQORNxNINlBPuq7rG4WWhNiTVHFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1"></script>
+
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <!-- Core plugin JavaScript-->
@@ -612,6 +615,25 @@
         return frequencies;
     }
 
+    function calculateRollingAverage(data, points) {
+        let rollingAvg = [];
+
+        for (let i = 0; i < data.length; i++) {
+            if (i < points - 1) {
+                // Not enough data points to calculate average
+                rollingAvg.push(null); // Placeholder for no data
+            } else {
+                let sum = 0;
+                for (let j = 0; j < points; j++) {
+                    sum += data[i - j];
+                }
+                rollingAvg.push(sum / points);
+            }
+        }
+
+        return rollingAvg;
+    }
+
     // *** END OF FUNCTIONS ***
 
     const img = new Image(16, 16);
@@ -787,27 +809,59 @@
                 newLabels.push(key);
                 newData.push(dateFrequencyData[key]);
             }
+            rollingAverageData = calculateRollingAverage(newData, 4);
             //console.log("HERE COMES THE DATA");
             //console.log(newLabels);
             //console.log(newData);
             //newData = [1, 2, 3, 5, 9, 15];
             myChart.destroy();
+            console.log(newLabels);
             myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     //labels: ['1850', '1860', '1870', '1880', '1890', '1900'],
                     labels: newLabels,
-                    datasets: [{
+                    datasets: [
+                        {
                         label: 'FREQUENCY',
                         data: newData,
-                        borderWidth: 1
-                    }]
+                        borderWidth: 1,
+                            borderColor: 'rgb(14,101,232)',
+                        tension: 0.5
+                        },
+                        {
+                            label: 'Rolling Average',
+                            data: rollingAverageData,
+                            borderColor: 'rgb(169,7,88)',
+                            borderWidth: 1,
+                            tension: 0.6,
+                            fill: false, // Do not fill under the line
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     scales: {
                         y: {
                             beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        zoom: {
+                            pan: {
+                                enabled: true,
+                                mode: 'x'
+                            },
+                            zoom: {
+                                wheel: {
+                                    enabled: true
+                                },
+                                pinch: {
+                                    enabled: true
+                                },
+                                mode: 'x'
+                            }
                         }
                     }
                 }
