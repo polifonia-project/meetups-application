@@ -1,7 +1,7 @@
 # RETRIEVE ALL BIOGRAPHIES (working)
 PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
-PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?subject ?subject_label ?dob ?dod
 WHERE {
@@ -22,11 +22,11 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX dbo:	<http://dbpedia.org/ontology/>
 SELECT DISTINCT  ?name ?comment ?image ?birthdate ?birthplacelabel
     WHERE {
-        <'.$biography.'>  rdfs:label ?name .
-        <'.$biography.'>  mtp:hasAbstract ?comment .
+        <'.$biography.'> rdfs:label ?name .
+        <'.$biography.'> mtp:hasAbstract ?comment .
         OPTIONAL {
-            <'.$biography.'>  mtp:thumbnail ?image .
-            <'.$biography.'>  mtp:hasdob ?birthdate .
+            <'.$biography.'> mtp:thumbnail ?image .
+            <'.$biography.'> mtp:hasdob ?birthdate .
         }
         SERVICE <https://dbpedia.org/sparql/> {
         OPTIONAL {
@@ -42,14 +42,15 @@ SELECT DISTINCT  ?name ?comment ?image ?birthdate ?birthplacelabel
 # $biography = eg 'http://dbpedia.org/resource/Edward_Elgar'
 
 PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
-PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ( COUNT( ?label) as ?count ) ?label
 WHERE
-{ ?s rdf:type mtp:Meetup ;
-mtp:hasSubject <'.$biography.'> ;
-mtp:hasPlace ?place .
-?place rdfs:label ?label .
+{
+    ?s rdf:type mtp:Meetup ;
+        mtp:hasSubject <'.$biography.'> ;
+        mtp:hasPlace ?place .
+    ?place rdfs:label ?label .
 }
 GROUP BY ?label
 ORDER BY DESC(?count)
@@ -65,13 +66,14 @@ PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ( COUNT( ?label) as ?count ) ?label
 WHERE
-{ ?s rdf:type mtp:Meetup ;
-      mtp:hasSubject <'.$biography.'> ;
-      mtp:hasAPurpose ?meetupType .
+{
+    ?s rdf:type mtp:Meetup ;
+        mtp:hasSubject <'.$biography.'> ;
+        mtp:hasAPurpose ?meetupType .
   ?meetupType rdfs:label ?label .
 }
 GROUP BY ?label
-    ORDER BY DESC(?count)
+ORDER BY DESC(?count)
 LIMIT 2
 
 # ==============================================================
@@ -83,20 +85,20 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-select ( count( ?participant) as ?count ) ?label ?link
-where
+SELECT ( COUNT( ?participant) as ?count ) ?label ?link
+WHERE
 {
-VALUES ?subject { <'.$biography.'> }
-[]  mtp:hasSubject ?subject ;
-mtp:hasParticipant ?participant .
-FILTER (?participant != ?subject ) .
-?participant rdfs:label ?label .
-OPTIONAL {
-FILTER EXISTS {
-[] mtp:hasSubject ?participant .
-}
-BIND (?participant AS ?link)
-}
+    VALUES ?subject { <'.$biography.'> }
+    []  mtp:hasSubject ?subject ;
+        mtp:hasParticipant ?participant .
+    FILTER (?participant != ?subject ) .
+    ?participant rdfs:label ?label .
+    OPTIONAL {
+        FILTER EXISTS {
+            [] mtp:hasSubject ?participant .
+        }
+        BIND (?participant AS ?link)
+    }
 }
 GROUP BY ?label ?link
 ORDER BY DESC(?count) ?participant
