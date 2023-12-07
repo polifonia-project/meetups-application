@@ -7,7 +7,6 @@ PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#> 
 
 SELECT DISTINCT ?subject ?subject_label ?dob ?dod
-FROM <http://data.open.ac.uk/context/meetups> 
 WHERE { 
   ?meetup  mtp:hasSubject ?subject .
   ?subject rdfs:label ?subject_label ;
@@ -18,7 +17,7 @@ $sparql_encoded = urlencode($sparql);
 $curl = curl_init();
 
 curl_setopt_array($curl, array(
-    CURLOPT_URL => 'https://data.open.ac.uk/sparql',
+    CURLOPT_URL => 'https://polifonia.kmi.open.ac.uk/meetups/sparql/',
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,

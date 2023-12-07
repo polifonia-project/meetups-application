@@ -658,6 +658,8 @@
     var mapTab;
 
 
+
+
     //********** VISJS TIMELINE STUFF START *************
 
     // DOM element where the Timeline will be attached
@@ -823,7 +825,7 @@
                     labels: newLabels,
                     datasets: [
                         {
-                        label: 'FREQUENCY',
+                        label: 'Frequency',
                         data: newData,
                         borderWidth: 1,
                             borderColor: 'rgb(14,101,232)',

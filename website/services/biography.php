@@ -31,7 +31,7 @@ $sparql_encoded = urlencode($sparql);
 $curl = curl_init();
 
 curl_setopt_array($curl, array(
-    CURLOPT_URL => 'https://data.open.ac.uk/sparql',
+    CURLOPT_URL => 'https://polifonia.kmi.open.ac.uk/meetups/sparql/',
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,
