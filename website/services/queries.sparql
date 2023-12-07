@@ -1,66 +1,147 @@
-# retrieve bigraphy details for Geoffrey Pullum
+# RETRIEVE ALL BIOGRAPHIES (working)
 PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
-PREFIX schema: <http://schema.org/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX dbo:	<http://dbpedia.org/ontology/>
-SELECT DISTINCT ?name ?comment ?birthdate ?birthplacelabel
-FROM <http://data.open.ac.uk/context/meetups>
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?subject ?subject_label ?dob ?dod
 WHERE {
-    ?meetup mtp:hasSubject <http://dbpedia.org/resource/Geoffrey_K._Pullum> .
-    SERVICE <https://dbpedia.org/sparql/> {
-        <http://dbpedia.org/resource/Geoffrey_K._Pullum> rdfs:label ?name FILTER (langMatches(lang(?name),"en")) .
-        <http://dbpedia.org/resource/Geoffrey_K._Pullum> rdfs:comment ?comment FILTER (langMatches(lang(?comment),"en")) .
-        <http://dbpedia.org/resource/Geoffrey_K._Pullum> dbo:birthDate ?birthdate .
-        <http://dbpedia.org/resource/Geoffrey_K._Pullum> dbo:birthPlace ?birthplace .
-        ?birthplace rdfs:label ?birthplacelabel FILTER (langMatches(lang(?birthplacelabel),"en"))
-    }
+    ?meetup  mtp:hasSubject ?subject .
+    ?subject rdfs:label ?subject_label ;
+    mtp:hasdob ?dob ;
+    mtp:hasdod ?dod
 }
-#better...
+
+# ==============================================================
+
+# DETAILS PAGE FOR A SINGLE BIOGRAPHY (working)
+# $biography = eg 'http://dbpedia.org/resource/Edward_Elgar'
+
 PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX dbo:	<http://dbpedia.org/ontology/>
-SELECT DISTINCT  ?name ?comment ?image ?birthplacelabel
-FROM <http://data.open.ac.uk/context/meetups>
+SELECT DISTINCT  ?name ?comment ?image ?birthdate ?birthplacelabel
     WHERE {
-        <http://dbpedia.org/resource/Achilles_Alferaki>  rdfs:label ?name .
+        <'.$biography.'>  rdfs:label ?name .
+        <'.$biography.'>  mtp:hasAbstract ?comment .
         OPTIONAL {
-            <http://dbpedia.org/resource/Achilles_Alferaki>  mtp:thumbnail ?image .
+            <'.$biography.'>  mtp:thumbnail ?image .
+            <'.$biography.'>  mtp:hasdob ?birthdate .
         }
         SERVICE <https://dbpedia.org/sparql/> {
         OPTIONAL {
-            <http://dbpedia.org/resource/Achilles_Alferaki> rdfs:comment ?comment FILTER (langMatches(lang(?comment),"en"))
-            <http://dbpedia.org/resource/Achilles_Alferaki> dbo:birthPlace ?birthplace .
+            <'.$biography.'> dbo:birthPlace ?birthplace .
             ?birthplace rdfs:label ?birthplacelabel FILTER (langMatches(lang(?birthplacelabel),"en"))
         }
     }
 }
-# -------------------------------------------
-# -------------------------------------------
-# retrieve all biographies
+
+# ==============================================================
+
+# TOP 2 PLACES, FOR A GIVEN BIOGRAPHY/SUBJECT (not working)
+# $biography = eg 'http://dbpedia.org/resource/Edward_Elgar'
+
 PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
-SELECT DISTINCT ?biography
-FROM <http://data.open.ac.uk/context/meetups>
-WHERE {
-    ?s  mtp:hasSubject ?biography
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ( COUNT( ?label) as ?count ) ?label
+WHERE
+{ ?s rdf:type mtp:Meetup ;
+mtp:hasSubject <'.$biography.'> ;
+mtp:hasPlace ?place .
+?place rdfs:label ?label .
 }
-# -------------------------------------------
-# -------------------------------------------
-#retrieve meeetups for single biography
+GROUP BY ?label
+ORDER BY DESC(?count)
+LIMIT 2
+
+# ==============================================================
+
+# TOP 2 THEMES, FOR A GIVEN BIOGRAPHY/SUBJECT (not working)
+# $biography = eg 'http://dbpedia.org/resource/Edward_Elgar'
+
 PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
-SELECT DISTINCT ?meetup
-FROM <http://data.open.ac.uk/context/meetups>
-WHERE {
-    ?meetup mtp:hasSubject <http://dbpedia.org/resource/Geoffrey_K._Pullum>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ( COUNT( ?label) as ?count ) ?label
+WHERE
+{ ?s rdf:type mtp:Meetup ;
+      mtp:hasSubject <'.$biography.'> ;
+      mtp:hasAPurpose ?meetupType .
+  ?meetupType rdfs:label ?label .
 }
-# -------------------------------------------
-# -------------------------------------------
-# all meetups for a single biograpy with some attributes
+GROUP BY ?label
+    ORDER BY DESC(?count)
+LIMIT 2
+
+# ==============================================================
+
+# TOP 2 PARTICIPANTS, FOR A GIVEN BIOGRAPHY/SUBJECT (not working)
+# $biography = eg 'http://dbpedia.org/resource/Edward_Elgar'
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
-SELECT DISTINCT ?meetup ?purpose ?when
-FROM <http://data.open.ac.uk/context/meetups>
-WHERE {
-    ?meetup mtp:hasSubject <http://dbpedia.org/resource/Geoffrey_K._Pullum> .
-    ?meetup mtp:hasAPurpose ?purpose .
-    ?meetup mtp:happensAt ?when
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+select ( count( ?participant) as ?count ) ?label ?link
+where
+{
+VALUES ?subject { <'.$biography.'> }
+[]  mtp:hasSubject ?subject ;
+mtp:hasParticipant ?participant .
+FILTER (?participant != ?subject ) .
+?participant rdfs:label ?label .
+OPTIONAL {
+FILTER EXISTS {
+[] mtp:hasSubject ?participant .
 }
+BIND (?participant AS ?link)
+}
+}
+GROUP BY ?label ?link
+ORDER BY DESC(?count) ?participant
+LIMIT 2
+
+# ==============================================================
+
+# GET ALL THE MEETUPS AND CORRESPONDING DETAILS FOR A SINGLE SUBJECT/BIOGRAPHY (not working)
+# $biography = eg 'http://dbpedia.org/resource/Edward_Elgar'
+
+PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX geo: <https://www.w3.org/2003/01/geo/wgs84_pos>
+PREFIX time: <http://www.w3.org/2006/time#>
+
+SELECT ?meetup ?evidence_text ?purpose
+(GROUP_CONCAT( DISTINCT ?participant; separator=", " ) as ?participants_URI )
+(GROUP_CONCAT( DISTINCT ?participant_label; separator=", " ) as ?participants_label )
+(GROUP_CONCAT( DISTINCT ?location_uri; separator=", " ) as ?locations_URI )
+(GROUP_CONCAT( DISTINCT ?location_label; separator=", " ) as ?locations_label )
+?time_expression_URI ?beginDate ?endDate ?time_evidence_text ?lat ?long
+WHERE
+{
+    VALUES ?subject { <'.$biography.'> }
+    ?meetup rdf:type mtp:Meetup ;
+        mtp:hasSubject ?subject ;
+        mtp:hasParticipant ?participant ;
+        mtp:hasAPurpose ?purpose_uri ;
+        mtp:hasEvidenceText ?evidence_text ;
+        mtp:hasPlace ?location_uri ;
+        mtp:happensAt ?time_expression_URI .
+    FILTER  (!regex (str(?participant), str(?subject) ) ) .
+    ?participant rdfs:label ?participant_label .
+    ?location_uri rdfs:label ?location_label ;
+        geo:lat ?lat ;
+        geo:long ?long .
+    ?purpose_uri rdfs:label ?purpose .
+    ?time_expression_URI mtp:hasEvidenceText  ?hasEvidenceTextTimeExpression ;
+    rdf:type ?typeTimeExpression .
+    FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
+    OPTIONAL {
+        ?time_expression_URI time:hasBeginning ?beginDate;
+            time:hasEnd ?endDate ;
+            mtp:hasEvidenceText ?time_evidence_text .
+    } .
+}
+GROUP BY ?meetup ?evidence_text ?purpose ?time_expression_URI ?beginDate ?endDate ?time_evidence_text ?lat ?long
