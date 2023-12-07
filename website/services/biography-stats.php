@@ -8,7 +8,6 @@ $sparqlTheme = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology
 'PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> '.
 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '.
 'SELECT ( COUNT( ?label) as ?count ) ?label '.
-'FROM <http://data.open.ac.uk/context/meetups> '.
 'WHERE '.
 '{ ?s rdf:type mtp:Meetup ; '.
 '      mtp:hasSubject <'.$biography.'> ; '.
@@ -23,7 +22,6 @@ $sparqlPlace = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ( COUNT( ?label) as ?count ) ?label
-FROM <http://data.open.ac.uk/context/meetups>
 WHERE
 { ?s rdf:type mtp:Meetup ;
     mtp:hasSubject <'.$biography.'> ;
@@ -60,7 +58,6 @@ PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 select ( count( ?participant) as ?count ) ?label ?link
-    from <http://data.open.ac.uk/context/meetups>
 where
 {
     VALUES ?subject { <'.$biography.'> }

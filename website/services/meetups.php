@@ -25,7 +25,6 @@ SELECT ?meetup ?evidence_text ?purpose
 (GROUP_CONCAT( DISTINCT ?location_uri; separator=", " ) as ?locations_URI )
 (GROUP_CONCAT( DISTINCT ?location_label; separator=", " ) as ?locations_label )
 ?time_expression_URI ?beginDate ?endDate ?time_evidence_text ?lat ?long
-FROM <http://data.open.ac.uk/context/meetups>
 WHERE
 { VALUES ?subject { <'.$biography.'> }
   ?meetup 	rdf:type mtp:Meetup ;

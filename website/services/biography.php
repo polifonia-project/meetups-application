@@ -8,7 +8,6 @@ $sparql = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#> '.
 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '.
 'PREFIX dbo:	<http://dbpedia.org/ontology/> '.
 'SELECT DISTINCT  ?name ?comment ?image ?birthdate ?birthplacelabel '.
-'FROM <http://data.open.ac.uk/context/meetups> '.
 '    WHERE { '.
 '        <'.$biography.'>  rdfs:label ?name . '.
 '        <'.$biography.'>  mtp:hasAbstract ?comment . '.
