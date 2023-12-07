@@ -145,3 +145,8 @@ WHERE
     } .
 }
 GROUP BY ?meetup ?evidence_text ?purpose ?time_expression_URI ?beginDate ?endDate ?time_evidence_text ?lat ?long
+
+# ==============================================================
+
+# MEETUP SEARCH - not updated this yet, but essentially the above query with some additional FILTER(regex...) etc (not working)
+# $biography = eg 'http://dbpedia.org/resource/Edward_Elgar'
