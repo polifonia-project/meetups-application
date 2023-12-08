@@ -200,7 +200,7 @@ LIMIT 10</pre>
                                             <p><a href="">Other useful MMKG SPARQL queries are available here</a></p>
                                         </div>
                                         <div class="col-7">
-                                            <p><strong>Making an API call</strong></p>
+                                            <p><strong>Making a SPARQL query request</strong></p>
 
                                            <p>CURL</p>
                                             <div class="sparql-container">
