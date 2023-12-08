@@ -39,6 +39,31 @@
             max-width: 100%;
             max-height: 100%;
         }
+
+        .sparql-container {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow: auto;
+            margin-top: -0.8em;
+            margin-bottom: 1.5em;
+            font-size: 0.85em;
+        }
+
+        .sparql-code {
+            white-space: pre-wrap;
+            /*font-size: 16px;*/
+            tab-size: 4;
+        }
+
+        .keyword {
+            color: blue;
+        }
+
+        .variable {
+            color: green;
+        }
+
     </style>
 
 </head>
@@ -63,16 +88,141 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
+                    <!-- <div class="g-signin2" data-onsuccess="onSignIn"></div> -->
+
                     <!-- Page Heading -->
                     <h1 class="h3 mb-2 text-gray-800">POLIFONIA - MEETUPS</h1>
-                    <p class="mb-4">This pilot focuses on supporting music historians and teachers by providing a
+                    <p class="mb-4">This Polifonia MEETUPS pilot focuses on supporting music historians and teachers by providing a
                         tool that enables the exploration and visualisation of encounters between people in the
                         musical world in Europe from c.1800 to c.1945</p>
 
-                    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+
+
+
 
                     <hr />
-                    <h5 class="h5 mb-2 text-gray-800">Guide to usage</h5>
+                    <h5  class="h5 mb-2 text-gray-800">MEETUPS resources</h5>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="card border-left-primary shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary" id="detailView">GitHub resources</h6>
+                                </div>
+                                <div class="card-body" id="meetupDetails">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <p>
+                                                <ul>
+                                                    <li><a href="https://github.com/polifonia-project/meetups-application" target="_blank">MEETUPS Application</a> </li>
+                                                    <li><a href="https://github.com/polifonia-project/meetups-knowledge-graph" target="_blank">MEETUPS Knowledge Graph</a> </li>
+                                                    <li><a href="https://github.com/polifonia-project/meetups-ontology" target="_blank">MEETUPS Ontology</a> </li>
+                                                    <li><a href="https://github.com/polifonia-project/meetups_corpus_collection" target="_blank">MEETUPS Corpus Collection</a> </li>
+                                                    <li><a href="https://github.com/polifonia-project/meetups-ui-design" target="_blank">MEETUPS Original UI Designs</a> </li>
+                                                </ul>
+                                            </p>
+                                        </div>
+                                        <div class="col-7">
+                                            <img src="img/meetups-github.png" class="img-fluid">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card border-left-danger shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary" id="detailView">Related publications</h6>
+                                </div>
+                                <div class="card-body" id="meetupDetails">
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <p>List of publications here?
+                                            <ul>
+                                                <li>Paper Title 1</li>
+                                                <li>Paper Title 2</li>
+                                                <li>Paper Title 3</li>
+                                                <li>Paper Title 4</li>
+                                            </ul>
+                                            </p>
+                                        </div>
+                                        <div class="col-5">
+                                            <img src="img/meetups-paper.png" class="img-fluid">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card border-left-warning shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary" id="detailView">Access the data</h6>
+                                </div>
+                                <div class="card-body" id="meetupDetails">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <p>The Musical Meetups Knoweldge Graph (MMKG) is made available for querying via an
+                                                open SPARQL endpoint at the following address:<br />
+<pre>https://polifonia.kmi.open.ac.uk/meetups/sparql</pre><br />
+                                                HTTP GET/POST queries can be made to this URL, passing your SPARQL query in a
+                                                URL or form parameter name 'query'.
+                                            </p>
+                                            <h6><strong>Example query</strong></h6>
+                                            <p>The following SPARQL query returns 10 biographies:</p>
+                                            <div class="sparql-container">
+                                                <pre class="sparql-code">
+PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?subjectID ?subjectLabel
+WHERE {
+    ?meetupID  mtp:hasSubject ?subjectID .
+    ?subjectID rdfs:label ?subjectLabel
+}
+LIMIT 10</pre>
+                                            </div>
+                                            <p><a href="">Other useful MMKG SPARQL queries are available here</a></p>
+                                        </div>
+                                        <div class="col-7">
+                                            <p><strong>Making an API call</strong></p>
+
+                                           <p>CURL</p>
+                                            <div class="sparql-container">
+                                            <pre>
+curl --location 'https://polifonia.kmi.open.ac.uk/meetups/sparql?query=SELECT%20*%20WHERE%20{%20%3Fs%20%3Fp%20%3Fo%20}%20LIMIT%205' \
+    --header 'Accept: application/json'</pre>
+                                            </div>
+
+                                            <p>Python (Requests)</p>
+                                            <div class="sparql-container">
+<pre>
+import requests
+
+url = "https://polifonia.kmi.open.ac.uk/meetups/sparql?query=SELECT * WHERE { ?s ?p ?o } LIMIT 5"
+
+payload = {}
+headers = {
+    'Accept': 'application/json'
+}
+
+response = requests.request("GET", url, headers=headers, data=payload)
+
+print(response.text)</pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <hr />
+                    <h5 class="h5 mb-2 text-gray-800">MEETUPS application usage guide</h5>
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="card border-left-primary shadow mb-4">
