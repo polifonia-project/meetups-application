@@ -110,8 +110,10 @@
                                 </div>
                                 <div class="card-body" id="meetupDetails">
                                     <div class="row">
-                                        <div class="col-5">
+                                        <div class="col-7">
                                             <p>
+
+
                                                 <ul>
                                                     <li><a href="https://github.com/polifonia-project/meetups-application" target="_blank">MEETUPS Application</a> </li>
                                                     <li><a href="https://github.com/polifonia-project/meetups-knowledge-graph" target="_blank">MEETUPS Knowledge Graph</a> </li>
@@ -119,10 +121,20 @@
                                                     <li><a href="https://github.com/polifonia-project/meetups_corpus_collection" target="_blank">MEETUPS Corpus Collection</a> </li>
                                                     <li><a href="https://github.com/polifonia-project/meetups-ui-design" target="_blank">MEETUPS Original UI Designs</a> </li>
                                                 </ul>
+
                                             </p>
                                         </div>
-                                        <div class="col-7">
-                                            <img src="img/meetups-github.png" class="img-fluid">
+                                        <div class="col-5">
+                                            <img src="img/meetups-github.png" class="img-fluid float-right">
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <p>The repositories above contain all the data, software and related resources created as part of this project. Other
+                                                related resources and further information are also available under the
+                                                <a href="https://polifonia-project.github.io/ecosystem/pages/pilots/meetups.html" target="_blank">MEETUPS section of
+                                                    the Polifonia Ecosystem website</a>.</p>
                                         </div>
                                     </div>
 
