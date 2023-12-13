@@ -57,6 +57,24 @@ GROUP BY ?label
 ORDER BY DESC(?count)
 LIMIT 2
 
+# Working query
+PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ( COUNT( ?label) as ?count ) ?label
+WHERE {
+  ?s rdf:type mtp:Meetup ;
+        mtp:hasSubject <http://dbpedia.org/resource/Edward_Elgar> ;
+        mtp:hasType ?type . 
+  FILTER (regex ( str (?type), str ("HM") ) ) . 
+  ?s  mtp:hasPlace ?aPlaceIRI .
+  ?aPlaceIRI mtp:hasEntity ?resource .  
+  OPTIONAL { ?resource rdfs:label ?label } . 
+}
+GROUP BY ?label
+ORDER BY DESC(?count)
+LIMIT 2
+
 # ==============================================================
 
 # TOP 2 THEMES, FOR A GIVEN BIOGRAPHY/SUBJECT (not working)
@@ -103,6 +121,25 @@ WHERE
 }
 GROUP BY ?label ?link
 ORDER BY DESC(?count) ?participant
+LIMIT 2
+
+# working
+PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ( COUNT( ?label) as ?count ) ?label
+WHERE {
+  ?s rdf:type mtp:Meetup ;
+     mtp:hasSubject <http://dbpedia.org/resource/Edward_Elgar> ;
+     mtp:hasType ?type . 
+  FILTER (regex ( str (?type), str ("HM") ) ) .
+  ?s mtp:hasPurpose ?aPurposeIRI .
+  ?aPurposeIRI rdf:type mtp:Purpose ;
+               mtp:hasAPurposeFirst ?purpose1 .    
+  ?purpose1 rdfs:label ?label .
+}
+GROUP BY ?label
+ORDER BY DESC(?count)
 LIMIT 2
 
 # ==============================================================
