@@ -148,18 +148,19 @@
                                 </div>
                                 <div class="card-body" id="meetupDetails">
                                     <div class="row">
-                                        <div class="col-7">
+                                        <div class="col-8">
                                             <p>List of publications here?
                                             <ul>
-                                                <li>Paper Title 1</li>
-                                                <li>Paper Title 2</li>
-                                                <li>Paper Title 3</li>
-                                                <li>Paper Title 4</li>
+                                                <li><a href="https://oro.open.ac.uk/88720/" target="_blank">Musical Meetups: a Knowledge Graph approach
+                                                    for Historical Social Network Analysis</a></li>
+                                                <!--<li>Paper Title 2</li>-->
+                                                <!--<li>Paper Title 3</li>-->
+                                                <!--<li>Paper Title 4</li>-->
                                             </ul>
                                             </p>
                                         </div>
-                                        <div class="col-5">
-                                            <img src="img/meetups-paper.png" class="img-fluid">
+                                        <div class="col-4">
+                                            <img src="img/meetups-workshop-paper.png" class="img-fluid">
                                         </div>
                                     </div>
                                 </div>

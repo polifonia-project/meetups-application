@@ -13,6 +13,8 @@ $sparql = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#> '.
 '    ?meetup mtp:happensAt ?when '.
 '}';
 */
+
+/*
 $sparql = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#> 
@@ -50,6 +52,55 @@ WHERE
   } .
 }
 GROUP BY ?meetup ?evidence_text ?purpose ?time_expression_URI ?beginDate ?endDate ?time_evidence_text ?lat ?long ';
+*/
+
+$sparql = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX geo: <https://www.w3.org/2003/01/geo/wgs84_pos>
+PREFIX time: <http://www.w3.org/2006/time#>
+
+SELECT ?meetup ?evidence_text ?purpose
+(GROUP_CONCAT( DISTINCT ?participant; separator=", " ) as ?participants_URI )
+(GROUP_CONCAT( DISTINCT ?participant_label; separator=", " ) as ?participants_label )
+(GROUP_CONCAT( DISTINCT ?location_uri; separator=", " ) as ?locations_URI )
+(GROUP_CONCAT( DISTINCT ?location_label; separator=", " ) as ?locations_label )
+(GROUP_CONCAT( DISTINCT ?lat ; separator=", " ) as ?lats )
+(GROUP_CONCAT( DISTINCT ?long ; separator=", " ) as ?longs )
+?time_expression_URI ?beginDate ?endDate ?time_evidence_text 
+WHERE
+{
+    VALUES ?subject { <'.$biography.'> }
+    ?meetup rdf:type mtp:Meetup ;
+        mtp:hasSubject ?subject ;
+        mtp:hasEvidenceText ?evidence_text ;
+        mtp:hasType ?type . 
+  FILTER (regex ( str (?type), str ("HM") ) ) .
+  ?meetup mtp:hasParticipant ?aParticipantIRI .
+  ?aParticipantIRI rdf:type mtp:Participant ;
+                   mtp:hasEntity ?participant .
+  FILTER  (!regex (str(?participant), str(?subject) ) ) .
+  OPTIONAL { ?participant rdfs:label ?participant_label  } . 
+  ?meetup mtp:hasPurpose ?aPurposeIRI .
+  ?aPurposeIRI rdf:type mtp:Purpose ;
+               mtp:hasAPurposeFirst ?purpose1 .    
+  ?purpose1 rdfs:label ?purpose .
+  ?meetup mtp:hasPlace ?aPlaceIRI .
+  ?aPlaceIRI mtp:hasEntity ?location_uri .  
+  OPTIONAL { ?location_uri rdfs:label ?location_label ;
+  		geo:lat ?lat ;
+        geo:long ?long . } . 
+  ?meetup mtp:happensAt ?time_expression_URI .
+    ?time_expression_URI mtp:hasEvidenceText ?hasEvidenceTextTimeExpression ;
+    rdf:type ?typeTimeExpression .
+    FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
+    OPTIONAL {
+        ?time_expression_URI time:hasBeginning ?beginDate;
+            time:hasEnd ?endDate ;
+            mtp:hasEvidenceText ?time_evidence_text .
+    } .
+}
+GROUP BY ?meetup ?evidence_text ?purpose ?time_expression_URI ?beginDate ?endDate ?time_evidence_text';
 
 $sparql_encoded = urlencode($sparql);
 $curl = curl_init();
@@ -82,16 +133,18 @@ $outputObj = [];
 foreach ($bindings as $binding) {
     $tempObject = [
         'meetup' => $binding->meetup->value,
+        'evidence' => $binding->evidence_text->value,
         'purpose' => $binding->purpose->value,
+        'participants' => $binding->participants_label->value,
+        'participantsUri' => $binding->participants_URI->value,
+        'location' => $binding->locations_label->value,
+        'locationUri' => $binding->locations_URI->value,
+        'lat' => $binding->lats->value,
+        'long' => $binding->longs->value,
         'when' => $binding->time_expression_URI->value,
         'beginDate' => $binding->beginDate->value,
         'endDate' => $binding->endDate->value,
         'time_evidence' => $binding->time_evidence_text->value,
-        'evidence' => $binding->evidence_text->value,
-        'participants' => $binding->participants_label->value,
-        'location' => $binding->locations_label->value,
-        'lat' => $binding->lat->value,
-        'long' => $binding->long->value,
     ];
     $outputObj[] = $tempObject;
 }
