@@ -436,23 +436,26 @@
             "features": []
         };
         for (i = 0; i < inputData.length; i++) {
-            feature = {
-                "type": "Feature",
-                "properties": {
-                    "evidence":  inputData[i].evidence,
-                    "meetup": inputData[i].meetup,
-                    "participants": inputData[i].participants,
-                    "when": inputData[i].when,
-                    "purpose": inputData[i].purpose,
-                    "location": inputData[i].location,
-                    "index": i
-                },
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [inputData[i].long, inputData[i].lat]
-                }
-            };
-            output.features.push(feature);
+            for (placeId = 0; placeId < inputData[i].location.length; placeId++) {
+                feature = {
+                    "type": "Feature",
+                    "properties": {
+                        "evidence":  inputData[i].evidence,
+                        "meetup": inputData[i].meetup,
+                        "participants": inputData[i].participants.join(","),
+                        "when": inputData[i].when,
+                        "purpose": inputData[i].purpose,
+                        "location": inputData[i].location[placeId],
+                        "index": i
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [inputData[i].long[placeId], inputData[i].lat[placeId]]
+                    }
+                };
+                output.features.push(feature);
+            }
+
         }
         //console.log(output);
         return output;

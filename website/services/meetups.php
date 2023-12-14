@@ -130,17 +130,19 @@ $responseObj = json_decode($response);
 //print_r($responseObj->results->bindings);
 $bindings = $responseObj->results->bindings;
 $outputObj = [];
+
+// user explode to return an array of string for those attributes that may have multiple values
 foreach ($bindings as $binding) {
     $tempObject = [
         'meetup' => $binding->meetup->value,
         'evidence' => $binding->evidence_text->value,
         'purpose' => $binding->purpose->value,
-        'participants' => $binding->participants_label->value,
-        'participantsUri' => $binding->participants_URI->value,
-        'location' => $binding->locations_label->value,
-        'locationUri' => $binding->locations_URI->value,
-        'lat' => $binding->lats->value,
-        'long' => $binding->longs->value,
+        'participants' => explode(",", $binding->participants_label->value),
+        'participantsUri' => explode (",", $binding->participants_URI->value),
+        'location' => explode (",", $binding->locations_label->value),
+        'locationUri' => explode (",", $binding->locations_URI->value),
+        'lat' => explode (",", $binding->lats->value),
+        'long' => explode (",", $binding->longs->value),
         'when' => $binding->time_expression_URI->value,
         'beginDate' => $binding->beginDate->value,
         'endDate' => $binding->endDate->value,
