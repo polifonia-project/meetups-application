@@ -57,6 +57,24 @@ GROUP BY ?label
 ORDER BY DESC(?count)
 LIMIT 2
 
+# Working query
+PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ( COUNT( ?label) as ?count ) ?label
+WHERE {
+  ?s rdf:type mtp:Meetup ;
+        mtp:hasSubject <http://dbpedia.org/resource/Edward_Elgar> ;
+        mtp:hasType ?type . 
+  FILTER (regex ( str (?type), str ("HM") ) ) . 
+  ?s  mtp:hasPlace ?aPlaceIRI .
+  ?aPlaceIRI mtp:hasEntity ?resource .  
+  OPTIONAL { ?resource rdfs:label ?label } . 
+}
+GROUP BY ?label
+ORDER BY DESC(?count)
+LIMIT 2
+
 # ==============================================================
 
 # TOP 2 THEMES, FOR A GIVEN BIOGRAPHY/SUBJECT (not working)
@@ -105,6 +123,25 @@ GROUP BY ?label ?link
 ORDER BY DESC(?count) ?participant
 LIMIT 2
 
+# working
+PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ( COUNT( ?label) as ?count ) ?label
+WHERE {
+  ?s rdf:type mtp:Meetup ;
+     mtp:hasSubject <http://dbpedia.org/resource/Edward_Elgar> ;
+     mtp:hasType ?type . 
+  FILTER (regex ( str (?type), str ("HM") ) ) .
+  ?s mtp:hasPurpose ?aPurposeIRI .
+  ?aPurposeIRI rdf:type mtp:Purpose ;
+               mtp:hasAPurposeFirst ?purpose1 .    
+  ?purpose1 rdfs:label ?label .
+}
+GROUP BY ?label
+ORDER BY DESC(?count)
+LIMIT 2
+
 # ==============================================================
 
 # GET ALL THE MEETUPS AND CORRESPONDING DETAILS FOR A SINGLE SUBJECT/BIOGRAPHY (not working)
@@ -149,6 +186,56 @@ WHERE
 }
 GROUP BY ?meetup ?evidence_text ?purpose ?time_expression_URI ?beginDate ?endDate ?time_evidence_text ?lat ?long
 
+
+# working query
+
+PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX geo: <https://www.w3.org/2003/01/geo/wgs84_pos>
+PREFIX time: <http://www.w3.org/2006/time#>
+
+SELECT ?meetup ?evidence_text ?purpose
+(GROUP_CONCAT( DISTINCT ?participant; separator=", " ) as ?participants_URI )
+(GROUP_CONCAT( DISTINCT ?participant_label; separator=", " ) as ?participants_label )
+(GROUP_CONCAT( DISTINCT ?location_uri; separator=", " ) as ?locations_URI )
+(GROUP_CONCAT( DISTINCT ?location_label; separator=", " ) as ?locations_label )
+?time_expression_URI ?beginDate ?endDate ?time_evidence_text ?lat ?long
+WHERE
+{
+    VALUES ?subject { <http://dbpedia.org/resource/Edward_Elgar> }
+    ?meetup rdf:type mtp:Meetup ;
+        mtp:hasSubject ?subject ;
+        mtp:hasEvidenceText ?evidence_text ;
+        mtp:hasType ?type . 
+  FILTER (regex ( str (?type), str ("HM") ) ) .
+  ?meetup mtp:hasParticipant ?aParticipantIRI .
+  ?aParticipantIRI rdf:type mtp:Participant ;
+                   mtp:hasEntity ?participant .
+  OPTIONAL { ?participant rdfs:label ?participant_label  } . 
+  ?meetup mtp:hasPurpose ?aPurposeIRI .
+  ?aPurposeIRI rdf:type mtp:Purpose ;
+               mtp:hasAPurposeFirst ?purpose1 .    
+  ?purpose1 rdfs:label ?purpose .
+  ?meetup mtp:hasPlace ?aPlaceIRI .
+  ?aPlaceIRI mtp:hasEntity ?location_uri .  
+  OPTIONAL { ?location_uri rdfs:label ?location_label ;
+  		geo:lat ?lat ;
+        geo:long ?long . } . 
+  ?meetup mtp:happensAt ?time_expression_URI .
+    FILTER  (!regex (str(?participant), str(?subject) ) ) .
+    ?participant rdfs:label ?participant_label .
+    ?purpose_uri rdfs:label ?purpose .
+    ?time_expression_URI mtp:hasEvidenceText ?hasEvidenceTextTimeExpression ;
+    rdf:type ?typeTimeExpression .
+    FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
+    OPTIONAL {
+        ?time_expression_URI time:hasBeginning ?beginDate;
+            time:hasEnd ?endDate ;
+            mtp:hasEvidenceText ?time_evidence_text .
+    } .
+}
+GROUP BY ?meetup ?evidence_text ?purpose ?time_expression_URI ?beginDate ?endDate ?time_evidence_text ?lat ?long
 # ==============================================================
 
 # MEETUP SEARCH - not updated this yet, but essentially the above query with some additional FILTER(regex...) etc (not working)
