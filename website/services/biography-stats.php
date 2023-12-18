@@ -4,6 +4,7 @@ header('Content-Type: application/json; charset=utf-8');
 $biography = $_GET["id"];
 $statType = $_GET["stat"];
 
+/*
 $sparqlTheme = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#> '.
 'PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> '.
 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '.
@@ -17,63 +18,65 @@ $sparqlTheme = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology
 'GROUP BY ?label '.
 '    ORDER BY DESC(?count) '.
 'LIMIT 2 ';
+*/
 
-$sparqlPlace = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+$sparqlTheme = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ( COUNT( ?label) as ?count ) ?label
-WHERE
-{ ?s rdf:type mtp:Meetup ;
-    mtp:hasSubject <'.$biography.'> ;
-    mtp:hasPlace ?place .
-  	?place rdfs:label ?label .
+WHERE {
+  ?s rdf:type mtp:Meetup ;
+     mtp:hasSubject <'.$biography.'> ;
+     mtp:hasType ?type . 
+  FILTER (regex ( str (?type), str ("HM") ) ) .
+  ?s mtp:hasPurpose ?aPurposeIRI .
+  ?aPurposeIRI rdf:type mtp:Purpose ;
+               mtp:hasAPurposeFirst ?purpose1 .    
+  ?purpose1 rdfs:label ?label .
 }
 GROUP BY ?label
 ORDER BY DESC(?count)
 LIMIT 2';
 
-/*
-$sparqlPeople = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
-PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT ( COUNT( ?label) as ?count ) ?label ?link
-FROM <http://data.open.ac.uk/context/meetups>
-WHERE
-{ ?s rdf:type mtp:Meetup ;
-      mtp:hasSubject <'.$biography.'> ;
-      mtp:hasParticipant ?participant .
-      FILTER  (!regex (str(?participant), \''.$biography.'\' ) ) .
-      ?participant rdfs:label ?label .
-      OPTIONAL { 
-        ?s2 mtp:hasSubject ?participant .
-        ?s2 mtp:hasSubject ?link
-      }
+
+$sparqlPlace = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ( COUNT( ?label) as ?count ) ?label
+WHERE {
+  ?s rdf:type mtp:Meetup ;
+        mtp:hasSubject <'.$biography.'> ;
+        mtp:hasType ?type . 
+  FILTER (regex ( str (?type), str ("HM") ) ) . 
+  ?s  mtp:hasPlace ?aPlaceIRI .
+  ?aPlaceIRI mtp:hasEntity ?resource .  
+  OPTIONAL { ?resource rdfs:label ?label } . 
 }
-GROUP BY ?label ?link
-    ORDER BY DESC(?count) ?label
+GROUP BY ?label
+ORDER BY DESC(?count)
 LIMIT 2';
-*/
 
 $sparqlPeople = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-select ( count( ?participant) as ?count ) ?label ?link
-where
+SELECT ( COUNT( ?participant) as ?count ) ?label ?link
+WHERE
 {
     VALUES ?subject { <'.$biography.'> }
     []  mtp:hasSubject ?subject ;
-      mtp:hasParticipant ?participant .
+        mtp:hasParticipant ?participant .
     FILTER (?participant != ?subject ) .
-  ?participant rdfs:label ?label .
-        OPTIONAL {
+    ?participant rdfs:label ?label .
+    OPTIONAL {
         FILTER EXISTS {
             [] mtp:hasSubject ?participant .
+        }
+        BIND (?participant AS ?link)
     }
-    BIND (?participant AS ?link)
-  }
-} 
+}
 GROUP BY ?label ?link
-    ORDER BY DESC(?count) ?participant 
+ORDER BY DESC(?count) ?participant
 LIMIT 2';
 
 $sparql = '';
