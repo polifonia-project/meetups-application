@@ -147,10 +147,10 @@ foreach ($bindings as $binding) {
         'locationUri' => explode (",", $binding->locations_URI->value),
         'lat' => explode (",", $binding->lats->value),
         'long' => explode (",", $binding->longs->value),
-        'when' => explode (",", $binding->time_expression_URI->value)[0],
-        'beginDate' => explode (",", $binding->beginDate->value)[0],
-        'endDate' => explode (",", $binding->endDate->value)[0],
-        'time_evidence' => explode (",", $binding->time_evidence_text->value)[0],
+        'when' => explode (",", $binding->time_expression_URIs->value)[0],
+        'beginDate' => explode (",", $binding->beginDates->value)[0],
+        'endDate' => explode (",", $binding->endDates->value)[0],
+        'time_evidence' => explode (",", $binding->time_evidence_texts->value)[0],
     ];
     $outputObj[] = $tempObject;
 }
