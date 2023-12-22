@@ -143,6 +143,16 @@ GROUP BY ?meetup ?evidence_text ?purpose ?time_expression_URI ?beginDate ?endDat
 # ==============================================================
 
 # MEETUP SEARCH - this is the old search, not yet updated/working for the new KG
+
+# Typical filter substitution currently looks like:
+# FILTER (regex(str(?purpose), "<search_term>"))
+# FILTER (regex(str(?subject), "<search_term>"))
+# FILTER (regex(str(?participant), "<search_term>"))
+# FILTER (regex(str(?location_label), "<search_term>"))
+
+# bounds filter...
+# FILTER (?long > -5.5) . FILTER (?long < 6.2) . FILTER (?lat > 45.78) . FILTER (?lat < 53.25)
+
 PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
