@@ -88,6 +88,35 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ( COUNT( ?label) as ?count ) ?label
 ...
 
+# new query - working
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+#SELECT *
+SELECT ( COUNT( ?participant) as ?count ) ?label ?link
+WHERE {
+    VALUES ?subject { <http://dbpedia.org/resource/Edward_Elgar> }
+    []  mtp:hasSubject ?subject ;
+        mtp:hasType ?type ;
+        mtp:hasParticipant ?aParticipantIRI .
+  FILTER (regex ( str (?type), str ("HM") ) ) .
+  ?aParticipantIRI rdf:type mtp:Participant ;
+                   mtp:hasEntity ?participant .
+  FILTER ( !isblank(?participant) ) .
+    FILTER (?participant != ?subject ) .
+  OPTIONAL { ?participant rdfs:label ?label . }
+    OPTIONAL {
+        FILTER EXISTS {
+            [] mtp:hasSubject ?participant .
+        }
+        BIND (?participant AS ?link)
+    }
+}
+GROUP BY ?label ?link
+ORDER BY DESC(?count) ?participant
+LIMIT 2
+
 # ==============================================================
 
 # GET ALL THE MEETUPS AND CORRESPONDING DETAILS FOR A SINGLE SUBJECT/BIOGRAPHY (working)
