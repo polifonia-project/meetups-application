@@ -907,6 +907,14 @@
             $('#topLocations').html(html);
         });
 
+        $.getJSON("services/biography-stats.php?id=<?= $_GET["id"]; ?>&stat=period", function(result){
+            html = '';
+            $.each(result, function(i, field){
+                html += field.label + ' <em>(' + field.count + ')</em><br />';
+            });
+            $('#topPeriods').html(html);
+        });
+
         $.getJSON("services/biography-stats.php?id=<?= $_GET["id"]; ?>&stat=theme", function(result){
             html = '';
             $.each(result, function(i, field){

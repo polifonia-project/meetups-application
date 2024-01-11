@@ -80,6 +80,34 @@ LIMIT 2
 
 # ==============================================================
 
+# TOP 2 DATES (years), FOR A GIVEN BIOGRAPHY/SUBJECT
+# new query - working
+
+PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbo:	<http://dbpedia.org/ontology/>
+PREFIX time: <http://www.w3.org/2006/time#>
+
+SELECT ( COUNT( ?date) as ?count ) ?label
+WHERE {
+?s rdf:type mtp:Meetup ;
+mtp:hasSubject <http://dbpedia.org/resource/Edward_Elgar> ;
+mtp:hasType ?type .
+FILTER (regex ( str (?type), str ("HM") ) ) .
+?s mtp:happensAt ?time_expression_URI .
+?time_expression_URI rdf:type ?typeTimeExpression .
+FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
+?time_expression_URI time:hasBeginning|time:hasEnd ?date .
+# Extract year from the xsd:date
+BIND(YEAR(?date) AS ?label)
+}
+GROUP BY ?label
+ORDER BY DESC(?count)
+LIMIT 2
+
+# ==============================================================
+
 # TOP 2 PARTICIPANTS, FOR A GIVEN BIOGRAPHY/SUBJECT
 # new query - working
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

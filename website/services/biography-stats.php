@@ -56,6 +56,7 @@ GROUP BY ?label
 ORDER BY DESC(?count)
 LIMIT 2';
 
+/*
 $sparqlPeople = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -78,6 +79,56 @@ WHERE
 GROUP BY ?label ?link
 ORDER BY DESC(?count) ?participant
 LIMIT 2';
+*/
+
+$sparqlPeople = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ( COUNT( ?participant) as ?count ) ?label ?link
+WHERE {
+    VALUES ?subject { <'.$biography.'> }
+    []  mtp:hasSubject ?subject ;
+        mtp:hasType ?type ;
+        mtp:hasParticipant ?aParticipantIRI .
+  FILTER (regex ( str (?type), str ("HM") ) ) .
+  ?aParticipantIRI rdf:type mtp:Participant ;
+                   mtp:hasEntity ?participant .
+  FILTER ( !isblank(?participant) ) .
+    FILTER (?participant != ?subject ) .
+  OPTIONAL { ?participant rdfs:label ?label . }
+    OPTIONAL {
+        FILTER EXISTS {
+            [] mtp:hasSubject ?participant .
+        }
+        BIND (?participant AS ?link)
+    }
+}
+GROUP BY ?label ?link
+ORDER BY DESC(?count) ?participant
+LIMIT 2';
+
+$sparqlPeriod = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbo:	<http://dbpedia.org/ontology/>
+PREFIX time: <http://www.w3.org/2006/time#>
+
+SELECT ( COUNT( ?date) as ?count ) ?label
+WHERE {
+?s rdf:type mtp:Meetup ;
+mtp:hasSubject <'.$biography.'> ;
+mtp:hasType ?type .
+FILTER (regex ( str (?type), str ("HM") ) ) .
+?s mtp:happensAt ?time_expression_URI .
+?time_expression_URI rdf:type ?typeTimeExpression .
+FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
+?time_expression_URI time:hasBeginning|time:hasEnd ?date .
+BIND(YEAR(?date) AS ?label) 
+}
+GROUP BY ?label
+ORDER BY DESC(?count)
+LIMIT 2';
 
 $sparql = '';
 switch ($statType) {
@@ -91,7 +142,7 @@ switch ($statType) {
         $sparql = $sparqlPeople;
         break;
     case 'period':
-        $sparql = $sparqlTheme;
+        $sparql = $sparqlPeriod;
         break;
     default:
         $sparql = $sparqlTheme;
