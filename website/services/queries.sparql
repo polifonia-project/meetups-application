@@ -259,7 +259,7 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX geo: <https://www.w3.org/2003/01/geo/wgs84_pos>
 PREFIX time: <http://www.w3.org/2006/time#>
-SELECT ?meetup ?evidence_text
+SELECT ?subject_label ?subject ?meetup ?evidence_text
 (GROUP_CONCAT( DISTINCT ?participant; separator=", " ) as ?participants_URI )
 (GROUP_CONCAT( DISTINCT ?participant_label; separator=", " ) as ?participants_label )
 (GROUP_CONCAT( DISTINCT ?location_uri; separator=", " ) as ?locations_URI )
@@ -291,8 +291,12 @@ WHERE
   OPTIONAL { ?location_uri rdfs:label ?location_label ;
   		geo:lat ?lat ;
         geo:long ?long . 
- 	} . 
-	FILTER (?long > -5.5) . FILTER (?long < 6.2) . FILTER (?lat > 45.78) . FILTER (?lat < 53.25) .
+ 	} .
+    '.$purposeFilter.'
+    '.$subjectFilter.'
+    '.$participantFilter.'
+    '.$placeFilter.'
+    '.$boundsFilter.'
   ?meetup mtp:happensAt ?time_expression_URI .
   ?time_expression_URI rdf:type ?typeTimeExpression .
     FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
@@ -306,6 +310,6 @@ WHERE
 #               mtp:hasAPurposeFirst ?purpose1 .    
 #  ?purpose1 rdfs:label ?purpose . 
 }
-GROUP BY ?meetup ?evidence_text
+GROUP BY ?subject_label ?subject ?meetup ?evidence_text
 ORDER BY ?meetup
-LIMIT 10
+LIMIT 500
