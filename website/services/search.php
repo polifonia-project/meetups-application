@@ -68,7 +68,7 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX geo: <https://www.w3.org/2003/01/geo/wgs84_pos>
 PREFIX time: <http://www.w3.org/2006/time#>
-SELECT ?meetup ?evidence_text
+SELECT ?subject ?subject_label ?meetup ?evidence_text
 (GROUP_CONCAT( DISTINCT ?participant; separator=", " ) as ?participants_URI )
 (GROUP_CONCAT( DISTINCT ?participant_label; separator=", " ) as ?participants_label )
 (GROUP_CONCAT( DISTINCT ?location_uri; separator=", " ) as ?locations_URI )
@@ -86,6 +86,7 @@ WHERE
         mtp:hasSubject ?subject ;
         mtp:hasEvidenceText ?evidence_text ;
         mtp:hasType ?type . 
+    ?subject rdfs:label ?subject_label .
   FILTER (regex ( str (?type), str ("HM") ) ) .
   ?meetup mtp:hasParticipant ?aParticipantIRI .
   ?aParticipantIRI rdf:type mtp:Participant ;
@@ -120,9 +121,9 @@ WHERE
 #               mtp:hasAPurposeFirst ?purpose1 .    
 #  ?purpose1 rdfs:label ?purpose . 
 }
-GROUP BY ?meetup ?evidence_text
+GROUP BY ?subject_label ?subject ?meetup ?evidence_text
 ORDER BY ?meetup
-LIMIT 10';
+LIMIT 500';
 
 $sparql_encoded = urlencode($sparql);
 //echo($sparql);
@@ -156,19 +157,20 @@ $bindings = $responseObj->results->bindings;
 $outputObj = [];
 foreach ($bindings as $binding) {
     $tempObject = [
-        'when' => $binding->time_expression_URI->value,
-        'beginDate' => $binding->beginDate->value,
-        'endDate' => $binding->endDate->value,
-        'time_evidence' => $binding->time_evidence_text->value,
         'purpose' => $binding->purpose->value,
         'subject' => $binding->subject->value,
         'subject_label' => $binding->subject_label->value,
         'evidence_text' => $binding->evidence_text->value,
         'participants' => $binding->participants_label->value,
-        'location' => $binding->locations_label->value,
-        'lat' => $binding->lat->value,
-        'long' => $binding->long->value,
-        'meetup' => $binding->meetup->value
+        'location' => explode (",", $binding->locations_label->value),
+        'locationUri' => explode (",", $binding->locations_URI->value),
+        'lat' => explode (",", $binding->lats->value),
+        'long' => explode (",", $binding->longs->value),
+        'meetup' => $binding->meetup->value,
+        'when' => explode (",", $binding->time_expression_URIs->value)[0],
+        'beginDate' => explode (",", $binding->beginDates->value)[0],
+        'endDate' => explode (",", $binding->endDates->value)[0],
+        'time_evidence' => explode (",", $binding->time_evidence_texts->value)[0],
     ];
     $outputObj[] = $tempObject;
 }
