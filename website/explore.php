@@ -115,7 +115,7 @@ $searchPanel = True;
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="purpose"> Purpose:</label>
-                                            <input type="text" class="form-control" id="purpose">
+                                            <input type="text" class="form-control" id="purpose" placeholder="temporarily disabled" disabled>
                                         </div>
                                     </div>
 
