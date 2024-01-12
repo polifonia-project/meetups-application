@@ -356,27 +356,30 @@ $searchPanel = True;
                 "features": []
             };
             for (i = 0; i < inputData.length; i++) {
-                feature = {
-                    "type": "Feature",
-                    "properties": {
-                        "meetup":  inputData[i].meetup,
-                        "evidence_text":  inputData[i].evidence_text,
-                        "participants": inputData[i].participants,
-                        "time_evidence": inputData[i].time_evidence,
-                        "beginDate": inputData[i].beginDate,
-                        "endDate": inputData[i].endDate,
-                        "purpose": inputData[i].purpose,
-                        "subject": inputData[i].subject,
-                        "subject_label": inputData[i].subject_label,
-                        "location": inputData[i].location,
-                        "index": i
-                    },
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [inputData[i].long, inputData[i].lat]
-                    }
-                };
-                output.features.push(feature);
+                for (placeId = 0; placeId < inputData[i].location.length; placeId++) {
+                    feature = {
+                        "type": "Feature",
+                        "properties": {
+                            "meetup":  inputData[i].meetup,
+                            "evidence_text":  inputData[i].evidence_text,
+                            "participants": inputData[i].participants,
+                            "time_evidence": inputData[i].time_evidence,
+                            "beginDate": inputData[i].beginDate,
+                            "endDate": inputData[i].endDate,
+                            "purpose": inputData[i].purpose,
+                            "subject": inputData[i].subject,
+                            "subject_label": inputData[i].subject_label,
+                            "location": inputData[i].location[placeId],
+                            "index": i
+                        },
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [inputData[i].long[placeId], inputData[i].lat[placeId]]
+                        }
+                    };
+                    output.features.push(feature);
+                }
+
             }
             console.log(output);
             return output;
