@@ -152,11 +152,11 @@ SELECT ?meetup ?evidence_text ?purpose
 WHERE
 {
     VALUES ?subject { <http://dbpedia.org/resource/Edward_Elgar> }
-    ?meetup rdf:type mtp:Meetup ;
+    ?meetup
         mtp:hasSubject ?subject ;
         mtp:hasEvidenceText ?evidence_text ;
-        mtp:hasType ?type . 
-  FILTER (regex ( str (?type), str ("HM") ) ) .
+        mtp:hasType "HM" . 
+#  FILTER (regex ( str (?type), str ("HM") ) ) .
   ?meetup mtp:hasParticipant ?aParticipantIRI .
   ?aParticipantIRI rdf:type mtp:Participant ;
                    mtp:hasEntity ?participant .
