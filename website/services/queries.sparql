@@ -308,3 +308,28 @@ WHERE
 GROUP BY ?subject_label ?subject ?meetup ?evidence_text
 ORDER BY ?meetup
 LIMIT 500
+
+
+# SEARCH EXAMPLE
+PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX geo: <https://www.w3.org/2003/01/geo/wgs84_pos>
+PREFIX time: <http://www.w3.org/2006/time#>
+SELECT ?meetup ?lit ?lit2 ?score ?score2
+WHERE
+{
+    ?meetup mtp:hasSubject/rdfs:label ?lit .
+    ?lit bds:search "Elgar" .
+	?lit bds:matchAllTerms "true" .
+	?lit bds:relevance ?score .
+
+    ?meetup mtp:hasPlace/mtp:hasEntity/rdfs:label ?lit2 .
+	?lit2 bds:search "London" .
+	?lit2 bds:matchAllTerms "true" .
+	?lit2 bds:relevance ?score2 .
+      
+    
+}
+ORDER BY DESC(?score)
+LIMIT 500
