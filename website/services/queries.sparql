@@ -46,15 +46,14 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ( COUNT( ?label) as ?count ) ?label
 WHERE {
-  ?s rdf:type mtp:Meetup ;
-        mtp:hasSubject <http://dbpedia.org/resource/Edward_Elgar> ;
-        mtp:hasType ?type . 
-  FILTER (regex ( str (?type), str ("HM") ) ) . 
-  ?s  mtp:hasPlace ?aPlaceIRI .
-  ?aPlaceIRI mtp:hasEntity ?resource .  
-  OPTIONAL { ?resource rdfs:label ?label } . 
+  ?s mtp:hasSubject <http://dbpedia.org/resource/Diana_Damrau>  ;
+       mtp:hasType "HM" .  
+  ?s  mtp:hasPlace/mtp:hasEntity ?p . 
+  OPTIONAL {?p rdfs:label ?labelTmp }.
+  BIND ( COALESCE(?labelTmp, 
+      REPLACE(STR(?p),"http://dbpedia.org/resource/","" )) AS ?label)
 }
-GROUP BY ?label
+GROUP BY ?label ?p
 ORDER BY DESC(?count)
 LIMIT 2
 
@@ -66,14 +65,9 @@ PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ( COUNT( ?label) as ?count ) ?label
 WHERE {
-?s rdf:type mtp:Meetup ;
-mtp:hasSubject <http://dbpedia.org/resource/Edward_Elgar> ;
-mtp:hasType ?type .
-FILTER (regex ( str (?type), str ("HM") ) ) .
-?s mtp:hasPurpose ?aPurposeIRI .
-?aPurposeIRI rdf:type mtp:Purpose ;
-mtp:hasAPurposeFirst ?purpose1 .
-?purpose1 rdfs:label ?label .
+?s mtp:hasSubject <http://dbpedia.org/resource/Edward_Elgar> ;
+mtp:hasType "HM" .
+?s mtp:hasPurpose/mtp:hasAPurposeFirst/rdfs:label ?label .
 }
 GROUP BY ?label
 ORDER BY DESC(?count)
@@ -92,13 +86,13 @@ PREFIX time: <http://www.w3.org/2006/time#>
 
 SELECT ( COUNT( ?date) as ?count ) ?label
 WHERE {
-?s rdf:type mtp:Meetup ;
+?s 
 mtp:hasSubject <http://dbpedia.org/resource/Edward_Elgar> ;
-mtp:hasType ?type .
-FILTER (regex ( str (?type), str ("HM") ) ) .
+mtp:hasType "HM" .
+#FILTER (regex ( str (?type), str ("HM") ) ) .
 ?s mtp:happensAt ?time_expression_URI .
 ?time_expression_URI rdf:type ?typeTimeExpression .
-FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
+FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) . # Why?
 ?time_expression_URI time:hasBeginning|time:hasEnd ?date .
 # Extract year from the xsd:date
 BIND(YEAR(?date) AS ?label)
@@ -118,19 +112,19 @@ PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 #SELECT *
 SELECT ( COUNT( ?participant) as ?count ) ?label ?link
 WHERE {
-    VALUES ?subject { <http://dbpedia.org/resource/Edward_Elgar> }
+    VALUES ?subject { <http://dbpedia.org/resource/Yehudi_Menuhin> }
     []  mtp:hasSubject ?subject ;
-        mtp:hasType ?type ;
+        mtp:hasType "HM" ;
         mtp:hasParticipant ?aParticipantIRI .
-  FILTER (regex ( str (?type), str ("HM") ) ) .
+  # FILTER (regex ( str (?type), str ("HM") ) ) .
   ?aParticipantIRI rdf:type mtp:Participant ;
                    mtp:hasEntity ?participant .
   FILTER ( !isblank(?participant) ) .
-    FILTER (?participant != ?subject ) .
+  FILTER ( ?participant != ?subject ) .
   OPTIONAL { ?participant rdfs:label ?label . }
     OPTIONAL {
         FILTER EXISTS {
-            [] mtp:hasSubject ?participant .
+            [] mtp:hasSubject ?participant ; mtp:hasType "HM" .
         }
         BIND (?participant AS ?link)
     }
