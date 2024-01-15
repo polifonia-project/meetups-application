@@ -4,12 +4,13 @@ PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT DISTINCT ?subject ?subject_label ?dob ?dod
+SELECT ?subject ?subject_label ?dob ?dod
 WHERE {
-    ?meetup  mtp:hasSubject ?subject .
+    #?meetup  mtp:hasSubject ?subject .
     ?subject rdfs:label ?subject_label ;
     mtp:hasdob ?dob ;
-    mtp:hasdod ?dod
+    mtp:hasdod ?dod .
+  FILTER EXISTS {?meetup  mtp:hasSubject ?subject}
 }
 
 # ==============================================================
