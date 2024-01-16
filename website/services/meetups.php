@@ -8,24 +8,32 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX geo: <https://www.w3.org/2003/01/geo/wgs84_pos>
 PREFIX time: <http://www.w3.org/2006/time#>
-
 SELECT ?meetup ?evidence_text ?purpose
 (GROUP_CONCAT( DISTINCT ?participant; separator=", " ) as ?participants_URI )
 (GROUP_CONCAT( DISTINCT ?participant_label; separator=", " ) as ?participants_label )
 (GROUP_CONCAT( DISTINCT ?location_uri; separator=", " ) as ?locations_URI )
 (GROUP_CONCAT( DISTINCT ?location_label; separator=", " ) as ?locations_label )
-?time_expression_URI ?beginDate ?endDate ?time_evidence_text ?lat ?long
+(GROUP_CONCAT( DISTINCT ?lat ; separator=", " ) as ?lats )
+(GROUP_CONCAT( DISTINCT ?long ; separator=", " ) as ?longs )
+(GROUP_CONCAT( DISTINCT ?time_expression_URI ; separator=", " ) as ?time_expression_URIs )
+(GROUP_CONCAT( DISTINCT ?beginDate ; separator=", " ) as ?beginDates )
+(GROUP_CONCAT( DISTINCT ?endDate ; separator=", " ) as ?endDates )
+(GROUP_CONCAT( DISTINCT ?time_evidence_text ; separator=", " ) as ?time_evidence_texts )
 WHERE
 {
     VALUES ?subject { <'.$biography.'> }
-    ?meetup
+    ?meetup rdf:type mtp:Meetup ;
         mtp:hasSubject ?subject ;
         mtp:hasEvidenceText ?evidence_text ;
-        mtp:hasType "HM" . 
+        mtp:hasType ?type . 
+  FILTER (regex ( str (?type), str ("HM") ) ) .
   ?meetup mtp:hasParticipant ?aParticipantIRI .
   ?aParticipantIRI rdf:type mtp:Participant ;
-                   mtp:hasEntity ?participant .
-  OPTIONAL { ?participant rdfs:label ?participant_label  } . 
+                   mtp:hasEntity ?participant ;
+                   mtp:hasTextEvidence ?mentionPerson.
+  FILTER  (!regex (str(?participant), str(?subject) ) || isBlank(?participant) ) .
+  OPTIONAL { ?participant rdfs:label ?part_label  } 
+  BIND ( IF (!isBlank(?participant),?part_label,?mentionPerson) AS ?participant_label ) .
   ?meetup mtp:hasPurpose ?aPurposeIRI .
   ?aPurposeIRI rdf:type mtp:Purpose ;
                mtp:hasAPurposeFirst ?purpose1 .    
@@ -36,11 +44,7 @@ WHERE
   		geo:lat ?lat ;
         geo:long ?long . } . 
   ?meetup mtp:happensAt ?time_expression_URI .
-    FILTER  (!regex (str(?participant), str(?subject) ) ) .
-    ?participant rdfs:label ?participant_label .
-    ?purpose_uri rdfs:label ?purpose .
-    ?time_expression_URI mtp:hasEvidenceText ?hasEvidenceTextTimeExpression ;
-    rdf:type ?typeTimeExpression .
+  ?time_expression_URI rdf:type ?typeTimeExpression .
     FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
     OPTIONAL {
         ?time_expression_URI time:hasBeginning ?beginDate;
@@ -48,7 +52,8 @@ WHERE
             mtp:hasEvidenceText ?time_evidence_text .
     } .
 }
-GROUP BY ?meetup ?evidence_text ?purpose ?time_expression_URI ?beginDate ?endDate ?time_evidence_text ?lat ?long';
+GROUP BY ?meetup ?evidence_text ?purpose
+ORDER BY ?meetup';
 
 $sparql_encoded = urlencode($sparql);
 $curl = curl_init();
