@@ -4,102 +4,52 @@ header('Content-Type: application/json; charset=utf-8');
 $biography = $_GET["id"];
 $statType = $_GET["stat"];
 
-/*
-$sparqlTheme = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#> '.
-'PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> '.
-'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '.
-'SELECT ( COUNT( ?label) as ?count ) ?label '.
-'WHERE '.
-'{ ?s rdf:type mtp:Meetup ; '.
-'      mtp:hasSubject <'.$biography.'> ; '.
-'      mtp:hasAPurpose ?meetupType . '.
-'  ?meetupType rdfs:label ?label . '.
-'} '.
-'GROUP BY ?label '.
-'    ORDER BY DESC(?count) '.
-'LIMIT 2 ';
-*/
-
 $sparqlTheme = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ( COUNT( ?label) as ?count ) ?label
 WHERE {
-  ?s rdf:type mtp:Meetup ;
-     mtp:hasSubject <'.$biography.'> ;
-     mtp:hasType ?type . 
-  FILTER (regex ( str (?type), str ("HM") ) ) .
-  ?s mtp:hasPurpose ?aPurposeIRI .
-  ?aPurposeIRI rdf:type mtp:Purpose ;
-               mtp:hasAPurposeFirst ?purpose1 .    
-  ?purpose1 rdfs:label ?label .
+?s mtp:hasSubject <'.$biography.'> ;
+mtp:hasType "HM" .
+?s mtp:hasPurpose/mtp:hasAPurposeFirst/rdfs:label ?label .
 }
 GROUP BY ?label
 ORDER BY DESC(?count)
 LIMIT 2';
-
 
 $sparqlPlace = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ( COUNT( ?label) as ?count ) ?label
 WHERE {
-  ?s rdf:type mtp:Meetup ;
-        mtp:hasSubject <'.$biography.'> ;
-        mtp:hasType ?type . 
-  FILTER (regex ( str (?type), str ("HM") ) ) . 
-  ?s  mtp:hasPlace ?aPlaceIRI .
-  ?aPlaceIRI mtp:hasEntity ?resource .  
-  OPTIONAL { ?resource rdfs:label ?label } . 
+  ?s mtp:hasSubject <'.$biography.'>  ;
+       mtp:hasType "HM" .  
+  ?s  mtp:hasPlace/mtp:hasEntity ?p . 
+  OPTIONAL {?p rdfs:label ?labelTmp }.
+  BIND ( COALESCE(?labelTmp, 
+      REPLACE(STR(?p),"http://dbpedia.org/resource/","" )) AS ?label)
 }
-GROUP BY ?label
+GROUP BY ?label ?p
 ORDER BY DESC(?count)
 LIMIT 2';
 
-/*
 $sparqlPeople = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-
-SELECT ( COUNT( ?participant) as ?count ) ?label ?link
-WHERE
-{
-    VALUES ?subject { <'.$biography.'> }
-    []  mtp:hasSubject ?subject ;
-        mtp:hasParticipant ?participant .
-    FILTER (?participant != ?subject ) .
-    ?participant rdfs:label ?label .
-    OPTIONAL {
-        FILTER EXISTS {
-            [] mtp:hasSubject ?participant .
-        }
-        BIND (?participant AS ?link)
-    }
-}
-GROUP BY ?label ?link
-ORDER BY DESC(?count) ?participant
-LIMIT 2';
-*/
-
-$sparqlPeople = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
-PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-
 SELECT ( COUNT( ?participant) as ?count ) ?label ?link
 WHERE {
     VALUES ?subject { <'.$biography.'> }
     []  mtp:hasSubject ?subject ;
-        mtp:hasType ?type ;
+        mtp:hasType "HM" ;
         mtp:hasParticipant ?aParticipantIRI .
-  FILTER (regex ( str (?type), str ("HM") ) ) .
   ?aParticipantIRI rdf:type mtp:Participant ;
                    mtp:hasEntity ?participant .
   FILTER ( !isblank(?participant) ) .
-    FILTER (?participant != ?subject ) .
+  FILTER ( ?participant != ?subject ) .
   OPTIONAL { ?participant rdfs:label ?label . }
     OPTIONAL {
         FILTER EXISTS {
-            [] mtp:hasSubject ?participant .
+            [] mtp:hasSubject ?participant ; mtp:hasType "HM" .
         }
         BIND (?participant AS ?link)
     }
@@ -113,18 +63,17 @@ PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX dbo:	<http://dbpedia.org/ontology/>
 PREFIX time: <http://www.w3.org/2006/time#>
-
 SELECT ( COUNT( ?date) as ?count ) ?label
 WHERE {
-?s rdf:type mtp:Meetup ;
+?s 
 mtp:hasSubject <'.$biography.'> ;
-mtp:hasType ?type .
-FILTER (regex ( str (?type), str ("HM") ) ) .
+mtp:hasType "HM" .
 ?s mtp:happensAt ?time_expression_URI .
 ?time_expression_URI rdf:type ?typeTimeExpression .
-FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
+FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) . 
 ?time_expression_URI time:hasBeginning|time:hasEnd ?date .
-BIND(YEAR(?date) AS ?label) 
+# Extract year from the xsd:date
+BIND(YEAR(?date) AS ?label)
 }
 GROUP BY ?label
 ORDER BY DESC(?count)
