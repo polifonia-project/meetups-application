@@ -2,6 +2,7 @@
 header('Content-Type: application/json; charset=utf-8');
 
 //$sparql = "prefix mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#> select distinct ?biography from <http://data.open.ac.uk/context/meetups> where { ?s  mtp:hasSubject ?biography }";
+/*
 $sparql = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#> 
@@ -12,6 +13,18 @@ WHERE {
   ?subject rdfs:label ?subject_label ;
            mtp:hasdob ?dob ;
            mtp:hasdod ?dod
+}';
+*/
+$sparql = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?subject ?subject_label ?dob ?dod
+WHERE {
+    #?meetup  mtp:hasSubject ?subject .
+    ?subject rdfs:label ?subject_label ;
+    mtp:hasdob ?dob ;
+    mtp:hasdod ?dod .
+  FILTER EXISTS {?meetup  mtp:hasSubject ?subject}
 }';
 $sparql_encoded = urlencode($sparql);
 $curl = curl_init();
