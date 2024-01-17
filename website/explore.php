@@ -285,6 +285,7 @@ $searchPanel = True;
                         <div class="tab-pane fade" id="timeline-tab" role="tabpanel" aria-labelledby="settings-tab">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Timeline of meetups</h6>
                                 </div>
                                 <div class="card card-body">
                                     <div id="timeline"></div>
@@ -293,6 +294,7 @@ $searchPanel = True;
 
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Meetup frequency</h6>
                                 </div>
                                 <div class="card card-body">
                                     <div id="chart-wrapper">
@@ -577,8 +579,8 @@ $searchPanel = True;
             data: {
                 labels: ['1850', '1860', '1870', '1880', '1890', '1900'],
                 datasets: [{
-                    label: 'FREQUENCY',
-                    data: [12, 19, 3, 5, 2, 3],
+                    label: 'Waiting for data',
+                    data: [12, 12, 12, 12, 12, 12],
                     borderWidth: 1
                 }]
             },

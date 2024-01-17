@@ -355,6 +355,7 @@
                         <div class="tab-pane fade" id="timeline-tab" role="tabpanel" aria-labelledby="settings-tab">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Timeline of meetups</h6>
                                 </div>
                                 <div class="card card-body">
                                     <div id="timeline"></div>
@@ -363,6 +364,7 @@
 
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Meetup frequency</h6>
                                 </div>
                                 <div class="card card-body">
                                     <div id="chart-wrapper">
