@@ -721,7 +721,7 @@
                     "content": eventText,
                     "title": "Purpose: " + field.purpose
                 };
-                if (field.beginDate != null) {
+                if (field.beginDate !== null && field.beginDate !== "") {
                     myEvents.push(singleEvent);
                 }
 

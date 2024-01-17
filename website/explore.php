@@ -30,6 +30,12 @@ $searchPanel = True;
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js" ></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js" integrity="sha512-42PE0rd+wZ2hNXftlM78BSehIGzezNeQuzihiBCvUEB3CVxHvsShF86wBWwQORNxNINlBPuq7rG4WWhNiTVHFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1"></script>
+
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
 
@@ -65,6 +71,15 @@ $searchPanel = True;
         }
         .leaflet-bottom {
             z-index: 1;
+        }
+    </style>
+
+    <style>
+        #chart-wrapper {
+            display: inline-block;
+            position: relative;
+            width: 100%;
+            height: 200px;
         }
     </style>
 
@@ -520,6 +535,30 @@ $searchPanel = True;
         myEvents = [];
         //********** TIMELINE STUFF END *************
 
+        //**************** DUMMY FREQUENCY CHART *************
+        const ctx = document.getElementById('timeFrequencyChart');
+
+        myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['1850', '1860', '1870', '1880', '1890', '1900'],
+                datasets: [{
+                    label: 'FREQUENCY',
+                    data: [12, 19, 3, 5, 2, 3],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        //**************** END DUMMY FREQUENCY CHART *************
+
         $(document).ready(function() {
 
             mapboxgl.accessToken = 'pk.eyJ1IjoiamFzZW1rIiwiYSI6ImNsaXQwYnNwNDAwOGUzbG8yMThuN3NlMWoifQ.3l8vpe1oFnPQeogCo7QihA';
@@ -616,7 +655,7 @@ $searchPanel = True;
                             "content": eventText,
                             "title": "Purpose: " + field.purpose
                         };
-                        if (field.beginDate != null) {
+                        if (field.beginDate !== null && field.beginDate !== "")  {
                             myEvents.push(singleEvent);
                         }
 
@@ -631,6 +670,74 @@ $searchPanel = True;
                     });
 
                     table.draw();
+
+
+                    // *********** CREATE Frequency chart with loaded data here... ***********
+                    newData = [];
+                    newLabels = []
+                    for (key in dateFrequencyData){
+                        newLabels.push(key);
+                        newData.push(dateFrequencyData[key]);
+                    }
+                    rollingAverageData = calculateRollingAverage(newData, 4);
+                    //console.log("HERE COMES THE DATA");
+                    //console.log(newLabels);
+                    //console.log(newData);
+                    //newData = [1, 2, 3, 5, 9, 15];
+                    myChart.destroy();
+                    console.log(newLabels);
+                    myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            //labels: ['1850', '1860', '1870', '1880', '1890', '1900'],
+                            labels: newLabels,
+                            datasets: [
+                                {
+                                    label: 'Frequency',
+                                    data: newData,
+                                    borderWidth: 1,
+                                    borderColor: 'rgb(14,101,232)',
+                                    tension: 0.5
+                                },
+                                {
+                                    label: 'Rolling Average',
+                                    data: rollingAverageData,
+                                    borderColor: 'rgb(169,7,88)',
+                                    borderWidth: 1,
+                                    tension: 0.6,
+                                    fill: false, // Do not fill under the line
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            },
+                            plugins: {
+                                zoom: {
+                                    pan: {
+                                        enabled: true,
+                                        mode: 'x'
+                                    },
+                                    zoom: {
+                                        wheel: {
+                                            enabled: true
+                                        },
+                                        pinch: {
+                                            enabled: true
+                                        },
+                                        mode: 'x'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    myChart.update();
+                    // *********** END Frequency chart loading ***********
 
 
 
