@@ -574,69 +574,6 @@
         return chartData;
     }
 
-    // Define a function that takes an array of numbers as a parameter
-    function countFrequencies(inputArray) {
-        // Create an empty object to store the frequencies
-        let frequencies = {};
-        // Loop through the array of numbers
-        for (let number of inputArray) {
-            // If the number is already a key in the object, increment its value by one
-            if (frequencies[number]) {
-                frequencies[number]++;
-            }
-            // Otherwise, create a new key with the number and set its value to one
-            else {
-                frequencies[number] = 1;
-            }
-        }
-        // Return the object with the frequencies
-        return frequencies;
-    }
-
-    function generateDateFrequencyData(inputData) {
-        // create array of years
-        var years = [];
-        $.each(inputData, function(i, field){
-            //console.log(field.beginDate);
-            if (field.beginDate != null){
-                if (field.endDate != null) {
-                    beginYear = Number(field.beginDate.substring(0,4));
-                    endYear = Number(field.endDate.substring(0,4));
-                    for (let i = beginYear; i <= endYear; i++) {
-                        years.push(i); // If we have a time range, push all the years in that range into the list of years array
-                    }
-                }
-                else {
-                    year = Number(field.beginDate.substring(0,4));
-                    years.push(year);
-                }
-            }
-        });
-        //console.log(years);
-        frequencies = countFrequencies(years);
-        console.log(frequencies);
-        return frequencies;
-    }
-
-    function calculateRollingAverage(data, points) {
-        let rollingAvg = [];
-
-        for (let i = 0; i < data.length; i++) {
-            if (i < points - 1) {
-                // Not enough data points to calculate average
-                rollingAvg.push(null); // Placeholder for no data
-            } else {
-                let sum = 0;
-                for (let j = 0; j < points; j++) {
-                    sum += data[i - j];
-                }
-                rollingAvg.push(sum / points);
-            }
-        }
-
-        return rollingAvg;
-    }
-
     // *** END OF FUNCTIONS ***
 
     const img = new Image(16, 16);
@@ -716,11 +653,6 @@
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
 
-
-
-
-
-
         var mapTabTriggerEl = document.querySelector('#map-tab')
         mapTab = new bootstrap.Tab(mapTabTriggerEl)
 
@@ -770,7 +702,7 @@
 
 
                 //Add events to timeline data object
-                // If start date and end date are in teh same year, for now, make the end date null so it looks like a point vs range
+                // If start date and end date are in the same year, for now, make the end date null so it looks like a point vs range
                 stopDate =  null;
                 if (field.endDate != null){
                     beginYear = Math.floor(field.beginDate.split("-")[0]);

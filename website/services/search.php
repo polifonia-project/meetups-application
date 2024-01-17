@@ -14,7 +14,7 @@ if (isset($_GET["restricttomap"])) {
     $southBound = "FILTER (?lat > ".$_GET["south"].")";
     $boundsFilter = $eastBound . " " . $westBound . " " . $northBound . " " . $southBound . " ";
 }
-
+/*
 $sparql = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#> 
@@ -59,6 +59,7 @@ WHERE
 }
 GROUP BY ?subject_label ?subject ?meetup ?evidence_text ?purpose ?time_expression_URI ?beginDate ?endDate ?time_evidence_text ?lat ?long
 LIMIT 500';
+*/
 
 //echo($sparql);
 
@@ -145,6 +146,7 @@ curl_setopt_array($curl, array(
         'Content-Type: application/x-www-form-urlencoded'
     ),
 ));
+
 
 $response = curl_exec($curl);
 

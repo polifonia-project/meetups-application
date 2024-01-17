@@ -36,6 +36,9 @@ $searchPanel = True;
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
 
+    <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
+    <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+
     <style>
         #geocoder {
             z-index: 1000;
@@ -240,11 +243,19 @@ $searchPanel = True;
                         <div class="tab-pane fade" id="timeline-tab" role="tabpanel" aria-labelledby="settings-tab">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <!--<h6 class="m-0 font-weight-bold text-primary">Timeline</h6>-->
                                 </div>
                                 <div class="card card-body">
-                                    <canvas id="myChart"></canvas>
-                                    <!--<img src="img/timeline_dummy.png" class="img-fluid">-->
+                                    <div id="timeline"></div>
+                                </div>
+                            </div>
+
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                </div>
+                                <div class="card card-body">
+                                    <div id="chart-wrapper">
+                                        <canvas id="timeFrequencyChart"></canvas>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -487,6 +498,28 @@ $searchPanel = True;
             }
         } );
 
+
+        //********** VISJS TIMELINE STUFF START *************
+
+        // DOM element where the Timeline will be attached
+        let timelineContainer = document.getElementById('timeline');
+        // Create a DataSet (allows two way data-binding)
+        let timelineItems = new vis.DataSet([
+            {id: 1, content: 'item 1', start: '2013-04-20'},
+            {id: 2, content: 'item 2', start: '2013-04-14'},
+            {id: 3, content: 'item 3', start: '2013-04-18'},
+            {id: 4, content: 'item 4', start: '2013-04-16', end: '2013-04-19'},
+            {id: 5, content: 'item 5', start: '2013-04-25'},
+            {id: 6, content: 'item 6', start: '2013-04-27'}
+        ]);
+        // Configuration for the Timeline
+        var timelineOptions = {
+            clickToUse: true
+        };
+
+        myEvents = [];
+        //********** TIMELINE STUFF END *************
+
         $(document).ready(function() {
 
             mapboxgl.accessToken = 'pk.eyJ1IjoiamFzZW1rIiwiYSI6ImNsaXQwYnNwNDAwOGUzbG8yMThuN3NlMWoifQ.3l8vpe1oFnPQeogCo7QihA';
@@ -540,6 +573,9 @@ $searchPanel = True;
                 $('#reloadButtonMessage').html('Loading...');
                 $.getJSON('services/search.php'+params, function(result){
                     //console.log(result);
+
+                    let dateFrequencyData = generateDateFrequencyData(result);
+
                     table.clear();
                     meetupsData = result;
                     resultsCount = 0;
@@ -559,8 +595,46 @@ $searchPanel = True;
                         $("#meetupsTable tbody").append(html);
                         */
                         table.row.add([formatDateString(field.beginDate, field.endDate, field.time_evidence), field.subject_label, field.participants, field.location, field.purpose, buttonHtml])
+
+                        //Add events to timeline data object
+                        // If start date and end date are in the same year, for now, make the end date null so it looks like a point vs range
+                        stopDate =  null;
+                        if (field.endDate != null){
+                            beginYear = Math.floor(field.beginDate.split("-")[0]);
+                            endYear = Math.floor(field.endDate.split("-")[0])
+                            if (endYear - beginYear > 0){
+                                stopDate = field.endDate
+                            }
+                        }
+                        console.log(field);
+                        eventText = field.time_evidence;
+                        eventText += ' - '+field.participants;
+                        singleEvent = {
+                            "id": i,
+                            "start": field.beginDate,
+                            "end": stopDate,
+                            "content": eventText,
+                            "title": "Purpose: " + field.purpose
+                        };
+                        if (field.beginDate != null) {
+                            myEvents.push(singleEvent);
+                        }
+
                     });
+
+                    // Create a Timeline
+                    timelineItems = new vis.DataSet(myEvents);
+                    var timeline = new vis.Timeline(timelineContainer, timelineItems, timelineOptions);
+                    timeline.on('select', function (properties) {
+                        console.log(properties);
+                        populateDetailsPanel(properties.items[0]);
+                    });
+
                     table.draw();
+
+
+
+
 
                     // Remove 'loading spoinner'
                     $('#reloadSpinner').addClass('d-none');

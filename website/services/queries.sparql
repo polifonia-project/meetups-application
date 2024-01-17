@@ -188,65 +188,6 @@ ORDER BY ?meetup
 
 # ==============================================================
 
-# MEETUP SEARCH - this is the old search, not yet updated/working for the new KG
-
-# Typical filter substitution currently looks like:
-# FILTER (regex(str(?purpose), "<search_term>"))
-# FILTER (regex(str(?subject), "<search_term>"))
-# FILTER (regex(str(?participant), "<search_term>"))
-# FILTER (regex(str(?location_label), "<search_term>"))
-
-# bounds filter...
-# FILTER (?long > -5.5) . FILTER (?long < 6.2) . FILTER (?lat > 45.78) . FILTER (?lat < 53.25)
-
-PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
-PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX geo: <https://www.w3.org/2003/01/geo/wgs84_pos>
-PREFIX time:   <http://www.w3.org/2006/time#>
-
-SELECT ?subject_label ?subject ?meetup ?evidence_text ?purpose
-(GROUP_CONCAT( DISTINCT ?participant; separator=", " ) as ?participants_URI )
-(GROUP_CONCAT( DISTINCT ?participant_label; separator=", " ) as ?participants_label )
-(GROUP_CONCAT( DISTINCT ?location_uri; separator=", " ) as ?locations_URI )
-(GROUP_CONCAT( DISTINCT ?location_label; separator=", " ) as ?locations_label )
-?time_expression_URI ?beginDate ?endDate ?time_evidence_text ?lat ?long
-WHERE
-{
-    ?meetup rdf:type mtp:Meetup ;
-        mtp:hasSubject ?subject ;
-        mtp:hasParticipant ?participant ;
-        mtp:hasAPurpose ?purpose_uri ;
-        mtp:hasEvidenceText ?evidence_text ;
-        mtp:hasPlace ?location_uri ;
-        mtp:happensAt ?time_expression_URI .
-    ?subject rdfs:label ?subject_label .
-    '.$purposeFilter.'
-    '.$subjectFilter.'
-    '.$participantFilter.'
-    '.$placeFilter.'
-    '.$boundsFilter.'
-    FILTER  (!regex (str(?participant), str(?subject) ) ) .
-    ?participant rdfs:label ?participant_label .
-    ?location_uri rdfs:label ?location_label ;
-        geo:lat ?lat ;
-        geo:long ?long .
-    ?purpose_uri rdfs:label ?purpose .
-    ?time_expression_URI 	mtp:hasEvidenceText  ?hasEvidenceTextTimeExpression ;
-        rdf:type ?typeTimeExpression .
-    FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
-    OPTIONAL {
-        ?time_expression_URI	time:hasBeginning ?beginDate;
-            time:hasEnd ?endDate ;
-            mtp:hasEvidenceText ?time_evidence_text .
-    } .
-}
-GROUP BY ?subject_label ?subject ?meetup ?evidence_text ?purpose ?time_expression_URI ?beginDate ?endDate ?time_evidence_text ?lat ?long
-LIMIT 500
-
-
-# ==============================================================
-
 # MEETUP SEARCH - new partial search, working for the new KG
 # TODO: include purpose
 
@@ -311,7 +252,7 @@ ORDER BY ?meetup
 LIMIT 500
 
 
-# SEARCH EXAMPLE
+# SEARCH EXAMPLE, using full text search instead of simple regex
 PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
