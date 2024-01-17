@@ -96,3 +96,8 @@ function calculateRollingAverage(data, points) {
 
     return rollingAvg;
 }
+
+function getViewOnMapButton(data) {
+    buttonHtml = '<button type="button" class="btn btn-sm btn-primary" onclick="zoomToPoint('+data.lat+','+data.long+');"><i class="fas fa-map-marked-alt"></i> View on map</button> ';
+    return buttonHtml;
+}

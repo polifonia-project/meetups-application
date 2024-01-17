@@ -188,35 +188,23 @@ $searchPanel = True;
                     </p>
                     <nav>
                         <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                            <button class="nav-link active" id="nav-home-tab" data-toggle="tab" data-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">
-                                Map
+                            <button class="nav-link active" id="nav-profile-tab" data-toggle="tab" data-target="#nav-profile"
+                                    type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Meetups (data view)
                             </button>
-                            <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#nav-profile"
-                                    type="button" role="tab" aria-controls="nav-profile" aria-selected="false">
-                                Table
+                            <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#reading-tab"
+                                    type="button" role="tab" aria-controls="reading-tab" aria-selected="false">Meetups (reading view)
+                            </button>
+                            <button class="nav-link" id="nav-home-tab" data-toggle="tab" data-target="#nav-home"
+                                    type="button" role="tab" aria-controls="nav-home" aria-selected="true">Map
                             </button>
                             <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#timeline-tab"
-                                    type="button" role="tab" aria-controls="timeline-tab" aria-selected="false">
-                                Timeline
+                                    type="button" role="tab" aria-controls="timeline-tab" aria-selected="false">Timeline
                             </button>
                         </div>
                     </nav>
                     <div class="tab-content" id="nav-tabContent">
-                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Meetups</h6>
-                                </div>
-                                <div class="card-body">
 
-                                    <pre id="result"></pre>
-                                    <div id="map" style="width: 100%; height: 600px;">
-                                        <div id="geocoder"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                        <div class="tab-pane fade show active" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-primary">Meetups</h6>
@@ -254,6 +242,45 @@ $searchPanel = True;
                                 </div>
                             </div>
                         </div>
+
+                        <div class="tab-pane fade" id="reading-tab" role="tabpanel" aria-labelledby="profile2-tab">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <!--<h6 class="m-0 font-weight-bold text-primary">Meetups (reading view)</h6>-->
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="readingTable">
+                                            <thead>
+                                            <tr>
+                                                <th>Extract</th>
+                                                <th>Details</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="tab-pane fade" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Meetups</h6>
+                                </div>
+                                <div class="card-body">
+
+                                    <pre id="result"></pre>
+                                    <div id="map" style="width: 100%; height: 600px;">
+                                        <div id="geocoder"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
 
                         <div class="tab-pane fade" id="timeline-tab" role="tabpanel" aria-labelledby="settings-tab">
                             <div class="card shadow mb-4">
@@ -513,6 +540,13 @@ $searchPanel = True;
             }
         } );
 
+        var tableReading = $('#readingTable').DataTable( {
+            "language": {
+                "search": "Filter:"
+            },
+
+        } );
+
 
         //********** VISJS TIMELINE STUFF START *************
 
@@ -635,6 +669,16 @@ $searchPanel = True;
                         */
                         table.row.add([formatDateString(field.beginDate, field.endDate, field.time_evidence), field.subject_label, field.participants, field.location, field.purpose, buttonHtml])
 
+                        // READING VIEW
+                        readingFieldsHTML = '';
+                        readingFieldsHTML += '<strong>When: </strong>'+formatDateString(field.beginDate, field.endDate, field.time_evidence);
+                        readingFieldsHTML += '<br /><strong>Where: </strong>'+field.location;
+                        readingFieldsHTML += '<br /><strong>Participants: </strong>'+field.participants;
+                        readingFieldsHTML += '<br /><strong>Purpose: </strong>'+field.purpose;
+
+                        evidenceHTML = '<p>' + field.evidence_text + '</p>' + getViewOnMapButton(field);
+                        tableReading.row.add([evidenceHTML, readingFieldsHTML])
+
                         //Add events to timeline data object
                         // If start date and end date are in the same year, for now, make the end date null so it looks like a point vs range
                         stopDate =  null;
@@ -670,6 +714,7 @@ $searchPanel = True;
                     });
 
                     table.draw();
+                    tableReading.draw();
 
 
                     // *********** CREATE Frequency chart with loaded data here... ***********

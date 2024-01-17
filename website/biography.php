@@ -474,11 +474,6 @@
         }
     }
 
-    function getViewOnMapButton(data) {
-        buttonHtml = '<button type="button" class="btn btn-sm btn-primary" onclick="zoomToPoint('+data.lat+','+data.long+');"><i class="fas fa-map-marked-alt"></i> View on map</button> ';
-        return buttonHtml;
-    }
-
     function populateModal(index) {
         meetupDetails = meetupsData[index];
         //console.log(meetupDetails);
