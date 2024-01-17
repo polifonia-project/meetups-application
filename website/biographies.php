@@ -164,7 +164,13 @@
         $.getJSON("services/biographies.php", function(result){
             table.clear() //clear content
             $.each(result, function(i, field){
-                subjectHtml = '<a href="biography.php?id=' + field.subject + '">' + field.subject_label + '</a>';
+                if (field.subject_label !== null && field.subject_label !== "") {
+                    subject_label = field.subject_label;
+                }
+                else {
+                    subject_label = field.subject.split('/').pop();
+                }
+                subjectHtml = '<a href="biography.php?id=' + field.subject + '">' + subject_label + '</a>';
                 table.row.add([subjectHtml, field.dob, field.dod])
             });
             table.draw() //update display
