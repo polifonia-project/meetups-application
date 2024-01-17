@@ -817,6 +817,13 @@ $searchPanel = True;
 
                 });
             });
+
+            $('.nav-tabs').on('shown.bs.tab', function (event) {
+                setTimeout(function () {
+                    map.invalidateSize();
+                },1);
+            });
+
         });
 
 
