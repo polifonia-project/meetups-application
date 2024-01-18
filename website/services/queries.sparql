@@ -275,3 +275,63 @@ WHERE
 }
 ORDER BY DESC(?score)
 LIMIT 500
+
+
+# ==============================================================
+
+# MEETUP SEARCH - new search working using FullTextSearch 
+# TODO: include dates and purpose
+
+PREFIX geo: <https://www.w3.org/2003/01/geo/wgs84_pos>
+PREFIX bds: <http://www.bigdata.com/rdf/search#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>  
+PREFIX time: <http://www.w3.org/2006/time#>
+
+SELECT ?meetup ?evidence_text 
+(GROUP_CONCAT( DISTINCT ?place_uri; separator=", " ) as ?locations_URI )
+(GROUP_CONCAT( DISTINCT ?location_label; separator=", " ) as ?locations_label )
+(GROUP_CONCAT( DISTINCT ?lat ; separator=", " ) as ?lats )
+(GROUP_CONCAT( DISTINCT ?long ; separator=", " ) as ?longs )
+(GROUP_CONCAT( DISTINCT ?participant_uri; separator=", " ) as ?participants_URI )
+(GROUP_CONCAT( DISTINCT ?participant_label; separator=", " ) as ?participants_label ) 
+WHERE{
+  {
+    # Search place
+    ?meetup mtp:hasPlace/mtp:hasEntity/rdfs:label ?lit1 .
+    ?lit1 bds:search "London" .
+    ?lit1 bds:matchAllTerms "true" .
+    
+    # Search participant
+    ?meetup mtp:hasParticipant/mtp:hasEntity/rdfs:label ?lit2 .
+    ?lit2 bds:search "Edward" .
+    ?lit2 bds:matchAllTerms "true" .
+    } 
+  # Complementary information
+  { 
+    ?meetup mtp:hasType "HM" ; 
+            mtp:hasEvidenceText ?evidence_text ;
+            mtp:hasSubject ?subject ;
+            mtp:hasParticipant/mtp:hasEntity ?participant_uri ;
+            mtp:hasPlace/mtp:hasEntity ?place_uri ;
+            mtp:hasPurpose/mtp:hasAPurposeFirst ?purpose_uri .
+    ?purpose_uri rdfs:label ?purpose_label .
+    
+    # location
+    OPTIONAL { ?place_uri rdfs:label ?place_tempLabel . } 
+    BIND ( COALESCE(?place_tempLabel, REPLACE(STR(?place_uri),"http://dbpedia.org/resource/","" )) AS ?location_label)
+    OPTIONAL { ?place_uri geo:lat ?lat ; geo:long ?long . } 
+    # Search by coordinates, undocument when needed
+	# FILTER (?long > -5.5) . FILTER (?long < 6.2) . FILTER (?lat > 45.78) . FILTER (?lat < 53.25) .
+    
+    # participant
+    ?participant_uri rdf:type mtp:Participant .
+    OPTIONAL { ?participant_uri rdfs:label ?part_tempLabel . }
+    FILTER  (!regex (str(?part_tempLabel), str(?subject) ) || isBlank(?participant_uri) ) .
+    OPTIONAL { ?participant_uri mtp:hasTextEvidence ?mentionPerson . } .
+    BIND ( COALESCE(?part_tempLabel, ?mentionPerson) AS ?participant_label) .
+  }
+}
+GROUP BY ?meetup ?evidence_text ?purpose_Label
+LIMIT 20
