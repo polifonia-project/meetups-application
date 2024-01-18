@@ -111,7 +111,7 @@ $searchPanel = True;
                     <h1 class="h3 mb-2 text-gray-800">Explore</h1>
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Filters</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Search terms</h6>
                         </div>
                         <div class="card-body">
                             <form id="searchForm">
@@ -147,20 +147,33 @@ $searchPanel = True;
                                 </div>
 
                                 <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label for="from_year"> From:</label> <em>(year)</em>
+                                            <input type="number" class="form-control" id="from_year" placeholder="" min="1000" max="2000">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label for="until_year"> Until:</label> <em>(year)</em>
+                                            <input type="number" class="form-control" id="until_year" placeholder="" min="1000" max="2000">
+                                        </div>
+                                    </div>
+
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <!--<label for="place"></i> Restrict to map view</label>-->
                                             <div class="text-sm pl-2">
-                                                <em>Restrict the search query to only meetups that are located within the current visible map area</em>
+                                                <em>Restrict the search query to meetups that are located within the current visible map area</em>
                                             </div>
                                             <div class="custom-control custom-switch ml-1">
                                                 <input type="checkbox" class="custom-control-input" id="restricttomap">
-                                                <label class="custom-control-label" for="restricttomap">Restrict to map view</label>
+                                                <label class="custom-control-label" for="restricttomap">Restrict to map</label>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <div class="">
                                             Results: <span id="resultsCount">0</span>
                                             <a id="resultsCountWarning" href="#" class="btn btn-warning btn-circle btn-sm d-none" data-toggle="tooltip" data-placement="top" title="Max search limit reached">
@@ -305,27 +318,7 @@ $searchPanel = True;
                         </div>
                     </div>
 
-                    <!--
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">
-                                        Timeline
-                                        <button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#collapseTimeline" aria-expanded="false" aria-controls="collapseTimeline">
-                                            <i class="fas fa-arrows-alt-v"></i>
-                                        </button>
-                                    </h6>
-                                </div>
-                                <div class="collapse" id="collapseTimeline">
-                                    <div class="card card-body">
-                                        <img src="img/timeline_dummy.png" class="img-fluid">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    -->
+                    <!-- ############################### -->
 
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
