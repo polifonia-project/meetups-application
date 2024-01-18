@@ -280,7 +280,7 @@ LIMIT 500
 # ==============================================================
 
 # MEETUP SEARCH - new search working using FullTextSearch 
-# TODO: include dates and purpose
+# TODO: include dates and purpose search
 
 PREFIX geo: <https://www.w3.org/2003/01/geo/wgs84_pos>
 PREFIX bds: <http://www.bigdata.com/rdf/search#>
@@ -289,13 +289,17 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>  
 PREFIX time: <http://www.w3.org/2006/time#>
 
-SELECT ?meetup ?evidence_text 
+SELECT ?meetup ?evidence_text ?purpose_Label
 (GROUP_CONCAT( DISTINCT ?place_uri; separator=", " ) as ?locations_URI )
 (GROUP_CONCAT( DISTINCT ?location_label; separator=", " ) as ?locations_label )
 (GROUP_CONCAT( DISTINCT ?lat ; separator=", " ) as ?lats )
 (GROUP_CONCAT( DISTINCT ?long ; separator=", " ) as ?longs )
 (GROUP_CONCAT( DISTINCT ?participant_uri; separator=", " ) as ?participants_URI )
 (GROUP_CONCAT( DISTINCT ?participant_label; separator=", " ) as ?participants_label ) 
+(GROUP_CONCAT( DISTINCT ?time_expression_URI ; separator=", " ) as ?time_expression_URIs )
+(GROUP_CONCAT( DISTINCT ?beginDate ; separator=", " ) as ?beginDates )
+(GROUP_CONCAT( DISTINCT ?endDate ; separator=", " ) as ?endDates )
+(GROUP_CONCAT( DISTINCT ?time_evidence_text ; separator=", " ) as ?time_evidence_texts )
 WHERE{
   {
     # Search place
@@ -315,8 +319,9 @@ WHERE{
             mtp:hasSubject ?subject ;
             mtp:hasParticipant/mtp:hasEntity ?participant_uri ;
             mtp:hasPlace/mtp:hasEntity ?place_uri ;
-            mtp:hasPurpose/mtp:hasAPurposeFirst ?purpose_uri .
-    ?purpose_uri rdfs:label ?purpose_label .
+            mtp:hasPurpose/mtp:hasAPurposeFirst ?purpose_uri ;
+            mtp:happensAt ?time_expression_URI .
+    # search by purpose
     
     # location
     OPTIONAL { ?place_uri rdfs:label ?place_tempLabel . } 
@@ -331,6 +336,19 @@ WHERE{
     FILTER  (!regex (str(?part_tempLabel), str(?subject) ) || isBlank(?participant_uri) ) .
     OPTIONAL { ?participant_uri mtp:hasTextEvidence ?mentionPerson . } .
     BIND ( COALESCE(?part_tempLabel, ?mentionPerson) AS ?participant_label) .
+    
+    # purpose
+    OPTIONAL { ?purpose_uri rdfs:label ?purpose_tempLabel . }
+    BIND ( COALESCE(?purpose_tempLabel, "") AS ?purpose_Label )
+    
+    # time
+  	?time_expression_URI rdf:type ?typeTimeExpression .
+    FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
+    OPTIONAL {
+        ?time_expression_URI time:hasBeginning ?beginDate;
+            time:hasEnd ?endDate ;
+            mtp:hasEvidenceText ?time_evidence_text .
+    } .
   }
 }
 GROUP BY ?meetup ?evidence_text ?purpose_Label
