@@ -324,7 +324,7 @@ WHERE{
     # search by purpose
     # If the search by purpose is active, it is easier to search for the type of purpose using the URI
     # Document the following when search by purpose is not active
-    FILTER (?purpose_uri = URI(<http://w3id.org/polifonia/pilot/meetups/musicmaking>))
+    FILTER (?purpose_uri = <http://w3id.org/polifonia/pilot/meetups/musicmaking>)
     # list of purposes
 	# <http://w3id.org/polifonia/pilot/meetups/musicmaking>
     # <http://w3id.org/polifonia/pilot/meetups/personallife>
