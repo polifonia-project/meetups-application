@@ -87,6 +87,7 @@ WHERE{
     BIND ( COALESCE(?place_tempLabel, REPLACE(STR(?place_uri),"http://dbpedia.org/resource/","" )) AS ?location_label)
     OPTIONAL { ?place_uri geo:lat ?lat ; geo:long ?long . } 
     # Search by coordinates
+    '.$boundsFilter.'
     
     # participant
     ?participant_uri rdf:type mtp:Participant .
