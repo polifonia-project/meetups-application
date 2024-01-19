@@ -94,6 +94,12 @@ WHERE{
             time:hasEnd ?endDate ;
             mtp:hasEvidenceText ?time_evidence_text .
     } .
+    # SEARCH Extract year from the xsd:date
+    # Use the following 4 lines for the date search, undocument when needed
+    # BIND(YEAR(?beginDate) AS ?b_year)
+    # FILTER ( ?b_year>=1890)
+    # BIND(YEAR(?endDate) AS ?e_year)
+    # FILTER ( ?e_year <=1900)
   }
 }
 GROUP BY ?subject ?subject_label ?meetup ?evidence_text ?purpose_Label

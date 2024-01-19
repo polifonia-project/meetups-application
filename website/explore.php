@@ -548,6 +548,7 @@ $searchPanel = True;
         // DOM element where the Timeline will be attached
         let timelineContainer = document.getElementById('timeline');
         // Create a DataSet (allows two way data-binding)
+        /*
         let timelineItems = new vis.DataSet([
             {id: 1, content: 'item 1', start: '2013-04-20'},
             {id: 2, content: 'item 2', start: '2013-04-14'},
@@ -556,11 +557,12 @@ $searchPanel = True;
             {id: 5, content: 'item 5', start: '2013-04-25'},
             {id: 6, content: 'item 6', start: '2013-04-27'}
         ]);
+        */
+        var timelineItems = new vis.DataSet();
         // Configuration for the Timeline
         var timelineOptions = {
             clickToUse: true
         };
-
         myEvents = [];
         //********** TIMELINE STUFF END *************
 
@@ -649,6 +651,7 @@ $searchPanel = True;
                     resultsCount = 0;
                     $('#resultsCount').text(resultsCount);
                     $("#resultsCountWarning").addClass("d-none");
+                    myEvents = [];
                     $.each(result, function(i, field){
                         resultsCount ++;
                         buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateDetailsPanel('+i+');"><i class="fas fa-search-plus"></i> View details</button> ';
@@ -701,7 +704,10 @@ $searchPanel = True;
                     });
 
                     // Create a Timeline
-                    timelineItems = new vis.DataSet(myEvents);
+                    //timelineItems = new vis.DataSet(myEvents);
+                    timelineItems.clear();
+                    timelineItems.add(myEvents);
+                    $(timelineContainer).empty();
                     var timeline = new vis.Timeline(timelineContainer, timelineItems, timelineOptions);
                     timeline.on('select', function (properties) {
                         console.log(properties);
