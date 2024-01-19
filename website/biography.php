@@ -455,7 +455,9 @@
                         "coordinates": [inputData[i].long[placeId], inputData[i].lat[placeId]]
                     }
                 };
-                output.features.push(feature);
+                if (!(inputData[i].lat[placeId] === undefined || inputData[i].long[placeId] === undefined)){
+                    output.features.push(feature);
+                }
             }
 
         }
@@ -804,7 +806,7 @@
             // *********** END Frequency chart loading ***********
 
 
-            $geoJsonData = createGeoJson(result);
+            geoJsonData = createGeoJson(result);
             //chartData = getChartDataFromGeoJSON($geoJsonData);
             /*
             var tempData = {
@@ -819,7 +821,7 @@
             //myChart.config.data = tempData;
             //myChart.update();
             meetupsData = result;
-            var pointsLayer = L.geoJSON($geoJsonData, {
+            var pointsLayer = L.geoJSON(geoJsonData, {
                 onEachFeature: onEachFeature
             });
             var clusterLayer = L.markerClusterGroup();

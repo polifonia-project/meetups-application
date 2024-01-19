@@ -425,11 +425,14 @@ $searchPanel = True;
                             "coordinates": [inputData[i].long[placeId], inputData[i].lat[placeId]]
                         }
                     };
-                    output.features.push(feature);
+                    if (!(inputData[i].lat[placeId] === undefined || inputData[i].long[placeId] === undefined)){
+                        output.features.push(feature);
+                    }
+
                 }
 
             }
-            console.log(output);
+            //console.log(output);
             return output;
         }
 
@@ -631,7 +634,7 @@ $searchPanel = True;
 
                 //check for map view restrict filter
                 if($("#restricttomap").is(':checked')) {
-                    console.log(map.getBounds().toBBoxString());
+                    //console.log(map.getBounds().toBBoxString());
                     east = map.getBounds().getEast();
                     west = map.getBounds().getWest();
                     north = map.getBounds().getNorth();
@@ -689,7 +692,7 @@ $searchPanel = True;
                                 stopDate = field.endDate
                             }
                         }
-                        console.log(field);
+                        //console.log(field);
                         eventText = field.time_evidence;
                         eventText += ' - '+field.participants;
                         singleEvent = {
@@ -712,7 +715,7 @@ $searchPanel = True;
                     $(timelineContainer).empty();
                     var timeline = new vis.Timeline(timelineContainer, timelineItems, timelineOptions);
                     timeline.on('select', function (properties) {
-                        console.log(properties);
+                        //console.log(properties);
                         populateDetailsPanel(properties.items[0]);
                     });
 
@@ -728,12 +731,7 @@ $searchPanel = True;
                         newData.push(dateFrequencyData[key]);
                     }
                     rollingAverageData = calculateRollingAverage(newData, 4);
-                    //console.log("HERE COMES THE DATA");
-                    //console.log(newLabels);
-                    //console.log(newData);
-                    //newData = [1, 2, 3, 5, 9, 15];
                     myChart.destroy();
-                    console.log(newLabels);
                     myChart = new Chart(ctx, {
                         type: 'line',
                         data: {
@@ -791,7 +789,7 @@ $searchPanel = True;
 
 
 
-                    // Remove 'loading spoinner'
+                    // Remove 'loading spinner'
                     $('#reloadSpinner').addClass('d-none');
                     $('#reloadButtonMessage').html('<i class="fas fa-sync"></i> Reload');
 
@@ -809,9 +807,9 @@ $searchPanel = True;
                     */
                     pointsLayer.clearLayers();
                     clusterLayer.clearLayers();
-                    $geoJsonData = createGeoJson(result);
+                    geoJsonData = createGeoJson(result);
                     meetupsData = result;
-                    pointsLayer = L.geoJSON($geoJsonData, {
+                    pointsLayer = L.geoJSON(geoJsonData, {
                         onEachFeature: onEachFeature
                     });
                     clusterLayer.addLayer(pointsLayer);

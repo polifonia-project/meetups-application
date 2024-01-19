@@ -74,7 +74,7 @@ function generateDateFrequencyData(inputData) {
     });
     //console.log(years);
     frequencies = countFrequencies(years);
-    console.log(frequencies);
+    //console.log(frequencies);
     return frequencies;
 }
 
