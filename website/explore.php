@@ -455,9 +455,15 @@ $searchPanel = True;
         function onEachFeature(feature, layer) {
             // does this feature have a property named popupContent?
             if (feature.properties) {
+                if (feature.properties.subject_label !== null && feature.properties.subject_label !== "") {
+                    subject_label = feature.properties.subject_label;
+                }
+                else {
+                    subject_label = feature.properties.subject.split('/').pop();
+                }
                 //console.log(feature.properties);
                 html = "";
-                html += "<p><strong>Subject: </strong>" + feature.properties.subject_label + "</p>";
+                html += "<p><strong>Subject: </strong>" + subject_label + "</p>";
                 html += "<p><strong>Participants: </strong>" + feature.properties.participants + "</p>";
                 html += "<p><strong>When: </strong>" + formatDateString(feature.properties.beginDate, feature.properties.endDate, feature.properties.time_evidence) + "</p>";
                 html += "<p><strong>Purpose: </strong>" + feature.properties.purpose + "</p>";
@@ -487,11 +493,17 @@ $searchPanel = True;
 
             subjectButtonHtml = '<a class="btn btn-primary btn-sm" href="biography.php?id='+meetupDetails.subject+'" role="button"><i class="fas fa-address-card"></i> View biography</a> ';
 
+            if (meetupDetails.subject_label !== null && meetupDetails.subject_label !== "") {
+                subject_label = meetupDetails.subject_label;
+            }
+            else {
+                subject_label = meetupDetails.subject.split('/').pop();
+            }
 
             html = '';
+            html += '<p><strong>Subject</strong>: ' + subject_label;
             html += '<p><strong>When</strong>: ' + formatDateString(meetupDetails.beginDate, meetupDetails.endDate, meetupDetails.time_evidence) + '</p>';
             html += '<p><strong>Where</strong>: ' + meetupDetails.location;
-            html += '<p><strong>Subject</strong>: ' + meetupDetails.subject_label;
             html += '<p><strong>Participants</strong>: ' + meetupDetails.participants + '</p>';
             html += '<p><strong>Purpose</strong>: ' + meetupDetails.purpose + '</p>';
             html += '<p><strong>Evidence</strong>: ' + meetupDetails.evidence_text + '</p>';
@@ -670,10 +682,20 @@ $searchPanel = True;
                         html += '</tr>';
                         $("#meetupsTable tbody").append(html);
                         */
-                        table.row.add([formatDateString(field.beginDate, field.endDate, field.time_evidence), field.subject_label, field.participants, field.location, field.purpose, buttonHtml])
+
+                        if (field.subject_label !== null && field.subject_label !== "") {
+                            subject_label = field.subject_label;
+                        }
+                        else {
+                            subject_label = field.subject.split('/').pop();
+                        }
+
+                        table.row.add([formatDateString(field.beginDate, field.endDate, field.time_evidence), subject_label, field.participants, field.location, field.purpose, buttonHtml])
+
 
                         // READING VIEW
                         readingFieldsHTML = '';
+                        readingFieldsHTML += '<br /><strong>Subject: </strong>'+subject_label;
                         readingFieldsHTML += '<strong>When: </strong>'+formatDateString(field.beginDate, field.endDate, field.time_evidence);
                         readingFieldsHTML += '<br /><strong>Where: </strong>'+field.location;
                         readingFieldsHTML += '<br /><strong>Participants: </strong>'+field.participants;
@@ -692,9 +714,9 @@ $searchPanel = True;
                                 stopDate = field.endDate
                             }
                         }
-                        //console.log(field);
                         eventText = field.time_evidence;
-                        eventText += ' - '+field.participants;
+                        eventText += '-'+subject_label+' ('
+                        eventText += field.participants+')';
                         singleEvent = {
                             "id": i,
                             "start": field.beginDate,
@@ -784,10 +806,6 @@ $searchPanel = True;
                     });
                     myChart.update();
                     // *********** END Frequency chart loading ***********
-
-
-
-
 
                     // Remove 'loading spinner'
                     $('#reloadSpinner').addClass('d-none');
