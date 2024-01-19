@@ -2,7 +2,7 @@
 header('Content-Type: application/json; charset=utf-8');
 
 $purposeFilter = (isset($_GET["purpose"])?"FILTER (regex(str(?purpose), \"".$_GET["purpose"]."\"))":"");
-$subjectFilter = (isset($_GET["subject"])?"FILTER (regex(str(?subject), \"".$_GET["subject"]."\"))":"");
+//$subjectFilter = (isset($_GET["subject"])?"FILTER (regex(str(?subject), \"".$_GET["subject"]."\"))":"");
 //$participantFilter = (isset($_GET["participant"])?"FILTER (regex(str(?participant), \"".$_GET["participant"]."\"))":"");
 //$placeFilter = (isset($_GET["place"])?"FILTER (regex(str(?location_label), \"".$_GET["place"]."\"))":"");
 
@@ -28,6 +28,20 @@ if (isset($_GET["subject"]) && !empty($_GET["subject"])) {
     ?meetup mtp:hasSubject/rdfs:label ?lit3 .
     ?lit3 bds:search "'.$_GET["subject"].'" .
     ?lit3 bds:matchAllTerms "true" .';
+}
+
+$fromFilter = "";
+if (isset($_GET["from_year"]) && !empty($_GET["from_year"])) {
+    $fromFilter = '
+    BIND(YEAR(?beginDate) AS ?b_year)
+    FILTER ( ?b_year>='.$_GET["from_year"].')';
+}
+
+$untilFilter = "";
+if (isset($_GET["until_year"]) && !empty($_GET["until_year"])) {
+    $untilFilter = '
+    BIND(YEAR(?endDate) AS ?e_year)
+    FILTER ( ?e_year <='.$_GET["until_year"].')';
 }
 
 
@@ -109,11 +123,11 @@ WHERE{
             mtp:hasEvidenceText ?time_evidence_text .
     } .
     # SEARCH Extract year from the xsd:date
-    # Use the following 4 lines for the date search, undocument when needed
-    # BIND(YEAR(?beginDate) AS ?b_year)
-    # FILTER ( ?b_year>=1890)
-    # BIND(YEAR(?endDate) AS ?e_year)
-    # FILTER ( ?e_year <=1900)
+    
+    '.$fromFilter.'
+    
+    '.$untilFilter.'
+    
   }
 }
 GROUP BY ?subject ?subject_label ?meetup ?evidence_text ?purpose_Label

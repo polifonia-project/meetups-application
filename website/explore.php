@@ -625,7 +625,9 @@ $searchPanel = True;
                 let participant = $("#participant").val();
                 let place = $("#place").val();
                 let purpose = $("#purpose").val();
-                params = '?subject='+subject+'&participant='+participant+'&place='+place+'&purpose='+purpose;
+                let from_year = $("#from_year").val();
+                let until_year = $("#until_year").val();
+                params = '?subject='+subject+'&participant='+participant+'&place='+place+'&purpose='+purpose+'&from_year='+from_year+'&until_year='+until_year;
 
                 //check for map view restrict filter
                 if($("#restricttomap").is(':checked')) {
