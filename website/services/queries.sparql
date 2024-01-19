@@ -289,7 +289,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>  
 PREFIX time: <http://www.w3.org/2006/time#>
 
-SELECT ?meetup ?evidence_text ?purpose_Label ?purpose_uri
+SELECT ?meetup ?evidence_text ?purpose_Label
 (GROUP_CONCAT( DISTINCT ?place_uri; separator=", " ) as ?locations_URI )
 (GROUP_CONCAT( DISTINCT ?location_label; separator=", " ) as ?locations_label )
 (GROUP_CONCAT( DISTINCT ?lat ; separator=", " ) as ?lats )
@@ -368,5 +368,5 @@ WHERE{
     # FILTER ( ?e_year <=1900)
   }
 }
-GROUP BY ?meetup ?evidence_text ?purpose_Label ?purpose_uri
+GROUP BY ?meetup ?evidence_text ?purpose_Label
 LIMIT 20
