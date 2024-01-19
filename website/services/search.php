@@ -22,6 +22,15 @@ if (isset($_GET["participant"]) && !empty($_GET["participant"])) {
     ?lit2 bds:matchAllTerms "true" .';
 }
 
+$subjectFilter = "";
+if (isset($_GET["subject"]) && !empty($_GET["subject"])) {
+    $subjectFilter = '
+    ?meetup mtp:hasSubject/rdfs:label ?lit3 .
+    ?lit3 bds:search "'.$_GET["subject"].'" .
+    ?lit3 bds:matchAllTerms "true" .';
+}
+
+
 $boundsFilter = "";
 if (isset($_GET["restricttomap"])) {
     $westBound = "FILTER (?long > ".$_GET["west"].")";
@@ -56,6 +65,10 @@ WHERE{
     
     # Search participant
     '.$participantFilter.'
+    
+    # Search subject
+    '.$subjectFilter.'
+    
     } 
   # Complementary information
   { 
