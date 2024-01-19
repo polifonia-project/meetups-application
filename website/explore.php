@@ -133,7 +133,16 @@ $searchPanel = True;
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="purpose"> Purpose:</label>
-                                            <input type="text" class="form-control" id="purpose" placeholder="temporarily disabled" disabled>
+                                            <select class="form-control" id="purpose">
+                                                <option value="">Any</option>
+                                                <option value="http://w3id.org/polifonia/pilot/meetups/musicmaking">Music making</option>
+                                                <option value="http://w3id.org/polifonia/pilot/meetups/personallife">Personal life</option>
+                                                <option value="http://w3id.org/polifonia/pilot/meetups/education">Education</option>
+                                                <option value="http://w3id.org/polifonia/pilot/meetups/publiccelebration">Public celebration</option>
+                                                <option value="http://w3id.org/polifonia/pilot/meetups/businessMeeting">Business meeting</option>
+                                                <option value="http://w3id.org/polifonia/pilot/meetups/coincidence">Coincidence</option>
+                                            </select>
+                                            <!-- <input type="text" class="form-control" id="purpose" placeholder="temporarily disabled" disabled> -->
                                         </div>
                                     </div>
 

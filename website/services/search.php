@@ -1,10 +1,14 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
-$purposeFilter = (isset($_GET["purpose"])?"FILTER (regex(str(?purpose), \"".$_GET["purpose"]."\"))":"");
+//$purposeFilter = (isset($_GET["purpose"])?"FILTER (regex(str(?purpose), \"".$_GET["purpose"]."\"))":"");
 //$subjectFilter = (isset($_GET["subject"])?"FILTER (regex(str(?subject), \"".$_GET["subject"]."\"))":"");
 //$participantFilter = (isset($_GET["participant"])?"FILTER (regex(str(?participant), \"".$_GET["participant"]."\"))":"");
 //$placeFilter = (isset($_GET["place"])?"FILTER (regex(str(?location_label), \"".$_GET["place"]."\"))":"");
+$purposeFilter = "";
+if (isset($_GET["purpose"]) && !empty($_GET["purpose"])) {
+    $purposeFilter = 'FILTER (?purpose_uri = <'.$_GET["purpose"].'>)';
+}
 
 $placeFilter = "";
 if (isset($_GET["place"]) && !empty($_GET["place"])) {
@@ -94,7 +98,9 @@ WHERE{
             mtp:hasPurpose/mtp:hasAPurposeFirst ?purpose_uri ;
             mtp:happensAt ?time_expression_URI .
     OPTIONAL { ?subject rdfs:label ?subject_label . } .
+    
     # search by purpose
+    '.$purposeFilter.'
     
     # location
     OPTIONAL { ?place_uri rdfs:label ?place_tempLabel . } 
