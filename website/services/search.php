@@ -7,7 +7,7 @@ $subjectFilter = (isset($_GET["subject"])?"FILTER (regex(str(?subject), \"".$_GE
 //$placeFilter = (isset($_GET["place"])?"FILTER (regex(str(?location_label), \"".$_GET["place"]."\"))":"");
 
 $placeFilter = "";
-if (isset($_GET["place"])) {
+if (isset($_GET["place"]) && !empty($_GET["place"])) {
     $placeFilter = '
     ?meetup mtp:hasPlace/mtp:hasEntity/rdfs:label ?lit1 .
     ?lit1 bds:search "'.$_GET["place"].'" .
@@ -15,7 +15,7 @@ if (isset($_GET["place"])) {
 }
 
 $participantFilter = "";
-if (isset($_GET["participant"])) {
+if (isset($_GET["participant"]) && !empty($_GET["participant"])) {
     $participantFilter = '
     ?meetup mtp:hasParticipant/mtp:hasEntity/rdfs:label ?lit2 .
     ?lit2 bds:search "'.$_GET["participant"].'" .
@@ -140,7 +140,7 @@ $bindings = $responseObj->results->bindings;
 $outputObj = [];
 foreach ($bindings as $binding) {
     $tempObject = [
-        'purpose' => $binding->purpose->value,
+        'purpose' => $binding->purpose_Label->value,
         'subject' => $binding->subject->value,
         'subject_label' => $binding->subject_label->value,
         'evidence_text' => $binding->evidence_text->value,
