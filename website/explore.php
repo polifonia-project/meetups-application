@@ -434,7 +434,7 @@ $searchPanel = True;
                             "coordinates": [inputData[i].long[placeId], inputData[i].lat[placeId]]
                         }
                     };
-                    if (!(inputData[i].lat[placeId] === undefined || inputData[i].long[placeId] === undefined)){
+                    if (inputData[i].lat[placeId] && inputData[i].long[placeId]){
                         output.features.push(feature);
                     }
 
