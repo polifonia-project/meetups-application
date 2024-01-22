@@ -202,7 +202,7 @@ WHERE {
 }
 LIMIT 10</pre>
                                             </div>
-                                            <p><a href="">Other useful MMKG SPARQL queries are available here</a></p>
+                                            <p><a href="queries.php">Other useful MMKG SPARQL queries are available here</a></p>
                                         </div>
                                         <div class="col-7">
                                             <p><strong>Making a SPARQL query request</strong></p>
