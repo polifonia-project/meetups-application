@@ -97,9 +97,6 @@
                         musical world in Europe from c.1800 to c.1945</p>
 
 
-
-
-
                     <hr />
                     <h5  class="h5 mb-2 text-gray-800">MEETUPS resources</h5>
                     <div class="row">
@@ -134,7 +131,8 @@
                                             <p>The repositories above contain all the data, software and related resources created as part of this project. Other
                                                 related resources and further information are also available under the
                                                 <a href="https://polifonia-project.github.io/ecosystem/pages/pilots/meetups.html" target="_blank">MEETUPS section of
-                                                    the Polifonia Ecosystem website</a>.</p>
+                                                    the Polifonia Ecosystem website</a>.
+                                                </p>
                                         </div>
                                     </div>
 
@@ -144,23 +142,29 @@
                         <div class="col-lg-6">
                             <div class="card border-left-danger shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary" id="detailView">Related publications</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary" id="detailView">Other media publications</h6>
                                 </div>
                                 <div class="card-body" id="meetupDetails">
                                     <div class="row">
                                         <div class="col-8">
-                                            <p>List of publications here?
+                                            <h5>Video</h5>
+                                            <ul>
+                                                <li><a href="https://polifonia-project.eu/video-an-introduction-to-meetups-pilot/" target="_blank">Introduction
+                                                        to the MEETUPS pilot</a></li>
+                                                <li><a href="https://polifonia-project.eu/explore-thousands-of-artists-biographies-with-the-meetups-demo/" target="_blank">
+                                                        MEETUPS user interface pilot demo and tutorial</a>
+                                                    </a></li>
+                                            </ul>
+                                            <h5>Dissemination</h5>
                                             <ul>
                                                 <li><a href="https://oro.open.ac.uk/88720/" target="_blank">Musical Meetups: a Knowledge Graph approach
                                                     for Historical Social Network Analysis</a></li>
-                                                <!--<li>Paper Title 2</li>-->
-                                                <!--<li>Paper Title 3</li>-->
-                                                <!--<li>Paper Title 4</li>-->
+                                                <li><a href="https://polifonia-project.eu/workshop-music-meets-machines-oct-13/" target="_blank">The Music Meets
+                                                        Machines: Exploring Music’s Hidden Connections with AI and Knowledge Graphs  is a workshop</a></li>
                                             </ul>
-                                            </p>
                                         </div>
                                         <div class="col-4">
-                                            <img src="img/meetups-workshop-paper.png" class="img-fluid">
+                                            <img src="img/meetups-workshop-paper.png" class="img-fluid" style="-webkit-filter: drop-shadow(2px 2px 2px #2228); filter: drop-shadow(2px 2px 2px #2228);">
                                         </div>
                                     </div>
                                 </div>
