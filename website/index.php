@@ -83,7 +83,7 @@
             <div id="content">
 
                 <!-- *** INCLUDE TOPBAR *** -->
-                <?php include ('topbar.php'); ?>
+                <?php //include ('topbar.php'); ?>
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
@@ -91,7 +91,7 @@
                     <!-- <div class="g-signin2" data-onsuccess="onSignIn"></div> -->
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">POLIFONIA - MEETUPS</h1>
+                    <h1 class="h3 mb-2 mt-4 text-gray-800">POLIFONIA - MEETUPS</h1>
                     <p class="mb-4">This Polifonia MEETUPS pilot focuses on supporting music historians and teachers by providing a
                         tool that enables the exploration and visualisation of encounters between people in the
                         musical world in Europe from c.1800 to c.1945</p>
