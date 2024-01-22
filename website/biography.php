@@ -142,7 +142,7 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 mt-4 text-gray-800"><span id="spanSubjectName">name...</span></h1>
+                    <h1 class="h3 mb-2 mt-4 text-gray-800"><span id="spanSubjectName">Loading...</span></h1>
                    <!-- <p class="mb-4">Biographies stored within the MEETUPS data are listed and summarised below.
                         Select a biography to explore the subject in more detail and view the meetups that it describes. </p>-->
 
