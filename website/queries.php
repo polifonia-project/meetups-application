@@ -210,14 +210,77 @@ GROUP BY ?meetup ?evidence_text ?purpose </pre>
                         <div class="col-md-12">
                             <div class="card border-left-warning shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary" id="detailView">Search for meetups that contain participant: <em>Edward</em></h6>
+                                    <h6 class="m-0 font-weight-bold text-primary" id="detailView">Search for meetups that contain participant: <em>Django</em></h6>
 
 
                                 </div>
                                 <div class="card-body" id="meetupDetails">
                                     <div class="sparql-container">
                                                 <pre class="sparql-code">
-tbc</pre>
+PREFIX geo: &lt;hhttps://www.w3.org/2003/01/geo/wgs84_pos&gt;
+PREFIX bds: &lt;hhttp://www.bigdata.com/rdf/search#&gt;
+PREFIX rdf: &lt;hhttp://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+PREFIX rdfs: &lt;hhttp://www.w3.org/2000/01/rdf-schema#&gt;
+PREFIX mtp: &lt;hhttp://w3id.org/polifonia/ontology/meetups-ontology#&gt;
+PREFIX time: &lt;hhttp://www.w3.org/2006/time#&gt;
+
+SELECT ?subject ?subject_label ?meetup ?evidence_text ?purpose_Label
+(GROUP_CONCAT( DISTINCT ?place_uri; separator=", " ) as ?locations_URI )
+(GROUP_CONCAT( DISTINCT ?location_label; separator=", " ) as ?locations_label )
+(GROUP_CONCAT( DISTINCT ?lat ; separator=", " ) as ?lats )
+(GROUP_CONCAT( DISTINCT ?long ; separator=", " ) as ?longs )
+(GROUP_CONCAT( DISTINCT ?participant_uri; separator=", " ) as ?participants_URI )
+(GROUP_CONCAT( DISTINCT ?participant_label; separator=", " ) as ?participants_label )
+(GROUP_CONCAT( DISTINCT ?time_expression_URI ; separator=", " ) as ?time_expression_URIs )
+(GROUP_CONCAT( DISTINCT ?beginDate ; separator=", " ) as ?beginDates )
+(GROUP_CONCAT( DISTINCT ?endDate ; separator=", " ) as ?endDates )
+(GROUP_CONCAT( DISTINCT ?time_evidence_text ; separator=", " ) as ?time_evidence_texts )
+WHERE{
+  {
+    # Search participant
+    ?meetup mtp:hasParticipant/mtp:hasEntity/rdfs:label ?lit .
+    ?lit bds:search "Django" .
+    ?lit bds:matchAllTerms "true" .
+    }
+  # Complementary information
+  {
+    ?meetup mtp:hasType "HM" ;
+            mtp:hasEvidenceText ?evidence_text ;
+            mtp:hasSubject ?subject ;
+            mtp:hasParticipant/mtp:hasEntity ?participant_uri ;
+            mtp:hasPlace/mtp:hasEntity ?place_uri ;
+            mtp:hasPurpose/mtp:hasAPurposeFirst ?purpose_uri ;
+            mtp:happensAt ?time_expression_URI .
+    OPTIONAL { ?subject rdfs:label ?subject_label . } .
+
+    # location
+    OPTIONAL { ?place_uri rdfs:label ?place_tempLabel . }
+    BIND ( COALESCE(?place_tempLabel, REPLACE(STR(?place_uri),"http://dbpedia.org/resource/","" )) AS ?location_label)
+    OPTIONAL { ?place_uri geo:lat ?lat ; geo:long ?long . }
+
+    # participant
+    ?participant_uri rdf:type mtp:Participant .
+    OPTIONAL { ?participant_uri rdfs:label ?part_tempLabel . }
+    FILTER  (!regex (str(?part_tempLabel), str(?subject) ) || isBlank(?participant_uri) ) .
+    OPTIONAL { ?participant_uri mtp:hasTextEvidence ?mentionPerson . } .
+    BIND ( COALESCE(?part_tempLabel, ?mentionPerson) AS ?participant_label) .
+
+    # purpose
+    OPTIONAL { ?purpose_uri rdfs:label ?purpose_tempLabel . }
+    BIND ( COALESCE(?purpose_tempLabel, "") AS ?purpose_Label )
+
+    # time
+  	?time_expression_URI rdf:type ?typeTimeExpression .
+    FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
+    OPTIONAL {
+        ?time_expression_URI time:hasBeginning ?beginDate;
+            time:hasEnd ?endDate ;
+            mtp:hasEvidenceText ?time_evidence_text .
+    } .
+
+  }
+}
+GROUP BY ?subject ?subject_label ?meetup ?evidence_text ?purpose_Label</pre>
                                     </div>
 
                                 </div>
@@ -238,7 +301,69 @@ tbc</pre>
                                 <div class="card-body" id="meetupDetails">
                                     <div class="sparql-container">
                                                 <pre class="sparql-code">
-tbc</pre>
+PREFIX geo: &lt;https://www.w3.org/2003/01/geo/wgs84_pos&gt;
+PREFIX bds: &lt;http://www.bigdata.com/rdf/search#&gt;
+PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+PREFIX mtp: &lt;http://w3id.org/polifonia/ontology/meetups-ontology#&gt;
+PREFIX time: &lt;http://www.w3.org/2006/time#&gt;
+
+SELECT ?subject ?subject_label ?meetup ?evidence_text ?purpose_Label
+(GROUP_CONCAT( DISTINCT ?place_uri; separator=", " ) as ?locations_URI )
+(GROUP_CONCAT( DISTINCT ?location_label; separator=", " ) as ?locations_label )
+(GROUP_CONCAT( DISTINCT ?lat ; separator=", " ) as ?lats )
+(GROUP_CONCAT( DISTINCT ?long ; separator=", " ) as ?longs )
+(GROUP_CONCAT( DISTINCT ?participant_uri; separator=", " ) as ?participants_URI )
+(GROUP_CONCAT( DISTINCT ?participant_label; separator=", " ) as ?participants_label )
+(GROUP_CONCAT( DISTINCT ?time_expression_URI ; separator=", " ) as ?time_expression_URIs )
+(GROUP_CONCAT( DISTINCT ?beginDate ; separator=", " ) as ?beginDates )
+(GROUP_CONCAT( DISTINCT ?endDate ; separator=", " ) as ?endDates )
+(GROUP_CONCAT( DISTINCT ?time_evidence_text ; separator=", " ) as ?time_evidence_texts )
+WHERE{
+  {
+    # Search place
+    ?meetup mtp:hasPlace/mtp:hasEntity/rdfs:label ?lit .
+    ?lit bds:search "Vienna" .
+    ?lit bds:matchAllTerms "true" .
+    }
+  # Complementary information
+  {
+    ?meetup mtp:hasType "HM" ;
+            mtp:hasEvidenceText ?evidence_text ;
+            mtp:hasSubject ?subject ;
+            mtp:hasParticipant/mtp:hasEntity ?participant_uri ;
+            mtp:hasPlace/mtp:hasEntity ?place_uri ;
+            mtp:hasPurpose/mtp:hasAPurposeFirst ?purpose_uri ;
+            mtp:happensAt ?time_expression_URI .
+    OPTIONAL { ?subject rdfs:label ?subject_label . } .
+
+    # location
+    OPTIONAL { ?place_uri rdfs:label ?place_tempLabel . }
+    BIND ( COALESCE(?place_tempLabel, REPLACE(STR(?place_uri),"http://dbpedia.org/resource/","" )) AS ?location_label)
+    OPTIONAL { ?place_uri geo:lat ?lat ; geo:long ?long . }
+
+    # participant
+    ?participant_uri rdf:type mtp:Participant .
+    OPTIONAL { ?participant_uri rdfs:label ?part_tempLabel . }
+    FILTER  (!regex (str(?part_tempLabel), str(?subject) ) || isBlank(?participant_uri) ) .
+    OPTIONAL { ?participant_uri mtp:hasTextEvidence ?mentionPerson . } .
+    BIND ( COALESCE(?part_tempLabel, ?mentionPerson) AS ?participant_label) .
+
+    # purpose
+    OPTIONAL { ?purpose_uri rdfs:label ?purpose_tempLabel . }
+    BIND ( COALESCE(?purpose_tempLabel, "") AS ?purpose_Label )
+
+    # time
+  	?time_expression_URI rdf:type ?typeTimeExpression .
+    FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
+    OPTIONAL {
+        ?time_expression_URI time:hasBeginning ?beginDate;
+            time:hasEnd ?endDate ;
+            mtp:hasEvidenceText ?time_evidence_text .
+    } .
+  }
+}
+GROUP BY ?subject ?subject_label ?meetup ?evidence_text ?purpose_Label</pre>
                                     </div>
 
                                 </div>
@@ -275,6 +400,28 @@ tbc</pre>
                                 <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-primary" id="detailView">Search for meetups occurring within a specific
                                         area defined by latitude/longitude</h6>
+
+
+                                </div>
+                                <div class="card-body" id="meetupDetails">
+                                    <div class="sparql-container">
+                                                <pre class="sparql-code">
+tbc</pre>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card border-left-warning shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary" id="detailView">A combined search for subject, area and timespan</h6>
 
 
                                 </div>
