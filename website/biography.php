@@ -797,7 +797,7 @@
                         stopDate = field.endDate
                     }
                 }
-                console.log(field);
+                //console.log(field);
                 eventText = field.time_evidence;
                 eventText += ' - '+field.participants;
                 singleEvent = {
@@ -816,7 +816,7 @@
             timelineItems = new vis.DataSet(myEvents);
             var timeline = new vis.Timeline(timelineContainer, timelineItems, timelineOptions);
             timeline.on('select', function (properties) {
-                console.log(properties);
+                //console.log(properties);
                 populateDetailsPanel(properties.items[0]);
             });
 
@@ -838,7 +838,7 @@
             //console.log(newData);
             //newData = [1, 2, 3, 5, 9, 15];
             myChart.destroy();
-            console.log(newLabels);
+            //console.log(newLabels);
             myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -944,7 +944,7 @@
         $.getJSON("services/biography-stats.php?id=<?= $_GET["id"]; ?>&stat=people", function(result){
             html = '';
             $.each(result, function(i, field){
-                console.log(field);
+                //console.log(field);
                 if (field.link) {
                     console.log(field.link);
                     html = '<a href="biography.php?id=' + field.link + '"><em>'+field.label+' (' + field.count + ')</em></a><br />';
@@ -960,6 +960,22 @@
             setTimeout(function () {
                 map.invalidateSize();
             },1);
+        });
+
+        map.on('moveend', function(e) {
+            var bounds = map.getBounds();
+            // Extract the latitude and longitude of the corners
+            var northEast = bounds.getNorthEast(); // Top right corner
+            var southWest = bounds.getSouthWest(); // Bottom left corner
+            // Round the coordinates to 2 decimal places
+            var northEastLat = parseFloat(northEast.lat.toFixed(2));
+            var northEastLng = parseFloat(northEast.lng.toFixed(2));
+            var southWestLat = parseFloat(southWest.lat.toFixed(2));
+            var southWestLng = parseFloat(southWest.lng.toFixed(2));
+
+            var boundsStr = southWestLat + ',' + southWestLng + ',' + northEastLat + ',' + northEastLng;
+            uiConfig['mapBounds'] = boundsStr;
+            rebuildURLHash(uiConfig);
         });
 
     });
@@ -981,7 +997,6 @@
         }
 
 
-
         const map = L.map('map').setView([52, -0.7], 8);
 
         const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -989,13 +1004,6 @@
             minZoom: 2,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
-
-/*
-        var pointsLayer = L.geoJSON(pointsData, {
-            onEachFeature: onEachFeature
-        }).addTo(map);
-        pointsLayer.on("click",markerOnClick);
-*/
 
     </script>
 
