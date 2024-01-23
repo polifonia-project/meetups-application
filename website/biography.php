@@ -233,20 +233,29 @@
 <!-- ***** MAIN TABS FOR BIOGRAPHY/MEETUPS CONTENT -->
                     <nav>
                         <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                            <button class="nav-link active" id="nav-home-tab" data-toggle="tab" data-target="#biog-tab"
+                            <button class="nav-link active" id="nav-biog-tab" data-toggle="tab" data-target="#biog-tab"
                                     type="button" role="tab" aria-controls="biog-tab" aria-selected="true">Biography
                             </button>
-                            <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#tabular-tab"
-                                    type="button" role="tab" aria-controls="tabular-tab" aria-selected="false">Meetups (data view)
+                            <button class="nav-link" id="nav-tabular-tab" data-toggle="tab" data-target="#tabular-tab"
+                                    type="button" role="tab" aria-controls="tabular-tab" aria-selected="false">Data view
                             </button>
-                            <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#reading-tab"
-                                    type="button" role="tab" aria-controls="reading-tab" aria-selected="false">Meetups (reading view)
+                            <button class="nav-link" id="nav-reading-tab" data-toggle="tab" data-target="#reading-tab"
+                                    type="button" role="tab" aria-controls="reading-tab" aria-selected="false">Reading view
                             </button>
-                            <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#map-tab"
+                            <button class="nav-link" id="nav-map-tab" data-toggle="tab" data-target="#map-tab"
                                     type="button" role="tab" aria-controls="map-tab" aria-selected="false">Map
                             </button>
-                            <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#timeline-tab"
+                            <button class="nav-link" id="nav-timeline-tab" data-toggle="tab" data-target="#timeline-tab"
                                     type="button" role="tab" aria-controls="timeline-tab" aria-selected="false">Timeline
+                            </button>
+                            <button class="nav-link" id="nav-participants-tab" data-toggle="tab" data-target="#participants-tab"
+                                    type="button" role="tab" aria-controls="timeline-tab" aria-selected="false">Participants
+                            </button>
+                            <button class="nav-link" id="nav-purposes-tab" data-toggle="tab" data-target="#purposes-tab"
+                                    type="button" role="tab" aria-controls="timeline-tab" aria-selected="false">Purposes
+                            </button>
+                            <button class="nav-link" id="nav-places-tab" data-toggle="tab" data-target="#places-tab"
+                                    type="button" role="tab" aria-controls="timeline-tab" aria-selected="false">Places
                             </button>
                         </div>
                     </nav>
@@ -313,9 +322,16 @@
                         <div class="tab-pane fade" id="reading-tab" role="tabpanel" aria-labelledby="profile2-tab">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <!--<h6 class="m-0 font-weight-bold text-primary">Meetups (reading view)</h6>-->
+                                    <h6 class="m-0 font-weight-bold text-primary">Meetups (reading view)
+                                    </h6>
                                 </div>
                                 <div class="card-body">
+                                    <div class="form-group">
+                                        <div class="custom-control custom-switch ml-1">
+                                            <input type="checkbox" class="custom-control-input" id="showtraces">
+                                            <label class="custom-control-label" for="showtraces">Show incomplete meetup data</label>
+                                        </div>
+                                    </div>
                                     <div class="table-responsive">
                                         <table class="table table-bordered" id="readingTable">
                                             <thead>
@@ -573,6 +589,59 @@
         return chartData;
     }
 
+    // Function to parse the URL hash and configure UI components
+    function parseUrlAndConfigUI() {
+        // Get the hash part of the URL (string after the '#')
+        var hash = window.location.hash.substring(1); // Remove the '#' symbol
+
+        // Split the hash into parts
+        var parts = hash.split('/');
+
+        // Ensure there are at least 4 parts
+        if (parts.length >= 4) {
+            var tabName = parts[0];
+            var variable1 = parts[1];
+            var variable2 = parts[2];
+            var variable3 = parts[3];
+
+            // Activate the Bootstrap tab
+            activateBootstrapTab(tabName);
+
+            // Store the other variables for later use
+            console.log("Stored variables:", tabName, variable1, variable2, variable3);
+        } else {
+            console.log("URL hash does not contain enough parts");
+        }
+    }
+
+    // Function to activate a Bootstrap tab
+    function activateBootstrapTab(tabName) {
+        // Using jQuery to activate the tab
+        // Make sure the tab has an id attribute that matches the tabName
+        //$('#' + tabName).tab('show');
+        $('#nav-tab button[data-target="#'+tabName+'"]').tab('show')
+    }
+
+    function getTabNameFromNav(input){
+        var output;
+        switch(input) {
+            case 'nav-biog-tab':
+                output = 'biog-tab';
+                break;
+            case 'nav-tabular-tab':
+                output = 'tabular-tab';
+                break;
+            default:
+                output = '';
+        }
+        return output;
+    }
+
+    function rebuildURLHash(config) {
+        var hashString = config['tabName'] + '/' + config['mapBounds'] + '/' + config['var3'] + '/' + config['var4'];
+        window.location.hash = hashString;
+    }
+
     // *** END OF FUNCTIONS ***
 
     const img = new Image(16, 16);
@@ -645,6 +714,15 @@
     });
     //**************** END DUMMY FREQUENCY CHART *************
 
+    //**************** INITIALISE UI CONFIG VARS *************
+    var uiConfig = {
+        'tabName': 'map-tab',
+        'mapBounds': '0',
+        'var3': '0',
+        'var4': '0',
+    };
+    //**************** END INITIALISE UI CONFIG VARS *************
+
 
     $( document ).ready(function() {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -654,6 +732,15 @@
 
         var mapTabTriggerEl = document.querySelector('#map-tab')
         mapTab = new bootstrap.Tab(mapTabTriggerEl)
+
+        parseUrlAndConfigUI();
+        // Event listener for Bootstrap tab change
+        $('#nav-tab button').on('shown.bs.tab', function(event){
+        //$('.nav-tabs a').on('shown.bs.tab', function(event){
+            uiConfig['tabName'] = getTabNameFromNav(event.target.id);
+            rebuildURLHash(uiConfig);
+            //console.log(event.target.id);
+        });
 
         $.getJSON("services/biography.php?id=<?= $_GET["id"]; ?>", function(result){
             $('#spanSubjectName').text(result.name);
