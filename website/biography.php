@@ -589,28 +589,43 @@
         return chartData;
     }
 
-    // Function to parse the URL hash and configure UI components
-    function parseUrlAndConfigUI() {
+    function getUIConfigFromURL() {
         // Get the hash part of the URL (string after the '#')
         var hash = window.location.hash.substring(1); // Remove the '#' symbol
 
         // Split the hash into parts
         var parts = hash.split('/');
-
         // Ensure there are at least 4 parts
         if (parts.length >= 4) {
+            uiConfig['tabName'] = parts[0];
+            uiConfig['mapBounds'] = parts[1];
             var tabName = parts[0];
-            var variable1 = parts[1];
+            var mapBounds = parts[1];
             var variable2 = parts[2];
             var variable3 = parts[3];
-
-            // Activate the Bootstrap tab
-            activateBootstrapTab(tabName);
-
-            // Store the other variables for later use
-            console.log("Stored variables:", tabName, variable1, variable2, variable3);
         } else {
             console.log("URL hash does not contain enough parts");
+        }
+    }
+
+    // Function to parse the URL hash and configure UI components
+    function configUI() {
+        // Activate the Bootstrap tab
+        if (uiConfig['tabName']) {
+            activateBootstrapTab(uiConfig['tabName']);
+        }
+
+        if (uiConfig['mapBounds']) {
+            //Set map bounds
+            var boundsArray = uiConfig['mapBounds'].split(',');
+            // Create LatLng objects for the northeast and southwest corners
+            var northEast = L.latLng(boundsArray[2], boundsArray[3]);
+            var southWest = L.latLng(boundsArray[0], boundsArray[1]);
+            // Create a LatLngBounds object
+            var bounds = L.latLngBounds(southWest, northEast);
+
+            map.fitBounds(bounds);
+            map.invalidateSize();
         }
     }
 
@@ -631,6 +646,12 @@
             case 'nav-tabular-tab':
                 output = 'tabular-tab';
                 break;
+            case 'nav-reading-tab':
+                output = 'reading-tab';
+                break;
+            case 'nav-map-tab':
+                output = 'map-tab';
+                break;
             default:
                 output = '';
         }
@@ -640,6 +661,26 @@
     function rebuildURLHash(config) {
         var hashString = config['tabName'] + '/' + config['mapBounds'] + '/' + config['var3'] + '/' + config['var4'];
         window.location.hash = hashString;
+    }
+
+    function markerOnClick(e) {
+        var attributes = e.layer.feature.properties;
+        console.log(attributes);
+        // do some stuff…
+        var html = "<strong>Subject</strong>: "+attributes.subject;
+        html += "<br /><strong>Participant</strong>: " + attributes.participant;
+        html += "<br /><strong>Date</strong>: " + attributes.date;
+        html += "<br /><strong>Location</strong>: " + attributes.place;
+        html += "<br /><strong>Description</strong>: " + attributes.description;
+        //html += "<br /><strong>Type</strong>: " + attributes.Type;
+        $('#pointDetails').html(html);
+    }
+
+    function getActiveTabName() {
+        // Find the active tab and get its text content
+        var activeTabName = $('.nav-tabs .active').data('target').substring(1);
+
+        return activeTabName;
     }
 
     // *** END OF FUNCTIONS ***
@@ -716,13 +757,33 @@
 
     //**************** INITIALISE UI CONFIG VARS *************
     var uiConfig = {
-        'tabName': 'map-tab',
-        'mapBounds': '0',
-        'var3': '0',
-        'var4': '0',
+        'tabName': '',
+        'mapBounds': '',
+        'var3': '',
+        'var4': '',
     };
     //**************** END INITIALISE UI CONFIG VARS *************
 
+    var tabReady = false;
+    var mapReady = false;
+    var mapShown = false;
+
+    var map = L.map('map');
+    map.on('load', function(){
+        //mapReady = true;
+    });
+    //map.setView([52, -0.7], 9);
+
+    const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 14,
+        minZoom: 3,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    map.off('moveend');
+
+    //Get the UI config params from the URL hash
+    getUIConfigFromURL();
 
     $( document ).ready(function() {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -733,13 +794,39 @@
         var mapTabTriggerEl = document.querySelector('#map-tab')
         mapTab = new bootstrap.Tab(mapTabTriggerEl)
 
-        parseUrlAndConfigUI();
+        //Set the UI from config values
+        configUI();
+
         // Event listener for Bootstrap tab change
         $('#nav-tab button').on('shown.bs.tab', function(event){
-        //$('.nav-tabs a').on('shown.bs.tab', function(event){
+            console.log(getActiveTabName());
             uiConfig['tabName'] = getTabNameFromNav(event.target.id);
             rebuildURLHash(uiConfig);
-            //console.log(event.target.id);
+            if (event.target.id == 'nav-map-tab') {
+                map.invalidateSize();
+                //If this is the first time the map tab has been switched to, switch map.moveend events back on for updating URL hash
+                if (!mapShown) {
+                    mapShown = true;
+                    configUI();
+                    map.on('moveend', function(e) {
+                        if (getActiveTabName() == 'map-tab') {
+                            var bounds = map.getBounds();
+                            // Extract the latitude and longitude of the corners
+                            var northEast = bounds.getNorthEast(); // Top right corner
+                            var southWest = bounds.getSouthWest(); // Bottom left corner
+                            // Round the coordinates to 2 decimal places
+                            var northEastLat = parseFloat(northEast.lat.toFixed(2));
+                            var northEastLng = parseFloat(northEast.lng.toFixed(2));
+                            var southWestLat = parseFloat(southWest.lat.toFixed(2));
+                            var southWestLng = parseFloat(southWest.lng.toFixed(2));
+                            var boundsStr = southWestLat + ',' + southWestLng + ',' + northEastLat + ',' + northEastLng;
+                            uiConfig['mapBounds'] = boundsStr;
+                            rebuildURLHash(uiConfig);
+                        }
+
+                    });
+                }
+            }
         });
 
         $.getJSON("services/biography.php?id=<?= $_GET["id"]; ?>", function(result){
@@ -761,17 +848,6 @@
             let counter = 0;
             $.each(result, function(i, field){
                 buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" onclick="populateDetailsPanel('+i+');"><i class="fas fa-search-plus"></i> View details</button> ';
-                //buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#meetupModal" onclick="populateModal('+i+');"><i class="fas fa-search-plus"></i> View details</button> ';
-                /*
-                html = '<tr>';
-                html += '<td>' + buttonHtml + '...</td>';
-                html += '<td>' + field.location + '</td>';
-                html += '<td>' + field.participants + '</td>';
-                //html += '<td><a href="#">' + field.meetup.substring(field.meetup.lastIndexOf('meetup') + 7) + '</a></td>';
-                html += '<td>' + field.purpose.substring(field.purpose.lastIndexOf('/') + 1) + '</td>';
-                html += '</tr>';
-                $('#meetupsTable tr:last').after(html);
-                */
 
                 // TABLE VIEW
                 table.row.add([formatDateString(field.beginDate, field.endDate, field.time_evidence), field.location, field.participants, field.purpose, buttonHtml])
@@ -817,13 +893,12 @@
             var timeline = new vis.Timeline(timelineContainer, timelineItems, timelineOptions);
             timeline.on('select', function (properties) {
                 //console.log(properties);
+                // TODO - Also encode this in the URL hash
                 populateDetailsPanel(properties.items[0]);
             });
 
-
             table.draw();
             tableReading.draw();
-
 
             // *********** CREATE Frequency chart with loaded data here... ***********
             newData = [];
@@ -833,12 +908,7 @@
                 newData.push(dateFrequencyData[key]);
             }
             rollingAverageData = calculateRollingAverage(newData, 4);
-            //console.log("HERE COMES THE DATA");
-            //console.log(newLabels);
-            //console.log(newData);
-            //newData = [1, 2, 3, 5, 9, 15];
             myChart.destroy();
-            //console.log(newLabels);
             myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -892,21 +962,8 @@
             myChart.update();
             // *********** END Frequency chart loading ***********
 
-
             geoJsonData = createGeoJson(result);
-            //chartData = getChartDataFromGeoJSON($geoJsonData);
-            /*
-            var tempData = {
-                datasets: [{
-                    data: chartData,
-                    pointStyle: img,
-                    borderWidth: 1
-                }]
-            };
-            */
 
-            //myChart.config.data = tempData;
-            //myChart.update();
             meetupsData = result;
             var pointsLayer = L.geoJSON(geoJsonData, {
                 onEachFeature: onEachFeature
@@ -914,7 +971,10 @@
             var clusterLayer = L.markerClusterGroup();
             clusterLayer.addLayer(pointsLayer);
             map.addLayer(clusterLayer);
-            map.fitBounds(pointsLayer.getBounds());
+            if (!uiConfig['mapBounds']) {
+                map.fitBounds(pointsLayer.getBounds());
+            }
+
         });
 
         $.getJSON("services/biography-stats.php?id=<?= $_GET["id"]; ?>&stat=place", function(result){
@@ -956,56 +1016,20 @@
             $('#topParticipants').html(html);
         });
 
+
         $('.nav-tabs').on('shown.bs.tab', function (event) {
             setTimeout(function () {
                 map.invalidateSize();
             },1);
         });
 
-        map.on('moveend', function(e) {
-            var bounds = map.getBounds();
-            // Extract the latitude and longitude of the corners
-            var northEast = bounds.getNorthEast(); // Top right corner
-            var southWest = bounds.getSouthWest(); // Bottom left corner
-            // Round the coordinates to 2 decimal places
-            var northEastLat = parseFloat(northEast.lat.toFixed(2));
-            var northEastLng = parseFloat(northEast.lng.toFixed(2));
-            var southWestLat = parseFloat(southWest.lat.toFixed(2));
-            var southWestLng = parseFloat(southWest.lng.toFixed(2));
 
-            var boundsStr = southWestLat + ',' + southWestLng + ',' + northEastLat + ',' + northEastLng;
-            uiConfig['mapBounds'] = boundsStr;
-            rebuildURLHash(uiConfig);
-        });
+
+
+        //parseUrlAndConfigUI();
 
     });
 </script>
-
-    <!-- *** MAP STUFF *** -->
-    <script>
-        function markerOnClick(e) {
-            var attributes = e.layer.feature.properties;
-            console.log(attributes);
-            // do some stuff…
-            var html = "<strong>Subject</strong>: "+attributes.subject;
-            html += "<br /><strong>Participant</strong>: " + attributes.participant;
-            html += "<br /><strong>Date</strong>: " + attributes.date;
-            html += "<br /><strong>Location</strong>: " + attributes.place;
-            html += "<br /><strong>Description</strong>: " + attributes.description;
-            //html += "<br /><strong>Type</strong>: " + attributes.Type;
-            $('#pointDetails').html(html);
-        }
-
-
-        const map = L.map('map').setView([52, -0.7], 8);
-
-        const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 14,
-            minZoom: 2,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
-
-    </script>
 
 </body>
 
