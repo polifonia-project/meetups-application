@@ -101,3 +101,52 @@ function getViewOnMapButton(data) {
     buttonHtml = '<button type="button" class="btn btn-sm btn-primary" onclick="zoomToPoint('+data.lat+','+data.long+');"><i class="fas fa-map-marked-alt"></i> View on map</button> ';
     return buttonHtml;
 }
+
+function buildTimelineGroups(groupList) {
+    var groupMasterList = {
+        'Personal life': {
+            id: 'Personal life',
+            content: 'Personal life',
+            style: 'color: red;'
+            // Optional: a field 'className', 'style', 'order', [properties]
+        },
+        'Music making': {
+            id: 'Music making',
+            content: 'Music making',
+            style: 'color: green;'
+            // Optional: a field 'className', 'style', 'order', [properties]
+        },
+        'Education': {
+            id: 'Education',
+            content: 'Education',
+            style: 'color: blue;'
+            // Optional: a field 'className', 'style', 'order', [properties]
+        },
+        'Public celebration': {
+            id: 'Public celebration',
+            content: 'Public celebration',
+            style: 'color: yellow;'
+            // Optional: a field 'className', 'style', 'order', [properties]
+        },
+        'Business meeting': {
+            id: 'Business meeting',
+            content: 'Business meeting',
+            style: 'color: purple;'
+            // Optional: a field 'className', 'style', 'order', [properties]
+        },
+        'Coincidence': {
+            id: 'Coincidence',
+            content: 'Coincidence',
+            style: 'color: orange;'
+            // Optional: a field 'className', 'style', 'order', [properties]
+        },
+    };
+
+    // For each group in the supplied group list, take the full entry from the master list and add it to the return structure.
+    var groups = [];
+    $.each(groupList, function(i, groupName){
+        groups.push(groupMasterList[groupName]);
+    });
+
+    return groups;
+}

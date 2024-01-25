@@ -512,6 +512,7 @@
     }
 
     function populateDetailsPanel(index) {
+        // TODO - Also encode this in the URL hash
         meetupDetails = meetupsData[index];
         //console.log(meetupDetails);
         //$('#modalTitle').text('Meetup Details');
@@ -846,6 +847,7 @@
             let dateFrequencyData = generateDateFrequencyData(result);
 
             let counter = 0;
+            var groupList = [];
             $.each(result, function(i, field){
                 buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" onclick="populateDetailsPanel('+i+');"><i class="fas fa-search-plus"></i> View details</button> ';
 
@@ -881,19 +883,22 @@
                     "start": field.beginDate,
                     "end": stopDate,
                     "content": eventText,
-                    "title": "Purpose: " + field.purpose
+                    "title": "Purpose: " + field.purpose,
+                    "group": field.purpose
                 };
                 if (field.beginDate !== null && field.beginDate !== "") {
                     myEvents.push(singleEvent);
                 }
-
+                // Build a list of the groups in this results set
+                if (!groupList.includes(field.purpose)) {
+                    groupList.push(field.purpose);
+                }
             });
             // Create a Timeline
             timelineItems = new vis.DataSet(myEvents);
-            var timeline = new vis.Timeline(timelineContainer, timelineItems, timelineOptions);
+            var timeline = new vis.Timeline(timelineContainer, timelineItems, buildTimelineGroups(groupList), timelineOptions);
             timeline.on('select', function (properties) {
                 //console.log(properties);
-                // TODO - Also encode this in the URL hash
                 populateDetailsPanel(properties.items[0]);
             });
 
