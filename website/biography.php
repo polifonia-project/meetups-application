@@ -581,7 +581,6 @@
                 scrollTop: $("#detailView").offset().top
             }, 500);
         }
-
     }
 
     function zoomToPoint(lat, long) {
@@ -761,14 +760,15 @@
         html += '        <h6 class="m-0 font-weight-bold text-primary">'+label+' <em>('+count+')</em></h6>';
         html += '    </div>';
         html += '    <div class="card card-body">';
+        html += '<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Edward_Elgar.jpg/275px-Edward_Elgar.jpg" class="rounded float-right" width="100px">';
         if (link) {
-            html += '        <p><a href="biography.php?id=' + link + '">Explore biography and meetups for this subject</a></p>';
+            html += '        <a href="biography.php?id=' + link + '">Explore biography and meetups for this subject</a>';
         }
         else {
-            html += '        <p>...</p>';
+            html += '        ...';
         }
 
-        html += '    </div>';
+        html += '    </p></div>';
         html += '</div></div>';
 
         return html;
