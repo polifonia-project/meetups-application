@@ -1048,46 +1048,63 @@
 
         });
 
+        var numTopStats = 2;
+
         $.getJSON("services/biography-stats.php?id=<?= $_GET["id"]; ?>&stat=place", function(result){
-            html = '';
+            tophtml = '';
+            bodyhtml = '';
             $.each(result, function(i, field){
-                html += field.label + ' <em>(' + field.count + ')</em><br />';
+                if (i < numTopStats) {
+                    tophtml += field.label + ' <em>(' + field.count + ')</em><br />';
+                }
+                bodyhtml += field.label + ' <em>(' + field.count + ')</em><br />';
             });
-            $('#topLocations').html(html);
-            $('#place_tab_content').html(html);
+            $('#topLocations').html(tophtml);
+            $('#place_tab_content').html(bodyhtml);
         });
 
         $.getJSON("services/biography-stats.php?id=<?= $_GET["id"]; ?>&stat=period", function(result){
-            html = '';
+            tophtml = '';
             $.each(result, function(i, field){
-                html += field.label + ' <em>(' + field.count + ')</em><br />';
+                tophtml += field.label + ' <em>(' + field.count + ')</em><br />';
             });
-            $('#topPeriods').html(html);
+            $('#topPeriods').html(tophtml);
         });
 
         $.getJSON("services/biography-stats.php?id=<?= $_GET["id"]; ?>&stat=theme", function(result){
-            html = '';
+            tophtml = '';
+            bodyhtml = '';
             $.each(result, function(i, field){
-                html += field.label + ' <em>(' + field.count + ')</em><br />';
+                if (i < numTopStats) {
+                    tophtml += field.label + ' <em>(' + field.count + ')</em><br />';
+                }
+                bodyhtml += field.label + ' <em>(' + field.count + ')</em><br />';
             });
-            $('#topThemes').html(html);
-            $('#purpose_tab_content').html(html);
+            $('#topThemes').html(tophtml);
+            $('#purpose_tab_content').html(bodyhtml);
         });
 
         $.getJSON("services/biography-stats.php?id=<?= $_GET["id"]; ?>&stat=people", function(result){
-            html = '';
+            tophtml = '';
+            bodyhtml = ''
             $.each(result, function(i, field){
                 //console.log(field);
                 if (field.link) {
                     console.log(field.link);
-                    html = '<a href="biography.php?id=' + field.link + '"><em>'+field.label+' (' + field.count + ')</em></a><br />';
+                    if (i < numTopStats) {
+                        tophtml = '<a href="biography.php?id=' + field.link + '"><em>'+field.label+' (' + field.count + ')</em></a><br />';
+                    }
+                    bodyhtml = '<a href="biography.php?id=' + field.link + '"><em>'+field.label+' (' + field.count + ')</em></a><br />';
                 }
                 else {
-                    html += field.label + ' <em>(' + field.count + ')</em><br />';
+                    if (i < numTopStats) {
+                        tophtml += field.label + ' <em>(' + field.count + ')</em><br />';
+                    }
+                    bodyhtml += field.label + ' <em>(' + field.count + ')</em><br />';
                 }
             });
-            $('#topParticipants').html(html);
-            $('#participants_tab_content').html(html);
+            $('#topParticipants').html(tophtml);
+            $('#participants_tab_content').html(bodyhtml);
         });
 
 

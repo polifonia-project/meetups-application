@@ -15,7 +15,7 @@ mtp:hasType "HM" .
 }
 GROUP BY ?label
 ORDER BY DESC(?count)
-LIMIT 2';
+#LIMIT 2';
 
 $sparqlPlace = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -31,7 +31,7 @@ WHERE {
 }
 GROUP BY ?label ?p
 ORDER BY DESC(?count)
-LIMIT 2';
+#LIMIT 2';
 
 $sparqlPeople = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
@@ -56,7 +56,7 @@ WHERE {
 }
 GROUP BY ?label ?link
 ORDER BY DESC(?count) ?participant
-LIMIT 2';
+#LIMIT 2';
 
 $sparqlPeriod = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
