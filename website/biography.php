@@ -1088,13 +1088,12 @@
             tophtml = '';
             bodyhtml = ''
             $.each(result, function(i, field){
-                //console.log(field);
                 if (field.link) {
-                    console.log(field.link);
+                    //console.log(field.link);
                     if (i < numTopStats) {
-                        tophtml = '<a href="biography.php?id=' + field.link + '"><em>'+field.label+' (' + field.count + ')</em></a><br />';
+                        tophtml += '<a href="biography.php?id=' + field.link + '"><em>'+field.label+' (' + field.count + ')</em></a><br />';
                     }
-                    bodyhtml = '<a href="biography.php?id=' + field.link + '"><em>'+field.label+' (' + field.count + ')</em></a><br />';
+                    bodyhtml += '<a href="biography.php?id=' + field.link + '"><em>'+field.label+' (' + field.count + ')</em></a><br />';
                 }
                 else {
                     if (i < numTopStats) {
