@@ -740,6 +740,26 @@
         return activeTabName;
     }
 
+    function participantCardHtml(label, link, count) {
+        var html = '';
+        html += '<div class="col-md-4"><div class="card shadow mb-4">';
+        html += '    <div class="card-header py-3">';
+        html += '        <h6 class="m-0 font-weight-bold text-primary">'+label+' <em>('+count+')</em></h6>';
+        html += '    </div>';
+        html += '    <div class="card card-body">';
+        if (link) {
+            html += '        <p><a href="biography.php?id=' + link + '">Explore biography and meetups for this subject</a></p>';
+        }
+        else {
+            html += '        <p>...</p>';
+        }
+
+        html += '    </div>';
+        html += '</div></div>';
+
+        return html;
+    }
+
     // *** END OF FUNCTIONS ***
 
     const img = new Image(16, 16);
@@ -1086,23 +1106,36 @@
 
         $.getJSON("services/biography-stats.php?id=<?= $_GET["id"]; ?>&stat=people", function(result){
             tophtml = '';
-            bodyhtml = ''
+            bodyhtml = '<div class="row">';
+            label = '';
             $.each(result, function(i, field){
+                if (field.label) {
+                    label = field.label;
+                }
+                else if (field.link) {
+                    label =  field.link.split("/").pop();
+                }
+                else {
+                    label = 'unknown';
+                }
                 if (field.link) {
                     //console.log(field.link);
                     if (i < numTopStats) {
-                        tophtml += '<a href="biography.php?id=' + field.link + '"><em>'+field.label+' (' + field.count + ')</em></a><br />';
+                        tophtml += '<a href="biography.php?id=' + field.link + '"><em>'+label+' (' + field.count + ')</em></a><br />';
                     }
-                    bodyhtml += '<a href="biography.php?id=' + field.link + '"><em>'+field.label+' (' + field.count + ')</em></a><br />';
+                    //bodyhtml += '<a href="biography.php?id=' + field.link + '"><em>'+label+' (' + field.count + ')</em></a><br />';
+                    bodyhtml += participantCardHtml(label, field.link, field.count);
                 }
                 else {
                     if (i < numTopStats) {
-                        tophtml += field.label + ' <em>(' + field.count + ')</em><br />';
+                        tophtml += label + ' <em>(' + field.count + ')</em><br />';
                     }
-                    bodyhtml += field.label + ' <em>(' + field.count + ')</em><br />';
+                    //bodyhtml += label + ' <em>(' + field.count + ')</em><br />';
+                    bodyhtml += participantCardHtml(label, field.link, field.count);
                 }
             });
             $('#topParticipants').html(tophtml);
+            bodyhtml += '</div>';
             $('#participants_tab_content').html(bodyhtml);
         });
 
