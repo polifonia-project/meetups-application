@@ -555,15 +555,17 @@
         $('#meetupModalBody').html(html);
     }
 
-    function populateDetailsPanel(index) {
+    function populateDetailsPanel(index, jump = true) {
         // TODO - Also encode this in the URL hash
+        uiConfig['detailID'] = index;
+        rebuildURLHash(uiConfig);
         meetupDetails = meetupsData[index];
         //console.log(meetupDetails);
         //$('#modalTitle').text('Meetup Details');
         buttonHtml = '<button type="button" class="btn btn-sm btn-primary" onclick="zoomToPoint('+meetupDetails.lat+','+meetupDetails.long+');"><i class="fas fa-map-marked-alt"></i> View on map</button> ';
 
-        subjectButtonHtml = '<a class="btn btn-primary btn-sm" href="biography.php?id='+meetupDetails.subject+'" role="button"><i class="fas fa-address-card"></i> View biography</a> ';
-
+        //subjectButtonHtml = '<a class="btn btn-primary btn-sm" href="biography.php?id='+meetupDetails.subject+'" role="button"><i class="fas fa-address-card"></i> View biography</a> ';
+        subjectButtonHtml = '';
 
         html = '';
         html += '<p><strong>When</strong>: ' + formatDateString(meetupDetails.beginDate, meetupDetails.endDate, meetupDetails.time_evidence) + '</p>';
@@ -574,9 +576,12 @@
         html += '<p><strong>Evidence</strong>: ' + meetupDetails.evidence + '</p>';
         html += '<p>' + subjectButtonHtml + ' ' + buttonHtml + '</p>'
         $('#meetupDetails').html(html);
-        $('html, body').animate({
-            scrollTop: $("#detailView").offset().top
-        }, 500);
+        if (jump) {
+            $('html, body').animate({
+                scrollTop: $("#detailView").offset().top
+            }, 500);
+        }
+
     }
 
     function zoomToPoint(lat, long) {
@@ -644,10 +649,11 @@
         if (parts.length >= 4) {
             uiConfig['tabName'] = parts[0];
             uiConfig['mapBounds'] = parts[1];
-            var tabName = parts[0];
-            var mapBounds = parts[1];
-            var variable2 = parts[2];
-            var variable3 = parts[3];
+            uiConfig['detailID'] = parts[2];
+            //var tabName = parts[0];
+            //var mapBounds = parts[1];
+            //var detailID = parts[2];
+            //var variable3 = parts[3];
         } else {
             console.log("URL hash does not contain enough parts");
         }
@@ -671,6 +677,14 @@
 
             map.fitBounds(bounds);
             map.invalidateSize();
+        }
+
+        if (uiConfig['detailID']) {
+            //populate detail pane
+            if (meetupsData) {
+                populateDetailsPanel(uiConfig['detailID'], false);
+            }
+
         }
     }
 
@@ -716,7 +730,7 @@
     }
 
     function rebuildURLHash(config) {
-        var hashString = config['tabName'] + '/' + config['mapBounds'] + '/' + config['var3'] + '/' + config['var4'];
+        var hashString = config['tabName'] + '/' + config['mapBounds'] + '/' + config['detailID'] + '/' + config['var4'];
         window.location.hash = hashString;
     }
 
@@ -836,7 +850,7 @@
     var uiConfig = {
         'tabName': '',
         'mapBounds': '',
-        'var3': '',
+        'detailID': '',
         'var4': '',
     };
     //**************** END INITIALISE UI CONFIG VARS *************
@@ -1065,6 +1079,8 @@
             if (!uiConfig['mapBounds']) {
                 map.fitBounds(pointsLayer.getBounds());
             }
+            configUI();
+
 
         });
 
@@ -1146,10 +1162,6 @@
             },1);
         });
 
-
-
-
-        //parseUrlAndConfigUI();
 
     });
 </script>
