@@ -68,7 +68,7 @@
     <!-- <link href="css/jquery.dateline.css" rel="stylesheet"> -->
     <!-- <script src="js/jquery.dateline.js"></script> -->
 
-
+    <link href="css/meetups.css" rel="stylesheet" type="text/css">
 
     <style>
         html, body {
@@ -389,6 +389,46 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="tab-pane fade" id="participants-tab" role="tabpanel" aria-labelledby="messages-tab">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                </div>
+                                <div class="card-body">
+                                    <h4>Exploring social networks by participant</h4>
+                                    <p><span id="subject_participant_tab"></span>'s biography shows musical meetups involving the following partipants:</p>
+                                    <span id="participants_tab_content"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="purposes-tab" role="tabpanel" aria-labelledby="messages-tab">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                </div>
+                                <div class="card-body">
+                                    <h4>Exploring social networks by purpose</h4>
+                                    <p><span id="subject_purpose_tab"></span>'s biography shows musical meetups involving the following
+                                        categorised by the following themes and purposes:</p>
+                                    <span id="purpose_tab_content"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="places-tab" role="tabpanel" aria-labelledby="messages-tab">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                </div>
+                                <div class="card-body">
+                                    <h4>Exploring social networks by place</h4>
+                                    <p><span id="subject_place_tab"></span>'s biography shows musical meetups in the following
+                                        places:</p>
+                                    <span id="place_tab_content"></span>
+                                </div>
+                            </div>
+                        </div>
+
+
                     </div>
 
                     <div class="card shadow mb-4">
@@ -653,6 +693,15 @@
             case 'nav-map-tab':
                 output = 'map-tab';
                 break;
+            case 'nav-participants-tab':
+                output = 'participants-tab';
+                break;
+            case 'nav-purposes-tab':
+                output = 'purposes-tab';
+                break;
+            case 'nav-places-tab':
+                output = 'places-tab';
+                break;
             default:
                 output = '';
         }
@@ -833,6 +882,9 @@
         $.getJSON("services/biography.php?id=<?= $_GET["id"]; ?>", function(result){
             $('#spanSubjectName').text(result.name);
             $('#spanSubjectNameCardHeader').text(result.name);
+            $('#subject_participant_tab').text(result.name);
+            $('#subject_purpose_tab').text(result.name);
+            $('#subject_place_tab').text(result.name);
             $('#spanBirthDate').text(result.birthdate);
             $('#spanBirthPlace').text(result.birthplace);
             $('#spanAbstract').text(result.abstract);
@@ -884,7 +936,8 @@
                     "end": stopDate,
                     "content": eventText,
                     "title": "Purpose: " + field.purpose,
-                    "group": field.purpose
+                    "group": field.purpose,
+                    "className": getTimelineItemClass(field.purpose)
                 };
                 if (field.beginDate !== null && field.beginDate !== "") {
                     myEvents.push(singleEvent);
@@ -988,6 +1041,7 @@
                 html += field.label + ' <em>(' + field.count + ')</em><br />';
             });
             $('#topLocations').html(html);
+            $('#place_tab_content').html(html);
         });
 
         $.getJSON("services/biography-stats.php?id=<?= $_GET["id"]; ?>&stat=period", function(result){
@@ -1004,6 +1058,7 @@
                 html += field.label + ' <em>(' + field.count + ')</em><br />';
             });
             $('#topThemes').html(html);
+            $('#purpose_tab_content').html(html);
         });
 
         $.getJSON("services/biography-stats.php?id=<?= $_GET["id"]; ?>&stat=people", function(result){
@@ -1019,6 +1074,7 @@
                 }
             });
             $('#topParticipants').html(html);
+            $('#participants_tab_content').html(html);
         });
 
 

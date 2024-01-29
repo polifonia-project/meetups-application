@@ -102,42 +102,66 @@ function getViewOnMapButton(data) {
     return buttonHtml;
 }
 
+function getTimelineItemClass(group) {
+    switch (group) {
+        case 'Music making':
+            return 'groups-musicmaking-item'
+            break;
+        case 'Personal life':
+            return 'groups-personallife-item'
+            break;
+        case 'Business meeting':
+            return 'groups-businessmeeting-item'
+            break;
+        case 'Education':
+            return 'groups-education-item'
+            break;
+        case 'Coincidence':
+            return 'groups-coincidence-item'
+            break;
+        case 'Public celebration':
+            return 'groups-publiccelebration-item'
+            break;
+    }
+    return '';
+}
+
 function buildTimelineGroups(groupList) {
     var groupMasterList = {
         'Personal life': {
             id: 'Personal life',
             content: 'Personal life',
-            style: 'color: red;'
+            className: 'groups-personallife-title'
             // Optional: a field 'className', 'style', 'order', [properties]
         },
         'Music making': {
             id: 'Music making',
             content: 'Music making',
-            style: 'color: green;'
+            className: 'groups-musicmaking-title'
             // Optional: a field 'className', 'style', 'order', [properties]
         },
         'Education': {
             id: 'Education',
             content: 'Education',
-            style: 'color: blue;'
+            className: 'groups-education-title'
             // Optional: a field 'className', 'style', 'order', [properties]
         },
         'Public celebration': {
             id: 'Public celebration',
             content: 'Public celebration',
-            style: 'color: yellow;'
+            className: 'groups-publicationcelebration-title'
             // Optional: a field 'className', 'style', 'order', [properties]
         },
         'Business meeting': {
             id: 'Business meeting',
             content: 'Business meeting',
-            style: 'color: purple;'
+            className: 'groups-businessmeeting-title'
             // Optional: a field 'className', 'style', 'order', [properties]
         },
         'Coincidence': {
             id: 'Coincidence',
             content: 'Coincidence',
-            style: 'color: orange;'
+            className: 'groups-coincidence -title'
             // Optional: a field 'className', 'style', 'order', [properties]
         },
     };

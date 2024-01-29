@@ -1,0 +1,42 @@
+
+.groups-musicmaking-title {
+    color: #034c11 !important;
+}
+.groups-musicmaking-item {
+    background-color: rgb(117, 197, 128);
+}
+
+.groups-personallife-title {
+    color: #662446 !important;
+}
+.groups-personallife-item {
+    background-color: rgb(206, 132, 171);
+}
+
+.groups-education-title {
+    color: #07196a !important;
+}
+.groups-education-item {
+    background-color: rgb(133, 153, 223);
+}
+
+.groups-coincidence-title {
+    color: #5f1804 !important;
+}
+.groups-coincidence-item {
+    background-color: rgb(227, 127, 105);
+}
+
+.groups-businessmeeting-title {
+    color: #30095d !important;
+}
+.groups-businessmeeting-item {
+    background-color: rgb(201, 162, 246);
+}
+
+.groups-publiccelebration-title {
+    color: #09323f !important;
+}
+.groups-publiccelebration-item {
+    background-color: rgb(123, 179, 185);
+}
