@@ -372,6 +372,8 @@
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-primary">Timeline of meetups</h6>
+                                    <p>Here the musical meetups for this subject are displayed on a timeline. Click the timeline to highlight it and enable
+                                    interactions - the timeline can be dragged left and right or zoomed in and out with your scroll wheel to explore in more detail. </p>
                                 </div>
                                 <div class="card card-body">
                                     <div id="timeline"></div>
@@ -381,6 +383,8 @@
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-primary">Meetup frequency</h6>
+                                    <p>The following graph shows popular and active periods of meetups for this subject over time. The
+                                    graph is calculated using a 3-year rolling average of the number of musical meetups occurring in each year for the subject.</p>
                                 </div>
                                 <div class="card card-body">
                                     <div id="chart-wrapper">
@@ -693,6 +697,9 @@
             case 'nav-map-tab':
                 output = 'map-tab';
                 break;
+            case 'nav-timeline-tab':
+                output = 'timeline-tab';
+                break;
             case 'nav-participants-tab':
                 output = 'participants-tab';
                 break;
@@ -973,6 +980,7 @@
                     //labels: ['1850', '1860', '1870', '1880', '1890', '1900'],
                     labels: newLabels,
                     datasets: [
+                        /*
                         {
                         label: 'Frequency',
                         data: newData,
@@ -980,13 +988,15 @@
                             borderColor: 'rgb(14,101,232)',
                         tension: 0.5
                         },
+                        */
                         {
                             label: 'Rolling Average',
                             data: rollingAverageData,
                             borderColor: 'rgb(169,7,88)',
                             borderWidth: 1,
-                            tension: 0.6,
-                            fill: false, // Do not fill under the line
+                            tension: 0.2,
+                            fill: true, // Do not fill under the line
+                            pointRadius: 0,
                         }
                     ]
                 },
@@ -995,7 +1005,10 @@
                     maintainAspectRatio: false,
                     scales: {
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
                         }
                     },
                     plugins: {
