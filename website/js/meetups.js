@@ -82,13 +82,20 @@ function calculateRollingAverage(data, points) {
     let rollingAvg = [];
 
     for (let i = 0; i < data.length; i++) {
-        if (i < points - 1) {
+        //if (i < points - 1) {
+        if (false) {
             // Not enough data points to calculate average
             rollingAvg.push(null); // Placeholder for no data
         } else {
             let sum = 0;
             for (let j = 0; j < points; j++) {
-                sum += data[i - j];
+                if (data[i - j]) {
+                    sum += data[i - j];
+                }
+                else {
+                    sum += 0;
+                }
+
             }
             rollingAvg.push(sum / points);
         }
