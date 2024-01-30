@@ -290,6 +290,8 @@
                                     <!--<h6 class="m-0 font-weight-bold text-primary">Meetups (data view)</h6>-->
                                 </div>
                                 <div class="card-body">
+                                    <p>The following table shows all complete meetups for this subject. To also view incomplete data and other
+                                    historical traces for this subject, please use the <em>Reading view</em> tab.</p>
                                     <div class="table-responsive">
                                         <table class="table table-bordered" id="meetupsTable">
                                             <thead>
@@ -328,7 +330,7 @@
                                 <div class="card-body">
                                     <div class="form-group">
                                         <div class="custom-control custom-switch ml-1">
-                                            <input type="checkbox" class="custom-control-input" id="showtraces">
+                                            <input type="checkbox" class="custom-control-input" id="showtraces" checked>
                                             <label class="custom-control-label" for="showtraces">Show incomplete meetup data</label>
                                         </div>
                                     </div>
@@ -945,7 +947,9 @@
                 buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" onclick="populateDetailsPanel('+i+');"><i class="fas fa-search-plus"></i> View details</button> ';
 
                 // TABLE VIEW
-                table.row.add([formatDateString(field.beginDate, field.endDate, field.time_evidence), field.location, field.participants, field.purpose, buttonHtml])
+                if (field.meetupType == "HM") {
+                    table.row.add([formatDateString(field.beginDate, field.endDate, field.time_evidence), field.location, field.participants, field.purpose, buttonHtml])
+                }
 
                 // READING VIEW
                 readingFieldsHTML = '';

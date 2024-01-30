@@ -8,7 +8,7 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX geo: <https://www.w3.org/2003/01/geo/wgs84_pos>
 PREFIX time: <http://www.w3.org/2006/time#>
-SELECT ?meetup ?evidence_text ?purpose
+SELECT ?meetup ?evidence_text ?purpose ?meetuptype
 (GROUP_CONCAT( DISTINCT ?participant; separator=", " ) as ?participants_URI )
 (GROUP_CONCAT( DISTINCT ?participant_label; separator=", " ) as ?participants_label )
 (GROUP_CONCAT( DISTINCT ?location_uri; separator=", " ) as ?locations_URI )
@@ -22,18 +22,15 @@ SELECT ?meetup ?evidence_text ?purpose
 WHERE
 {
     VALUES ?subject { <'.$biography.'> }
-    ?meetup rdf:type mtp:Meetup ;
+    ?meetup
         mtp:hasSubject ?subject ;
         mtp:hasEvidenceText ?evidence_text ;
-        mtp:hasType ?type . 
-  FILTER (regex ( str (?type), str ("HM") ) ) .
+        #mtp:hasType "HM" . 
+        mtp:hasType ?meetuptype . 
   ?meetup mtp:hasParticipant ?aParticipantIRI .
   ?aParticipantIRI rdf:type mtp:Participant ;
-                   mtp:hasEntity ?participant ;
-                   mtp:hasTextEvidence ?mentionPerson.
-  FILTER  (!regex (str(?participant), str(?subject) ) || isBlank(?participant) ) .
-  OPTIONAL { ?participant rdfs:label ?part_label  } 
-  BIND ( IF (!isBlank(?participant),?part_label,?mentionPerson) AS ?participant_label ) .
+                   mtp:hasEntity ?participant .
+  OPTIONAL { ?participant rdfs:label ?participant_label  } . 
   ?meetup mtp:hasPurpose ?aPurposeIRI .
   ?aPurposeIRI rdf:type mtp:Purpose ;
                mtp:hasAPurposeFirst ?purpose1 .    
@@ -44,7 +41,11 @@ WHERE
   		geo:lat ?lat ;
         geo:long ?long . } . 
   ?meetup mtp:happensAt ?time_expression_URI .
-  ?time_expression_URI rdf:type ?typeTimeExpression .
+    FILTER  (!regex (str(?participant), str(?subject) ) ) .
+    ?participant rdfs:label ?participant_label .
+    ?purpose_uri rdfs:label ?purpose .
+    ?time_expression_URI mtp:hasEvidenceText ?hasEvidenceTextTimeExpression ;
+    rdf:type ?typeTimeExpression .
     FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
     OPTIONAL {
         ?time_expression_URI time:hasBeginning ?beginDate;
@@ -52,8 +53,7 @@ WHERE
             mtp:hasEvidenceText ?time_evidence_text .
     } .
 }
-GROUP BY ?meetup ?evidence_text ?purpose
-ORDER BY ?meetup';
+GROUP BY ?meetup ?evidence_text ?purpose ?meetuptype';
 
 $sparql_encoded = urlencode($sparql);
 $curl = curl_init();
@@ -88,6 +88,7 @@ $outputObj = [];
 foreach ($bindings as $binding) {
     $tempObject = [
         'meetup' => $binding->meetup->value,
+        'meetupType' => $binding->meetuptype->value,
         'evidence' => $binding->evidence_text->value,
         'purpose' => $binding->purpose->value,
         'participants' => explode(",", $binding->participants_label->value),
