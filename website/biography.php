@@ -758,7 +758,7 @@
         return activeTabName;
     }
 
-    function participantCardHtml(label, link, image, count) {
+    function participantCardHtml(label, link, image, abstract, count) {
         if (link) {
             cardBorder = 'border-left-success';
             userIcon = '<i class="fas fa-user text-success"></i>';
@@ -779,16 +779,16 @@
         html += '        <h6 class="m-0 font-weight-bold text-primary">'+label+' <em>('+count+')</em></h6>';
         html += '    </div>';
         html += '    <div class="card card-body">';
-        html += '<p>' + thumbNail;
+        //html += thumbNail;
         if (link) {
-            html += '        <a href="biography.php?id=' + link + '">Explore biography and meetups for this subject</a>';
+            html += '<p>'+ thumbNail + abstract.substring(0,200) + '...</p><p><a href="biography.php?id=' + link + '">Explore biography and meetups for '+label+'</a></p>';
         }
         else {
-            html += '<em>This participant\'s biography and details are not yet included within the meetups application.</em>';
+            html += '<p><em>This participant\'s biography and details are not yet included within the meetups application.</em></p>';
         }
 
-        html += '    </p></div>';
-        html += '</div></div>';
+        html += '';
+        html += '</div></div></div>';
 
         return html;
     }
@@ -1169,14 +1169,14 @@
                         tophtml += '<a href="biography.php?id=' + field.link + '"><em>'+label+' (' + field.count + ')</em></a><br />';
                     }
                     //bodyhtml += '<a href="biography.php?id=' + field.link + '"><em>'+label+' (' + field.count + ')</em></a><br />';
-                    bodyhtml += participantCardHtml(label, field.link, field.image, field.count);
+                    bodyhtml += participantCardHtml(label, field.link, field.image, field.abstract, field.count);
                 }
                 else {
                     if (i < numTopStats) {
                         tophtml += label + ' <em>(' + field.count + ')</em><br />';
                     }
                     //bodyhtml += label + ' <em>(' + field.count + ')</em><br />';
-                    bodyhtml += participantCardHtml(label, field.link, field.image, field.count);
+                    bodyhtml += participantCardHtml(label, field.link, field.image, field.abstract, field.count);
                 }
             });
             $('#topParticipants').html(tophtml);
