@@ -328,12 +328,15 @@
                                     </h6>
                                 </div>
                                 <div class="card-body">
+                                    <p>This reading view shows all meetup data held on this subject, including incomplete meetups and historical traces. </p>
+                                    <!--
                                     <div class="form-group">
                                         <div class="custom-control custom-switch ml-1">
                                             <input type="checkbox" class="custom-control-input" id="showtraces" checked>
                                             <label class="custom-control-label" for="showtraces">Show incomplete meetup data</label>
                                         </div>
                                     </div>
+                                    -->
                                     <div class="table-responsive">
                                         <table class="table table-bordered" id="readingTable">
                                             <thead>
@@ -946,7 +949,7 @@
             $.each(result, function(i, field){
                 buttonHtml = '<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" onclick="populateDetailsPanel('+i+');"><i class="fas fa-search-plus"></i> View details</button> ';
 
-                // TABLE VIEW
+                // TABLE VIEW - only show complete historical meetups, not traces (type HM vs HT)
                 if (field.meetupType == "HM") {
                     table.row.add([formatDateString(field.beginDate, field.endDate, field.time_evidence), field.location, field.participants, field.purpose, buttonHtml])
                 }
@@ -958,7 +961,15 @@
                 readingFieldsHTML += '<br /><strong>Participants: </strong>'+field.participants;
                 readingFieldsHTML += '<br /><strong>Purpose: </strong>'+field.purpose;
 
-                evidenceHTML = '<p>' + field.evidence + '</p>' + getViewOnMapButton(field);
+                if (field.meetupType != "HM") {
+                    warningMessage = 'This incomplete entry is marked as a \'historical trace\' as it does not contain a full set of meetup attributes';
+                    symbol = '<div class="card border-left-warning"><div class="card-body"><div class="float-right"><a href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="' + warningMessage + '">';
+                    symbol += '<i class="fas fa-exclamation-triangle text-warning"></i></a></div>';
+                    evidenceHTML = symbol + '<p>' + field.evidence + '</p>' + getViewOnMapButton(field) + '</div></div>';
+                }
+                else {
+                    evidenceHTML = '<div class="card border-left-success"><div class="card-body"><p>' + field.evidence + '</p>' + getViewOnMapButton(field) + '</div></div>';
+                }
                 tableReading.row.add([evidenceHTML, readingFieldsHTML])
 
 
