@@ -758,19 +758,33 @@
         return activeTabName;
     }
 
-    function participantCardHtml(label, link, count) {
+    function participantCardHtml(label, link, image, count) {
+        if (link) {
+            cardBorder = 'border-left-success';
+            userIcon = '<i class="fas fa-user text-success"></i>';
+            thumbNail = '';
+            if (image) {
+                thumbNail = '<img src="'+image+'" class="rounded float-right" width="100px">';
+            }
+        }
+        else {
+            cardBorder = 'border-left-warning';
+            userIcon = '<i class="fas fa-user-slash text-warning"></i>';
+            thumbNail = '';
+        }
         var html = '';
-        html += '<div class="col-md-4"><div class="card shadow mb-4">';
+        html += '<div class="col-md-4"><div class="card shadow mb-4 '+cardBorder+'">';
         html += '    <div class="card-header py-3">';
+        html += '        <div class="float-right">'+userIcon+'</div>';
         html += '        <h6 class="m-0 font-weight-bold text-primary">'+label+' <em>('+count+')</em></h6>';
         html += '    </div>';
         html += '    <div class="card card-body">';
-        html += '<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Edward_Elgar.jpg/275px-Edward_Elgar.jpg" class="rounded float-right" width="100px">';
+        html += '<p>' + thumbNail;
         if (link) {
             html += '        <a href="biography.php?id=' + link + '">Explore biography and meetups for this subject</a>';
         }
         else {
-            html += '        ...';
+            html += '<em>This participant\'s biography and details are not yet included within the meetups application.</em>';
         }
 
         html += '    </p></div>';
@@ -1155,14 +1169,14 @@
                         tophtml += '<a href="biography.php?id=' + field.link + '"><em>'+label+' (' + field.count + ')</em></a><br />';
                     }
                     //bodyhtml += '<a href="biography.php?id=' + field.link + '"><em>'+label+' (' + field.count + ')</em></a><br />';
-                    bodyhtml += participantCardHtml(label, field.link, field.count);
+                    bodyhtml += participantCardHtml(label, field.link, field.image, field.count);
                 }
                 else {
                     if (i < numTopStats) {
                         tophtml += label + ' <em>(' + field.count + ')</em><br />';
                     }
                     //bodyhtml += label + ' <em>(' + field.count + ')</em><br />';
-                    bodyhtml += participantCardHtml(label, field.link, field.count);
+                    bodyhtml += participantCardHtml(label, field.link, field.image, field.count);
                 }
             });
             $('#topParticipants').html(tophtml);

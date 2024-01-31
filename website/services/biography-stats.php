@@ -36,7 +36,7 @@ ORDER BY DESC(?count)
 $sparqlPeople = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT ( COUNT( ?participant) as ?count ) ?label ?link
+SELECT ( COUNT( ?participant) as ?count ) ?label ?link ?image
 WHERE {
     VALUES ?subject { <'.$biography.'> }
     []  mtp:hasSubject ?subject ;
@@ -51,10 +51,11 @@ WHERE {
         FILTER EXISTS {
             [] mtp:hasSubject ?participant ; mtp:hasType "HM" .
         }
+        ?participant mtp:thumbnail ?image .
         BIND (?participant AS ?link)
     }
 }
-GROUP BY ?label ?link
+GROUP BY ?label ?link ?image
 ORDER BY DESC(?count) ?participant
 #LIMIT 2';
 
@@ -131,6 +132,7 @@ foreach ($bindings as $binding) {
     $item = [
         'label' => $binding->label->value,
         'link' => $binding->link->value,
+        'image' => $binding->image->value,
         'count' => $binding->count->value
     ];
     $outputObj[] = $item;
