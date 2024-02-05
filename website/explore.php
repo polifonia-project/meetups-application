@@ -705,7 +705,7 @@ $searchPanel = True;
                         // READING VIEW
                         readingFieldsHTML = '';
                         readingFieldsHTML += '<br /><strong>Subject: </strong>'+subject_label;
-                        readingFieldsHTML += '<strong>When: </strong>'+formatDateString(field.beginDate, field.endDate, field.time_evidence);
+                        readingFieldsHTML += '<br /><strong>When: </strong>'+formatDateString(field.beginDate, field.endDate, field.time_evidence);
                         readingFieldsHTML += '<br /><strong>Where: </strong>'+field.location;
                         readingFieldsHTML += '<br /><strong>Participants: </strong>'+field.participants;
                         readingFieldsHTML += '<br /><strong>Purpose: </strong>'+field.purpose;
@@ -769,6 +769,7 @@ $searchPanel = True;
                             //labels: ['1850', '1860', '1870', '1880', '1890', '1900'],
                             labels: newLabels,
                             datasets: [
+                                /*
                                 {
                                     label: 'Frequency',
                                     data: newData,
@@ -776,6 +777,8 @@ $searchPanel = True;
                                     borderColor: 'rgb(14,101,232)',
                                     tension: 0.5
                                 },
+                                */
+
                                 {
                                     label: 'Rolling Average',
                                     data: rollingAverageData,
@@ -783,6 +786,7 @@ $searchPanel = True;
                                     borderWidth: 1,
                                     tension: 0.6,
                                     fill: false, // Do not fill under the line
+                                    pointRadius: 0,
                                 }
                             ]
                         },

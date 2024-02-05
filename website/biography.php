@@ -252,10 +252,10 @@
                                     type="button" role="tab" aria-controls="timeline-tab" aria-selected="false">Participants
                             </button>
                             <button class="nav-link" id="nav-purposes-tab" data-toggle="tab" data-target="#purposes-tab"
-                                    type="button" role="tab" aria-controls="timeline-tab" aria-selected="false">Purposes
+                                    type="button" role="tab" aria-controls="timeline-tab" aria-selected="false" disabled>Purposes
                             </button>
                             <button class="nav-link" id="nav-places-tab" data-toggle="tab" data-target="#places-tab"
-                                    type="button" role="tab" aria-controls="timeline-tab" aria-selected="false">Places
+                                    type="button" role="tab" aria-controls="timeline-tab" aria-selected="false" disabled>Places
                             </button>
                         </div>
                     </nav>
