@@ -181,3 +181,13 @@ function buildTimelineGroups(groupList) {
 
     return groups;
 }
+
+function copyURL() {
+    navigator.clipboard.writeText(window.location.href)
+        .then(() => {
+            alert("URL copied to clipboard");
+        })
+        .catch(err => {
+            console.error("Failed to copy URL: ", err);
+        });
+}
