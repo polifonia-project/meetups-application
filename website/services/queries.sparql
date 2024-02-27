@@ -142,7 +142,7 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX geo: <https://www.w3.org/2003/01/geo/wgs84_pos>
 PREFIX time: <http://www.w3.org/2006/time#>
-SELECT ?meetup ?evidence_text ?purpose
+SELECT ?meetup ?evidence_text ?purpose ?meetuptype
 (GROUP_CONCAT( DISTINCT ?participant; separator=", " ) as ?participants_URI )
 (GROUP_CONCAT( DISTINCT ?participant_label; separator=", " ) as ?participants_label )
 (GROUP_CONCAT( DISTINCT ?location_uri; separator=", " ) as ?locations_URI )
@@ -157,7 +157,8 @@ WHERE
 {
 VALUES ?subject { <http://dbpedia.org/resource/Edward_Elgar> }
 	?meetup mtp:hasSubject ?subject ;
-             mtp:hasType "HM" ;  
+             #mtp:hasType "HM" ;
+             mtp:hasType ?meetuptype ;
              mtp:hasEvidenceText ?evidence_text ;
              mtp:hasParticipant ?aParticipantIRI .
 	
@@ -186,7 +187,7 @@ time:hasEnd ?endDate ;
 mtp:hasEvidenceText ?time_evidence_text .
 } .
 }
-GROUP BY ?meetup ?evidence_text ?purpose
+GROUP BY ?meetup ?evidence_text ?purpose ?meetuptype
 ORDER BY ?meetup
 
 # ==============================================================
