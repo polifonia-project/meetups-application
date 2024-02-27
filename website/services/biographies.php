@@ -22,8 +22,8 @@ SELECT ?subject ?subject_label ?dob ?dod
 WHERE {
     #?meetup  mtp:hasSubject ?subject .
     ?subject rdfs:label ?subject_label ;
-    mtp:hasdob ?dob ;
-    mtp:hasdod ?dod .
+    mtp:hasdob ?dob .
+    OPTIONAL { ?subject mtp:hasdod ?dod }
   FILTER EXISTS {?meetup  mtp:hasSubject ?subject}
 }';
 $sparql_encoded = urlencode($sparql);
