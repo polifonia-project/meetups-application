@@ -251,12 +251,14 @@
                             <button class="nav-link" id="nav-participants-tab" data-toggle="tab" data-target="#participants-tab"
                                     type="button" role="tab" aria-controls="timeline-tab" aria-selected="false">Participants
                             </button>
+                            <!--
                             <button class="nav-link" id="nav-purposes-tab" data-toggle="tab" data-target="#purposes-tab"
                                     type="button" role="tab" aria-controls="timeline-tab" aria-selected="false" disabled>Purposes
                             </button>
                             <button class="nav-link" id="nav-places-tab" data-toggle="tab" data-target="#places-tab"
                                     type="button" role="tab" aria-controls="timeline-tab" aria-selected="false" disabled>Places
                             </button>
+                            -->
                         </div>
                     </nav>
                     <div class="tab-content">
