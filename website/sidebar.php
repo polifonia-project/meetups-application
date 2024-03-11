@@ -35,7 +35,7 @@
     <li class="nav-item">
         <a class="nav-link" href="explore.php">
             <i class="fas fa-fw fa-chart-area"></i>
-            <span>Explore</span></a>
+            <span>Find meetups</span></a>
     </li>
 
     <hr class="sidebar-divider">

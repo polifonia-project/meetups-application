@@ -11,7 +11,7 @@ $searchPanel = True;
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>MEETUPS - Explore</title>
+    <title>MEETUPS - Find meetups</title>
 
     <!-- Custom fonts for this template -->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -108,7 +108,7 @@ $searchPanel = True;
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 mt-4 text-gray-800">Explore</h1>
+                    <h1 class="h3 mb-2 mt-4 text-gray-800">Find meetups</h1>
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary">Search terms</h6>
