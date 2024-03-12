@@ -110,10 +110,10 @@ WHERE{
     '.$boundsFilter.'
     
     # participant
-    ?participant_uri rdf:type mtp:Participant .
+    #?participant_uri rdf:type mtp:Participant .
     OPTIONAL { ?participant_uri rdfs:label ?part_tempLabel . }
     FILTER  (!regex (str(?part_tempLabel), str(?subject) ) || isBlank(?participant_uri) ) .
-    OPTIONAL { ?participant_uri mtp:hasTextEvidence ?mentionPerson . } .
+    #ßOPTIONAL { ?participant_uri mtp:hasTextEvidence ?mentionPerson . } .
     BIND ( COALESCE(?part_tempLabel, ?mentionPerson) AS ?participant_label) .
     
     # purpose
