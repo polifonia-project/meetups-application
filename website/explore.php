@@ -45,6 +45,8 @@ $searchPanel = True;
     <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
     <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
 
+    <link href="css/meetups.css" rel="stylesheet" type="text/css">
+
     <style>
         #geocoder {
             z-index: 1000;
@@ -672,6 +674,8 @@ $searchPanel = True;
 
                     let dateFrequencyData = generateDateFrequencyData(result);
 
+                    var groupList = [];
+
                     table.clear();
                     meetupsData = result;
                     resultsCount = 0;
@@ -731,20 +735,26 @@ $searchPanel = True;
                             "start": field.beginDate,
                             "end": stopDate,
                             "content": eventText,
-                            "title": "Purpose: " + field.purpose
+                            "title": "Purpose: " + field.purpose,
+                            "group": field.purpose,
+                            "className": getTimelineItemClass(field.purpose)
                         };
                         if (field.beginDate !== null && field.beginDate !== "")  {
                             myEvents.push(singleEvent);
                         }
-
+                        // Build a list of the groups in this results set
+                        if (!groupList.includes(field.purpose)) {
+                            groupList.push(field.purpose);
+                        }
                     });
 
                     // Create a Timeline
                     //timelineItems = new vis.DataSet(myEvents);
                     timelineItems.clear();
-                    timelineItems.add(myEvents);
+                    //timelineItems.add(myEvents);
                     $(timelineContainer).empty();
-                    var timeline = new vis.Timeline(timelineContainer, timelineItems, timelineOptions);
+                    timelineItems = new vis.DataSet(myEvents);
+                    var timeline = new vis.Timeline(timelineContainer, timelineItems, buildTimelineGroups(groupList), timelineOptions);
                     timeline.on('select', function (properties) {
                         //console.log(properties);
                         populateDetailsPanel(properties.items[0]);
