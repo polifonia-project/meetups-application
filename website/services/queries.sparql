@@ -111,28 +111,22 @@ PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT ( COUNT( ?participant) as ?count ) ?label ?link
 WHERE {
-    VALUES ?subject { <http://dbpedia.org/resource/Wolfgang_Amadeus_Mozart> }
+    # VALUES ?subject { <http://dbpedia.org/resource/Wolfgang_Amadeus_Mozart> }
+  VALUES ?subject { <http://dbpedia.org/resource/Yehudi_Menuhin> }
     []  mtp:hasSubject ?subject ;
         mtp:hasType "HM" ;
         mtp:hasParticipant ?aParticipantIRI .
   ?aParticipantIRI mtp:hasEntity ?participant .
   FILTER ( ?participant != ?subject ) .
-  SERVICE <https://dbpedia.org/sparql/> {
-        OPTIONAL {
-            ?participant rdfs:label ?label .  FILTER langMatches( lang(?label), "EN" )
-        }
-  }
-  OPTIONAL { ?participant rdfs:label ?label . }
-    OPTIONAL {
-        FILTER EXISTS {
-            [] mtp:hasSubject ?participant ; mtp:hasType "HM" .
-        }
-        BIND (?participant AS ?link)
-    }
+  OPTIONAL { ?participant rdfs:label ?label }
+  OPTIONAL { ?aParticipantIRI mtp:hasTextEvidence ?temp_label .
+    BIND ( COALESCE(?label, ?temp_label) AS ?label) . }
+  OPTIONAL { FILTER EXISTS {
+      [] mtp:hasSubject ?participant . }
+    BIND (?participant AS ?link) }
 }
 GROUP BY ?label ?link
 ORDER BY DESC(?count) ?participant
-LIMIT 2
 
 # ==============================================================
 
