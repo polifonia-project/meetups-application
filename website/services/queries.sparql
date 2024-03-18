@@ -143,39 +143,34 @@ SELECT ?meetup ?evidence_text ?purpose ?meetuptype
 (GROUP_CONCAT( DISTINCT ?beginDate ; separator=", " ) as ?beginDates )
 (GROUP_CONCAT( DISTINCT ?endDate ; separator=", " ) as ?endDates )
 (GROUP_CONCAT( DISTINCT ?time_evidence_text ; separator=", " ) as ?time_evidence_texts )
-WHERE
-{
-VALUES ?subject { <http://dbpedia.org/resource/Edward_Elgar> }
-	?meetup mtp:hasSubject ?subject ;
-             #mtp:hasType "HM" ;
-             mtp:hasType ?meetuptype ;
-             mtp:hasEvidenceText ?evidence_text ;
-             mtp:hasParticipant ?aParticipantIRI .
-	
-?aParticipantIRI mtp:hasEntity ?participant ;
+WHERE {
+  VALUES ?subject { <http://dbpedia.org/resource/Wolfgang_Amadeus_Mozart> }
+  ?meetup mtp:hasSubject ?subject ;
+          #mtp:hasType "HM" ;
+          mtp:hasType ?meetuptype ;
+          mtp:hasEvidenceText ?evidence_text ;
+          mtp:hasParticipant ?aParticipantIRI .
+  ?aParticipantIRI mtp:hasEntity ?participant ;
                    mtp:hasTextEvidence ?mentionPerson.
   FILTER NOT EXISTS { ?aParticipantIRI mtp:hasEntity ?subject } .
   OPTIONAL { ?participant rdfs:label ?part_tempLabel . }
-  FILTER  (!isBlank(?participant) ) .
-  BIND ( COALESCE(?part_tempLabel, ?mentionPerson) AS ?participant_label) .
-	
-?meetup mtp:hasPurpose ?aPurposeIRI .
-?aPurposeIRI rdf:type mtp:Purpose ;
-mtp:hasAPurposeFirst ?purpose1 .
-?purpose1 rdfs:label ?purpose .
-?meetup mtp:hasPlace ?aPlaceIRI .
-?aPlaceIRI mtp:hasEntity ?location_uri .
-OPTIONAL { ?location_uri rdfs:label ?location_label ;
-geo:lat ?lat ;
-geo:long ?long . } .
-?meetup mtp:happensAt ?time_expression_URI .
-?time_expression_URI rdf:type ?typeTimeExpression .
-FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
-OPTIONAL {
-?time_expression_URI time:hasBeginning ?beginDate;
-time:hasEnd ?endDate ;
-mtp:hasEvidenceText ?time_evidence_text .
-} .
+  OPTIONAL { ?aParticipantIRI mtp:hasTextEvidence ?temp_label .
+    BIND ( COALESCE(?part_tempLabel, ?temp_label) AS ?participant_label) . }
+  ?meetup mtp:hasPurpose ?aPurposeIRI .
+  ?aPurposeIRI rdf:type mtp:Purpose ;
+  mtp:hasAPurposeFirst ?purpose1 .
+  ?purpose1 rdfs:label ?purpose .
+  ?meetup mtp:hasPlace ?aPlaceIRI .
+  ?aPlaceIRI mtp:hasEntity ?location_uri .
+  OPTIONAL { ?location_uri rdfs:label ?location_label ;
+                           geo:lat ?lat ;
+                           geo:long ?long . } .
+  ?meetup mtp:happensAt ?time_expression_URI .
+  ?time_expression_URI rdf:type ?typeTimeExpression .
+  FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
+  OPTIONAL { ?time_expression_URI time:hasBeginning ?beginDate ;
+                                  time:hasEnd ?endDate }
+  OPTIONAL { ?time_expression_URI mtp:hasEvidenceText ?time_evidence_text . } .
 }
 GROUP BY ?meetup ?evidence_text ?purpose ?meetuptype
 ORDER BY ?meetup
@@ -281,11 +276,9 @@ WHERE{
     # time
   	?time_expression_URI rdf:type ?typeTimeExpression .
     FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
-    OPTIONAL {
-        ?time_expression_URI time:hasBeginning ?beginDate;
-            time:hasEnd ?endDate ;
-            mtp:hasEvidenceText ?time_evidence_text .
-    } .
+    OPTIONAL { ?time_expression_URI time:hasBeginning ?beginDate;
+                             time:hasEnd ?endDate }
+    OPTIONAL { ?time_expression_URI mtp:hasEvidenceText ?time_evidence_text .
     
     # SEARCH Extract year from the xsd:date
     # Use the following 4 lines for the date search, undocument when needed
