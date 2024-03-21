@@ -36,33 +36,6 @@ ORDER BY DESC(?count)
 $sparqlPeople = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT ( COUNT( ?participant) as ?count ) ?label ?link ?image ?abstract
-WHERE {
-    VALUES ?subject { <'.$biography.'> }
-    []  mtp:hasSubject ?subject ;
-        mtp:hasType "HM" ;
-        mtp:hasParticipant ?aParticipantIRI .
-  ?aParticipantIRI rdf:type mtp:Participant ;
-                   mtp:hasEntity ?participant .
-  FILTER ( !isblank(?participant) ) .
-  FILTER ( ?participant != ?subject ) .
-  OPTIONAL { ?participant rdfs:label ?label . }
-    OPTIONAL {
-        FILTER EXISTS {
-            [] mtp:hasSubject ?participant ; mtp:hasType "HM" .
-        }
-        ?participant mtp:thumbnail ?image ;
-                     mtp:hasAbstract ?abstract .
-        BIND (?participant AS ?link)
-    }
-}
-GROUP BY ?label ?link ?image ?abstract
-ORDER BY DESC(?count) ?participant
-#LIMIT 2';
-
-$sparqlPeople2 = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
-PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT ( COUNT( ?participant) as ?count ) ?label ?link ?image ?abstract
 WHERE {
@@ -96,7 +69,6 @@ mtp:hasSubject <'.$biography.'> ;
 mtp:hasType "HM" .
 ?s mtp:happensAt ?time_expression_URI .
 ?time_expression_URI rdf:type ?typeTimeExpression .
-FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) . 
 ?time_expression_URI time:hasBeginning|time:hasEnd ?date .
 # Extract year from the xsd:date
 BIND(YEAR(?date) AS ?label)
@@ -114,7 +86,7 @@ switch ($statType) {
         $sparql = $sparqlPlace;
         break;
     case 'people':
-        $sparql = $sparqlPeople2;
+        $sparql = $sparqlPeople;
         break;
     case 'period':
         $sparql = $sparqlPeriod;

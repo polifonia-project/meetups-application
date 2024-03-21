@@ -83,7 +83,7 @@ PREFIX time: <http://www.w3.org/2006/time#>
 PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-SELECT ( COUNT( ?date) as ?count ) ?year
+SELECT ( COUNT( ?date) as ?count ) ?label
 WHERE {
   ?s mtp:hasSubject <http://dbpedia.org/resource/Yehudi_Menuhin> ;
      mtp:hasType "HM" .
@@ -91,9 +91,9 @@ WHERE {
   ?time_expression_URI rdf:type ?typeTimeExpression .
   ?time_expression_URI time:hasBeginning|time:hasEnd ?date .
   # Extract year from the xsd:date
-  BIND(YEAR(?date) AS ?year)
+  BIND(YEAR(?date) AS ?label)
 }
-GROUP BY ?year
+GROUP BY ?label
 ORDER BY DESC(?count)
 LIMIT 2
 
