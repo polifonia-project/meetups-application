@@ -125,9 +125,9 @@ WHERE{
     FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
     OPTIONAL {
         ?time_expression_URI time:hasBeginning ?beginDate;
-            time:hasEnd ?endDate ;
-            mtp:hasEvidenceText ?time_evidence_text .
-    } .
+            time:hasEnd ?endDate
+    } 
+    OPTIONAL { ?time_expression_URI mtp:hasEvidenceText ?time_evidence_text } .
     # SEARCH Extract year from the xsd:date
     
     '.$fromFilter.'
