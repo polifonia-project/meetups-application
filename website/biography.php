@@ -442,7 +442,7 @@
 
                     </div>
 
-                    <div class="card shadow mb-4">
+                    <div class="card shadow mb-4" id="detailCard">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary" id="detailView">Detail view</h6>
                         </div>
@@ -912,6 +912,8 @@
         // Event listener for Bootstrap tab change
         $('#nav-tab button').on('shown.bs.tab', function(event){
             console.log(getActiveTabName());
+
+
             uiConfig['tabName'] = getTabNameFromNav(event.target.id);
             rebuildURLHash(uiConfig);
             if (event.target.id == 'nav-map-tab') {
@@ -938,6 +940,24 @@
 
                     });
                 }
+            }
+            //If the tab is biography or reading view, hide the details panel, else show it.
+            switch(event.target.id) {
+                case 'nav-biog-tab':
+                    // code block
+                    $('#detailCard').hide();
+                    break;
+                case 'nav-reading-tab':
+                    // code block
+                    $('#detailCard').hide();
+                    break;
+                case 'nav-participants-tab':
+                    // code block
+                    $('#detailCard').hide();
+                    break;
+                default:
+                    // code block
+                    $('#detailCard').show();
             }
         });
 
