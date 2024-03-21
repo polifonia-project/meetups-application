@@ -66,30 +66,23 @@ PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT ( COUNT( ?participant) as ?count ) ?label ?link ?image ?abstract
 WHERE {
-    VALUES ?subject { <'.$biography.'> }
+  VALUES ?subject { <'.$biography.'> }
     []  mtp:hasSubject ?subject ;
         mtp:hasType "HM" ;
         mtp:hasParticipant ?aParticipantIRI .
   ?aParticipantIRI mtp:hasEntity ?participant .
   FILTER ( ?participant != ?subject ) .
-  SERVICE <https://dbpedia.org/sparql/> {
-        OPTIONAL {
-            ?participant rdfs:label ?label .  FILTER langMatches( lang(?label), "EN" )
-        }
-  }
-  OPTIONAL { ?participant rdfs:label ?label . }
-    OPTIONAL {
-        FILTER EXISTS {
-            [] mtp:hasSubject ?participant ; mtp:hasType "HM" .
-        }
-        ?participant mtp:thumbnail ?image ;
+  OPTIONAL { ?participant rdfs:label ?label }
+  OPTIONAL { ?aParticipantIRI mtp:hasTextEvidence ?temp_label .
+    BIND ( COALESCE(?label, ?temp_label) AS ?label) . }
+  OPTIONAL { FILTER EXISTS {
+      [] mtp:hasSubject ?participant . }
+      ?participant mtp:thumbnail ?image ;
                      mtp:hasAbstract ?abstract .
-        BIND (?participant AS ?link)
-    }
+    BIND (?participant AS ?link) }
 }
 GROUP BY ?label ?link ?image ?abstract
-ORDER BY DESC(?count) ?participant
-#LIMIT 2';
+ORDER BY DESC(?count) ?participant';
 
 $sparqlPeriod = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -121,7 +114,7 @@ switch ($statType) {
         $sparql = $sparqlPlace;
         break;
     case 'people':
-        $sparql = $sparqlPeople;
+        $sparql = $sparqlPeople2;
         break;
     case 'period':
         $sparql = $sparqlPeriod;
