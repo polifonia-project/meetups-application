@@ -842,7 +842,6 @@
     myEvents = [];
     //********** TIMELINE STUFF END *************
 
-
     //**************** DUMMY FREQUENCY CHART *************
     const ctx = document.getElementById('timeFrequencyChart');
 
