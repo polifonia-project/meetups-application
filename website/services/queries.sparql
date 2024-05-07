@@ -198,8 +198,6 @@ ORDER BY DESC(?score)
 LIMIT 500
 
 
-# ==============================================================
-
 # MEETUP SEARCH - new search working using FullTextSearch 
 # TODO: include dates and purpose search
 
@@ -225,12 +223,12 @@ WHERE{
   {
     # Search place
     ?meetup mtp:hasPlace/mtp:hasEntity/rdfs:label ?lit1 .
-    ?lit1 bds:search "London" .
+    ?lit1 bds:search "Vienna" .
     ?lit1 bds:matchAllTerms "true" .
     
     # Search participant
     ?meetup mtp:hasParticipant/mtp:hasEntity/rdfs:label ?lit2 .
-    ?lit2 bds:search "Edward" .
+    ?lit2 bds:search "Mozart" .
     ?lit2 bds:matchAllTerms "true" .
     } 
   # Complementary information
@@ -254,38 +252,37 @@ WHERE{
     # <http://w3id.org/polifonia/pilot/meetups/businessMeeting>
     # <http://w3id.org/polifonia/pilot/meetups/coincidence>
     
+    # purpose
+    ?purpose_uri rdfs:label ?purpose_Label . 
+    
     # location
-    OPTIONAL { ?place_uri rdfs:label ?place_tempLabel . } 
+    ?place_uri rdfs:label ?place_tempLabel . 
     BIND ( COALESCE(?place_tempLabel, REPLACE(STR(?place_uri),"http://dbpedia.org/resource/","" )) AS ?location_label)
     OPTIONAL { ?place_uri geo:lat ?lat ; geo:long ?long . } 
     # Search by coordinates, undocument when needed
-	# FILTER (?long > -5.5) . FILTER (?long < 6.2) . FILTER (?lat > 45.78) . FILTER (?lat < 53.25) .
-    
+	# FILTER (?long > -51.0) . FILTER (?long < 6.2) . FILTER (?lat > 45.78) . FILTER (?lat < 53.25) .
+   
     # participant
-    ?participant_uri rdf:type mtp:Participant .
+    # document following lines when needed
     OPTIONAL { ?participant_uri rdfs:label ?part_tempLabel . }
-    FILTER  (!regex (str(?part_tempLabel), str(?subject) ) || isBlank(?participant_uri) ) .
+    # FILTER  (!regex (str(?part_tempLabel), str(?subject) ) || isBlank(?participant_uri) ) .
     OPTIONAL { ?participant_uri mtp:hasTextEvidence ?mentionPerson . } .
     BIND ( COALESCE(?part_tempLabel, ?mentionPerson) AS ?participant_label) .
     
-    # purpose
-    OPTIONAL { ?purpose_uri rdfs:label ?purpose_tempLabel . }
-    BIND ( COALESCE(?purpose_tempLabel, "") AS ?purpose_Label )
-    
     # time
   	?time_expression_URI rdf:type ?typeTimeExpression .
-    FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
+    #FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
     OPTIONAL { ?time_expression_URI time:hasBeginning ?beginDate;
                              time:hasEnd ?endDate }
     OPTIONAL { ?time_expression_URI mtp:hasEvidenceText ?time_evidence_text .
-    
     # SEARCH Extract year from the xsd:date
     # Use the following 4 lines for the date search, undocument when needed
     # BIND(YEAR(?beginDate) AS ?b_year)
-    # FILTER ( ?b_year>=1890)
+    # FILTER ( ?b_year>=1877)
     # BIND(YEAR(?endDate) AS ?e_year)
     # FILTER ( ?e_year <=1900)
   }
+ }
 }
 GROUP BY ?meetup ?evidence_text ?purpose_Label
 LIMIT 20
