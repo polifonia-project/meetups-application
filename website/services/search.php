@@ -101,9 +101,11 @@ WHERE{
     
     # search by purpose
     '.$purposeFilter.'
+    ?purpose_uri rdfs:label ?purpose_Label .
     
     # location
-    OPTIONAL { ?place_uri rdfs:label ?place_tempLabel . } 
+    #OPTIONAL { ?place_uri rdfs:label ?place_tempLabel . } 
+    ?place_uri rdfs:label ?place_tempLabel .
     BIND ( COALESCE(?place_tempLabel, REPLACE(STR(?place_uri),"http://dbpedia.org/resource/","" )) AS ?location_label)
     OPTIONAL { ?place_uri geo:lat ?lat ; geo:long ?long . } 
     # Search by coordinates
@@ -112,17 +114,17 @@ WHERE{
     # participant
     #?participant_uri rdf:type mtp:Participant .
     OPTIONAL { ?participant_uri rdfs:label ?part_tempLabel . }
-    FILTER  (!regex (str(?part_tempLabel), str(?subject) ) || isBlank(?participant_uri) ) .
-    #ßOPTIONAL { ?participant_uri mtp:hasTextEvidence ?mentionPerson . } .
+    #FILTER  (!regex (str(?part_tempLabel), str(?subject) ) || isBlank(?participant_uri) ) .
+    OPTIONAL { ?participant_uri mtp:hasTextEvidence ?mentionPerson . } .
     BIND ( COALESCE(?part_tempLabel, ?mentionPerson) AS ?participant_label) .
     
     # purpose
-    OPTIONAL { ?purpose_uri rdfs:label ?purpose_tempLabel . }
-    BIND ( COALESCE(?purpose_tempLabel, "") AS ?purpose_Label )
+    #OPTIONAL { ?purpose_uri rdfs:label ?purpose_tempLabel . }
+    #BIND ( COALESCE(?purpose_tempLabel, "") AS ?purpose_Label )
     
     # time
   	?time_expression_URI rdf:type ?typeTimeExpression .
-    FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
+    #FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
     OPTIONAL {
         ?time_expression_URI time:hasBeginning ?beginDate;
             time:hasEnd ?endDate
