@@ -8,11 +8,12 @@ $sparqlTheme = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ( COUNT( ?label) as ?count ) ?label
+GRAPH <'.$biography.'>{
 WHERE {
 ?s mtp:hasSubject <'.$biography.'> ;
 mtp:hasType "HM" .
 ?s mtp:hasPurpose/mtp:hasAPurposeFirst/rdfs:label ?label .
-}
+}}
 GROUP BY ?label
 ORDER BY DESC(?count)
 #LIMIT 2';
@@ -22,40 +23,52 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ( COUNT( ?label) as ?count ) ?label
 WHERE {
+GRAPH <'.$biography.'>{
   ?s mtp:hasSubject <'.$biography.'>  ;
        mtp:hasType "HM" .  
   ?s  mtp:hasPlace/mtp:hasEntity ?p . 
   OPTIONAL {?p rdfs:label ?labelTmp }.
   BIND ( COALESCE(?labelTmp, 
       REPLACE(STR(?p),"http://dbpedia.org/resource/","" )) AS ?label)
-}
+}}
 GROUP BY ?label ?p
 ORDER BY DESC(?count)
 #LIMIT 2';
 
 $sparqlPeople = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
-PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mtp:  <http://w3id.org/polifonia/ontology/meetups-ontology#>
 
-SELECT ( COUNT( ?participant) as ?count ) ?label ?link ?image ?abstract
+SELECT (COUNT(*) AS ?count) ?participant ?label ?link
 WHERE {
-  VALUES ?subject { <'.$biography.'> }
-    []  mtp:hasSubject ?subject ;
-        mtp:hasType "HM" ;
-        mtp:hasParticipant ?aParticipantIRI .
-  ?aParticipantIRI mtp:hasEntity ?participant .
-  FILTER ( ?participant != ?subject ) .
-  OPTIONAL { ?participant rdfs:label ?label }
-  OPTIONAL { ?aParticipantIRI mtp:hasTextEvidence ?temp_label .
-    BIND ( COALESCE(?label, ?temp_label) AS ?label) . }
-  OPTIONAL { FILTER EXISTS {
-      [] mtp:hasSubject ?participant . }
-      ?participant mtp:thumbnail ?image ;
-                     mtp:hasAbstract ?abstract .
-    BIND (?participant AS ?link) }
+  {
+    SELECT ?participant ?label ?link
+    WHERE {
+      GRAPH <'.$biography.'> {
+        VALUES ?subject { <'.$biography.'> }
+
+        ?meetup mtp:hasSubject ?subject ;
+                mtp:hasType "HM" ;
+                mtp:hasParticipant ?participantNode .
+
+        ?participantNode mtp:hasEntity ?participant .
+        FILTER (?participant != ?subject)
+
+        OPTIONAL { ?participant rdfs:label ?label1 }
+        OPTIONAL { ?participantNode mtp:hasTextEvidence ?temp_label }
+
+        BIND(COALESCE(?label1, ?temp_label, STR(?participant)) AS ?label)
+
+        OPTIONAL {
+          ?m2 mtp:hasSubject ?participant .
+          BIND(?participant AS ?link)
+        }
+      }
+    }
+  }
 }
-GROUP BY ?label ?link ?image ?abstract
-ORDER BY DESC(?count) ?participant';
+GROUP BY ?participant ?label ?link
+ORDER BY DESC(?count) ?label';
 
 $sparqlPeriod = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -64,6 +77,7 @@ PREFIX dbo:	<http://dbpedia.org/ontology/>
 PREFIX time: <http://www.w3.org/2006/time#>
 SELECT ( COUNT( ?date) as ?count ) ?label
 WHERE {
+GRAPH <'.$biography.'>{
 ?s 
 mtp:hasSubject <'.$biography.'> ;
 mtp:hasType "HM" .
@@ -72,7 +86,7 @@ mtp:hasType "HM" .
 ?time_expression_URI time:hasBeginning|time:hasEnd ?date .
 # Extract year from the xsd:date
 BIND(YEAR(?date) AS ?label)
-}
+}}
 GROUP BY ?label
 ORDER BY DESC(?count)
 LIMIT 2';
