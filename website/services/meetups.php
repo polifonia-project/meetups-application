@@ -120,7 +120,7 @@ PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX time: <http://www.w3.org/2006/time#>
 
 SELECT ?meetup ?evidence_text ?purpose ?meetuptype
-(GROUP_CONCAT( DISTINCT ?participant; separator=", " ) as ?participants_URI )
+(GROUP_CONCAT( DISTINCT STR(?participant); separator=", " ) as ?participants_URI )
 (GROUP_CONCAT( DISTINCT ?participant_label; separator=", " ) as ?participants_label )
 (GROUP_CONCAT( DISTINCT ?location_uri; separator=", " ) as ?locations_URI )
 (GROUP_CONCAT( DISTINCT ?location_label; separator=", " ) as ?locations_label )
@@ -131,47 +131,52 @@ SELECT ?meetup ?evidence_text ?purpose ?meetuptype
 (GROUP_CONCAT( DISTINCT ?endDate ; separator=", " ) as ?endDates )
 (GROUP_CONCAT( DISTINCT ?time_evidence_text ; separator=", " ) as ?time_evidence_texts )
 WHERE {
-GRAPH <'.$biography.'> {
-  VALUES ?subject { <'.$biography.'> }
-  ?meetup mtp:hasSubject ?subject ;
-          mtp:hasType ?meetuptype ;
-          mtp:hasEvidenceText ?evidence_text .
-  ?meetup mtp:hasPurpose ?aPurposeIRI .
-  ?aPurposeIRI rdf:type mtp:Purpose ;
-               mtp:hasAPurposeFirst ?purpose1 .
-  ?purpose1 rdfs:label ?purpose .
+  GRAPH <'.$biography.'> {
+    VALUES ?subject { <'.$biography.'> }
 
-  OPTIONAL {
-    ?meetup mtp:hasParticipant ?aParticipantIRI .
-    ?aParticipantIRI mtp:hasEntity ?participant .
-    FILTER NOT EXISTS { ?aParticipantIRI mtp:hasEntity ?subject } .
-    OPTIONAL { ?participant rdfs:label ?part_tempLabel . }
-    OPTIONAL { ?aParticipantIRI mtp:hasTextEvidence ?temp_label . }
-    BIND ( COALESCE(?part_tempLabel, ?temp_label) AS ?participant_label ) .
-  }
+    ?meetup mtp:hasSubject ?subject ;
+            mtp:hasType ?meetuptype ;
+            mtp:hasEvidenceText ?evidence_text .
 
-  OPTIONAL {
-    ?meetup mtp:hasPlace ?aPlaceIRI .
-    ?aPlaceIRI mtp:hasEntity ?location_uri .
-    BIND(IRI(?location_uri) AS ?location_graph)
+    ?meetup mtp:hasPurpose ?aPurposeIRI .
+    ?aPurposeIRI rdf:type mtp:Purpose ;
+                 mtp:hasAPurposeFirst ?purpose1 .
+    ?purpose1 rdfs:label ?purpose .
+
     OPTIONAL {
-      GRAPH ?location_graph { ?location_graph  rdfs:label ?location_label ;
-                    geo:lat ?lat ;
-                    geo:long ?long .
-    }}
-  }
-
-  OPTIONAL {
-    ?meetup mtp:happensAt ?time_expression_URI .
-    ?time_expression_URI rdf:type ?typeTimeExpression .
-    FILTER ( ?typeTimeExpression !=  mtp:TimeExpression ) .
-    OPTIONAL {
-      ?time_expression_URI time:hasBeginning ?beginDate ;
-                           time:hasEnd ?endDate
+      ?meetup mtp:hasParticipant ?aParticipantIRI .
+      ?aParticipantIRI mtp:hasEntity ?participant .
+      MINUS { ?aParticipantIRI mtp:hasEntity <'.$biography.'> }
+      OPTIONAL { ?participant rdfs:label ?part_tempLabel . }
+      OPTIONAL { ?aParticipantIRI mtp:hasTextEvidence ?temp_label . }
+      BIND ( COALESCE(?part_tempLabel, ?temp_label) AS ?participant_label ) .
     }
-    OPTIONAL { ?time_expression_URI mtp:hasEvidenceText ?time_evidence_text . }
+
+    OPTIONAL {
+      ?meetup mtp:hasPlace ?aPlaceIRI .
+      ?aPlaceIRI mtp:hasEntity ?location_uri .
+      BIND(IRI(?location_uri) AS ?location_graph)
+      OPTIONAL {
+        GRAPH ?location_graph {
+          ?location_graph rdfs:label ?location_label ;
+                          geo:lat ?lat ;
+                          geo:long ?long .
+        }
+      }
+    }
+
+    OPTIONAL {
+      ?meetup mtp:happensAt ?time_expression_URI .
+      ?time_expression_URI rdf:type ?typeTimeExpression .
+      FILTER ( ?typeTimeExpression != mtp:TimeExpression ) .
+      OPTIONAL {
+        ?time_expression_URI time:hasBeginning ?beginDate ;
+                             time:hasEnd ?endDate
+      }
+      OPTIONAL { ?time_expression_URI mtp:hasEvidenceText ?time_evidence_text . }
+    }
   }
-}}
+}
 GROUP BY ?meetup ?evidence_text ?purpose ?meetuptype
 ORDER BY ?meetup';
 
