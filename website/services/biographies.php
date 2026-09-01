@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__.'/sparql-helpers.php';
 header('Content-Type: application/json; charset=utf-8');
 
 //$sparql = "prefix mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#> select distinct ?biography from <http://data.open.ac.uk/context/meetups> where { ?s  mtp:hasSubject ?biography }";
@@ -41,7 +42,10 @@ curl_setopt_array($curl, array(
     CURLOPT_POSTFIELDS => 'query='.$sparql_encoded,
     CURLOPT_HTTPHEADER => array(
         'Accept: application/sparql-results+json',
-        'Content-Type: application/x-www-form-urlencoded'
+        'Content-Type: application/x-www-form-urlencoded',
+        // PHP's cURL adds "Expect: 100-continue" for bodies over ~1KB; the
+        // endpoint never answers it, so the request stalls until a 408.
+        'Expect:'
     ),
 ));
 
@@ -52,7 +56,7 @@ curl_close($curl);
 
 $responseObj = json_decode($response);
 //print_r($responseObj->results->bindings);
-$bindings = $responseObj->results->bindings;
+$bindings = isset($responseObj->results->bindings) ? $responseObj->results->bindings : array();
 $outputObj = [];
 /*
 foreach ($bindings as $binding) {
@@ -61,10 +65,10 @@ foreach ($bindings as $binding) {
 */
 foreach ($bindings as $binding) {
     $tempObject = [
-        'subject' => $binding->subject->value,
-        'subject_label' => $binding->subject_label->value,
-        'dob' => $binding->dob->value,
-        'dod' => $binding->dod->value
+        'subject' => bindingValue($binding, 'subject'),
+        'subject_label' => bindingValue($binding, 'subject_label'),
+        'dob' => bindingValue($binding, 'dob'),
+        'dod' => bindingValue($binding, 'dod')
     ];
     $outputObj[] = $tempObject;
 }

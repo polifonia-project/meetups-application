@@ -1,7 +1,8 @@
 <?php
+require_once __DIR__.'/sparql-helpers.php';
 header('Content-Type: application/json; charset=utf-8');
 
-$biography = $_GET["id"];
+$biography = sparqlIri($_GET["id"]);
 
 $sparql = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#> '.
 'PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> '.
@@ -42,7 +43,10 @@ curl_setopt_array($curl, array(
     CURLOPT_POSTFIELDS => 'query='.$sparql_encoded,
     CURLOPT_HTTPHEADER => array(
         'Accept: application/sparql-results+json',
-        'Content-Type: application/x-www-form-urlencoded'
+        'Content-Type: application/x-www-form-urlencoded',
+        // PHP's cURL adds "Expect: 100-continue" for bodies over ~1KB; the
+        // endpoint never answers it, so the request stalls until a 408.
+        'Expect:'
     ),
 ));
 
@@ -53,14 +57,16 @@ curl_close($curl);
 
 
 $responseObj = json_decode($response);
-//print_r($responseObj->results->bindings);
-$bindings = $responseObj->results->bindings[0];
+// A subject with no meetups (or a query that errored) yields no bindings at
+// all; reading row 0 blindly emitted a notice per field and a broken payload.
+$rows = isset($responseObj->results->bindings) ? $responseObj->results->bindings : array();
+$bindings = count($rows) ? $rows[0] : null;
 $outputObj = [
-    'name' => $bindings->name->value,
-    'abstract' => $bindings->comment->value,
-    'birthdate' => $bindings->birthdate->value,
-    'birthplace' => $bindings->birthplacelabel->value,
-    'image' => $bindings->image->value
+    'name' => bindingValue($bindings, 'name'),
+    'abstract' => bindingValue($bindings, 'comment'),
+    'birthdate' => bindingValue($bindings, 'birthdate'),
+    'birthplace' => bindingValue($bindings, 'birthplacelabel'),
+    'image' => bindingValue($bindings, 'image')
 ];
 //header('Content-Type: application/json; charset=utf-8');
 echo(json_encode($outputObj));

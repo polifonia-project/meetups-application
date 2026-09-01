@@ -266,7 +266,7 @@
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-primary"><span
-                                                id="spanSubjectNameCardHeader"></span> <em>(<?= $_GET["id"]; ?>)</em>
+                                                id="spanSubjectNameCardHeader"></span> <em>(<?= htmlspecialchars($_GET["id"], ENT_QUOTES, 'UTF-8'); ?>)</em>
                                     </h6>
                                 </div>
                                 <div class="card-body">
@@ -783,7 +783,8 @@
         html += '    <div class="card card-body">';
         //html += thumbNail;
         if (link) {
-            html += '<p>'+ thumbNail + abstract.substring(0,200) + '...</p><p><a href="biography.php?id=' + link + '">Explore biography and meetups for '+label+'</a></p>';
+            var snippet = abstract ? abstract.substring(0,200) + '...' : '';
+            html += '<p>'+ thumbNail + snippet + '</p><p><a href="biography.php?id=' + link + '">Explore biography and meetups for '+label+'</a></p>';
         }
         else {
             html += '<p><em>This participant\'s biography and details are not yet included within the meetups application.</em></p>';
@@ -960,7 +961,7 @@
             }
         });
 
-        $.getJSON("services/biography.php?id=<?= $_GET["id"]; ?>", function(result){
+        $.getJSON("services/biography.php?id=<?= rawurlencode($_GET["id"]); ?>", function(result){
             $('#spanSubjectName').text(result.name);
             $('#spanSubjectNameCardHeader').text(result.name);
             $('#subject_participant_tab').text(result.name);
@@ -969,13 +970,18 @@
             $('#spanBirthDate').text(result.birthdate);
             $('#spanBirthPlace').text(result.birthplace);
             $('#spanAbstract').text(result.abstract);
-            imageHtml = '<img src="' + result.image + '" class="rounded float-right" alt="Frederic Chopin" width="250px">';
+            // A subject with no thumbnail returns null, which became src="null"
+            // and rendered a broken-image icon.
+            imageHtml = '';
+            if (result.image) {
+                imageHtml = '<img src="' + result.image + '" class="rounded float-right" alt="' + (result.name || '') + '" width="250px">';
+            }
             $('#spanSubjectImage').html(imageHtml);
             //console.log(result);
             //$('#dataTable').DataTable();
         });
 
-        $.getJSON("services/meetups.php?id=<?= $_GET["id"]; ?>", function(result){
+        $.getJSON("services/meetups.php?id=<?= rawurlencode($_GET["id"]); ?>", function(result){
             //console.log(result);
             let dateFrequencyData = generateDateFrequencyData(result);
 
@@ -986,24 +992,24 @@
 
                 // TABLE VIEW - only show complete historical meetups, not traces (type HM vs HT)
                 if (field.meetupType == "HM") {
-                    table.row.add([formatDateString(field.beginDate, field.endDate, field.time_evidence), field.location, field.participants, field.purpose, buttonHtml])
+                    table.row.add([formatDateString(field.beginDate, field.endDate, field.time_evidence), (field.location || ''), (field.participants || ''), (field.purpose || ''), buttonHtml])
                 }
 
                 // READING VIEW
                 readingFieldsHTML = '';
                 readingFieldsHTML += '<strong>When: </strong>'+formatDateString(field.beginDate, field.endDate, field.time_evidence);
-                readingFieldsHTML += '<br /><strong>Where: </strong>'+field.location;
-                readingFieldsHTML += '<br /><strong>Participants: </strong>'+field.participants;
-                readingFieldsHTML += '<br /><strong>Purpose: </strong>'+field.purpose;
+                readingFieldsHTML += '<br /><strong>Where: </strong>'+(field.location || '');
+                readingFieldsHTML += '<br /><strong>Participants: </strong>'+(field.participants || '');
+                readingFieldsHTML += '<br /><strong>Purpose: </strong>'+(field.purpose || '');
 
                 if (field.meetupType != "HM") {
                     warningMessage = 'This incomplete entry is marked as a \'historical trace\' as it does not contain a full set of meetup attributes';
                     symbol = '<div class="card border-left-warning"><div class="card-body"><div class="float-right"><a href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="' + warningMessage + '">';
                     symbol += '<i class="fas fa-exclamation-triangle text-warning"></i></a></div>';
-                    evidenceHTML = symbol + '<p>' + field.evidence + '</p>' + getViewOnMapButton(field) + '</div></div>';
+                    evidenceHTML = symbol + '<p>' + (field.evidence || '') + '</p>' + getViewOnMapButton(field) + '</div></div>';
                 }
                 else {
-                    evidenceHTML = '<div class="card border-left-success"><div class="card-body"><p>' + field.evidence + '</p>' + getViewOnMapButton(field) + '</div></div>';
+                    evidenceHTML = '<div class="card border-left-success"><div class="card-body"><p>' + (field.evidence || '') + '</p>' + getViewOnMapButton(field) + '</div></div>';
                 }
                 tableReading.row.add([evidenceHTML, readingFieldsHTML])
 
@@ -1126,7 +1132,9 @@
             var clusterLayer = L.markerClusterGroup();
             clusterLayer.addLayer(pointsLayer);
             map.addLayer(clusterLayer);
-            if (!uiConfig['mapBounds']) {
+            // A subject whose meetups have no coordinates leaves the layer
+            // empty, and fitBounds throws "Bounds are not valid".
+            if (!uiConfig['mapBounds'] && pointsLayer.getBounds().isValid()) {
                 map.fitBounds(pointsLayer.getBounds());
             }
             configUI();
@@ -1136,7 +1144,7 @@
 
         var numTopStats = 2;
 
-        $.getJSON("services/biography-stats.php?id=<?= $_GET["id"]; ?>&stat=place", function(result){
+        $.getJSON("services/biography-stats.php?id=<?= rawurlencode($_GET["id"]); ?>&stat=place", function(result){
             tophtml = '';
             bodyhtml = '';
             $.each(result, function(i, field){
@@ -1149,7 +1157,7 @@
             $('#place_tab_content').html(bodyhtml);
         });
 
-        $.getJSON("services/biography-stats.php?id=<?= $_GET["id"]; ?>&stat=period", function(result){
+        $.getJSON("services/biography-stats.php?id=<?= rawurlencode($_GET["id"]); ?>&stat=period", function(result){
             tophtml = '';
             $.each(result, function(i, field){
                 tophtml += field.label + ' <em>(' + field.count + ')</em><br />';
@@ -1157,7 +1165,7 @@
             $('#topPeriods').html(tophtml);
         });
 
-        $.getJSON("services/biography-stats.php?id=<?= $_GET["id"]; ?>&stat=theme", function(result){
+        $.getJSON("services/biography-stats.php?id=<?= rawurlencode($_GET["id"]); ?>&stat=theme", function(result){
             tophtml = '';
             bodyhtml = '';
             $.each(result, function(i, field){
@@ -1170,7 +1178,7 @@
             $('#purpose_tab_content').html(bodyhtml);
         });
 
-        $.getJSON("services/biography-stats.php?id=<?= $_GET["id"]; ?>&stat=people", function(result){
+        $.getJSON("services/biography-stats.php?id=<?= rawurlencode($_GET["id"]); ?>&stat=people", function(result){
             tophtml = '';
             bodyhtml = '<div class="row">';
             label = '';
