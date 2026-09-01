@@ -400,7 +400,9 @@ $searchPanel = True;
     <script src="vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-    <script src="js/meetups.js"></script>
+    <!-- ?v=filemtime busts the browser cache whenever this file changes; without
+         it a cached copy keeps serving the old code long after a deploy -->
+    <script src="js/meetups.js?v=<?= filemtime(__DIR__.'/js/meetups.js'); ?>"></script>
     <!-- Page level custom scripts -->
     <script>
         function scrollToAnchor(aid){
@@ -500,7 +502,7 @@ $searchPanel = True;
             meetupDetails = meetupsData[index];
             //console.log(meetupDetails);
             //$('#modalTitle').text('Meetup Details');
-            buttonHtml = '<button type="button" class="btn btn-sm btn-primary" onclick="zoomToPoint('+meetupDetails.lat+','+meetupDetails.long+');"><i class="fas fa-map-marked-alt"></i> View on map</button> ';
+            buttonHtml = getViewOnMapButton(meetupDetails, true);
 
             subjectButtonHtml = '<a class="btn btn-primary btn-sm" href="biography.php?id='+meetupDetails.subject+'" role="button"><i class="fas fa-address-card"></i> View biography</a> ';
 

@@ -104,8 +104,23 @@ function calculateRollingAverage(data, points) {
     return rollingAvg;
 }
 
-function getViewOnMapButton(data) {
-    buttonHtml = '<button type="button" class="btn btn-sm btn-primary" onclick="zoomToPoint('+data.lat+','+data.long+');"><i class="fas fa-map-marked-alt"></i> View on map</button> ';
+function getViewOnMapButton(data, disableWhenUnavailable) {
+    // lat and long arrive as lists: a meetup may carry several places, or none
+    // at all. Interpolating an empty list produced onclick="zoomToPoint(,)",
+    // which is a syntax error the moment the button is clicked, so only offer
+    // the button when there is somewhere to fly to. Where a meetup has more
+    // than one place, the first is used, matching the map marker.
+    var lat = Array.isArray(data.lat) ? data.lat[0] : data.lat;
+    var long = Array.isArray(data.long) ? data.long[0] : data.long;
+    if (!lat || !long) {
+        // In a details panel the button is part of the layout, so show it
+        // greyed out and say why; in a list of meetups it is better dropped.
+        if (disableWhenUnavailable) {
+            return '<button type="button" class="btn btn-sm btn-primary disabled" disabled title="No location recorded for this meetup"><i class="fas fa-map-marked-alt"></i> View on map</button> ';
+        }
+        return '';
+    }
+    buttonHtml = '<button type="button" class="btn btn-sm btn-primary" onclick="zoomToPoint('+lat+','+long+');"><i class="fas fa-map-marked-alt"></i> View on map</button> ';
     return buttonHtml;
 }
 

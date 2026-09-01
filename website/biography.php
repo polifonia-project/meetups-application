@@ -490,7 +490,9 @@
         </div>
     </div>
 
-<script src="js/meetups.js"></script>
+<!-- ?v=filemtime busts the browser cache whenever this file changes; without
+     it a cached copy keeps serving the old code long after a deploy -->
+<script src="js/meetups.js?v=<?= filemtime(__DIR__.'/js/meetups.js'); ?>"></script>
 
 
 
@@ -550,7 +552,7 @@
         //console.log(meetupDetails);
         $('#modalTitle').text('Meetup Details');
         //buttonHtml = '<button type="button" class="btn btn-sm btn-primary" onclick="zoomToPoint('+meetupDetails.lat+','+meetupDetails.long+');"><i class="fas fa-map-marked-alt"></i> View on map</button> ';
-        buttonHtml = getViewOnMapButton(meetupDetails);
+        buttonHtml = getViewOnMapButton(meetupDetails, true);
 
         html = '';
         html += '<p><strong>When</strong>: ' + formatDateString(meetupDetails.beginDate, meetupDetails.endDate, meetupDetails.time_evidence) + '</p>';
@@ -569,7 +571,7 @@
         meetupDetails = meetupsData[index];
         //console.log(meetupDetails);
         //$('#modalTitle').text('Meetup Details');
-        buttonHtml = '<button type="button" class="btn btn-sm btn-primary" onclick="zoomToPoint('+meetupDetails.lat+','+meetupDetails.long+');"><i class="fas fa-map-marked-alt"></i> View on map</button> ';
+        buttonHtml = getViewOnMapButton(meetupDetails, true);
 
         //subjectButtonHtml = '<a class="btn btn-primary btn-sm" href="biography.php?id='+meetupDetails.subject+'" role="button"><i class="fas fa-address-card"></i> View biography</a> ';
         subjectButtonHtml = '';
