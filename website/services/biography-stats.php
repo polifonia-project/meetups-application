@@ -1,15 +1,16 @@
 <?php
+require_once __DIR__.'/sparql-helpers.php';
 header('Content-Type: application/json; charset=utf-8');
 
-$biography = $_GET["id"];
+$biography = sparqlIri($_GET["id"]);
 $statType = $_GET["stat"];
 
 $sparqlTheme = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
 PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ( COUNT( ?label) as ?count ) ?label
-GRAPH <'.$biography.'>{
 WHERE {
+GRAPH <'.$biography.'>{
 ?s mtp:hasSubject <'.$biography.'> ;
 mtp:hasType "HM" .
 ?s mtp:hasPurpose/mtp:hasAPurposeFirst/rdfs:label ?label .
@@ -27,10 +28,14 @@ GRAPH <'.$biography.'>{
   ?s mtp:hasSubject <'.$biography.'>  ;
        mtp:hasType "HM" .  
   ?s  mtp:hasPlace/mtp:hasEntity ?p . 
-  OPTIONAL {?p rdfs:label ?labelTmp }.
-  BIND ( COALESCE(?labelTmp, 
-      REPLACE(STR(?p),"http://dbpedia.org/resource/","" )) AS ?label)
-}}
+}
+# A place keeps its rdfs:label outside the biography graph, so looking it up
+# inside the graph always missed and fell back to the URI slug -- which is why
+# this card read "United_States" instead of "United States".
+OPTIONAL {?p rdfs:label ?labelTmp }.
+BIND ( COALESCE(?labelTmp, 
+    REPLACE(STR(?p),"http://dbpedia.org/resource/","" )) AS ?label)
+}
 GROUP BY ?label ?p
 ORDER BY DESC(?count)
 #LIMIT 2';
@@ -39,10 +44,10 @@ $sparqlPeople = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mtp:  <http://w3id.org/polifonia/ontology/meetups-ontology#>
 
-SELECT (COUNT(*) AS ?count) ?participant ?label ?link
+SELECT (COUNT(*) AS ?count) ?participant ?label ?link ?image ?abstract
 WHERE {
   {
-    SELECT ?participant ?label ?link
+    SELECT ?participant ?label ?link ?image ?abstract
     WHERE {
       GRAPH <'.$biography.'> {
         VALUES ?subject { <'.$biography.'> }
@@ -54,20 +59,32 @@ WHERE {
         ?participantNode mtp:hasEntity ?participant .
         FILTER (?participant != ?subject)
 
-        OPTIONAL { ?participant rdfs:label ?label1 }
         OPTIONAL { ?participantNode mtp:hasTextEvidence ?temp_label }
+      }
 
-        BIND(COALESCE(?label1, ?temp_label, STR(?participant)) AS ?label)
+      # A participant does not always carry rdfs:label inside the biography
+      # graph (David Grisman does not), so the label is resolved outside it --
+      # otherwise the card fell back to the raw surface mention, "Grisman".
+      OPTIONAL { ?participant rdfs:label ?label1 }
+      BIND(COALESCE(?label1, ?temp_label, STR(?participant)) AS ?label)
 
-        OPTIONAL {
-          ?m2 mtp:hasSubject ?participant .
-          BIND(?participant AS ?link)
-        }
+      # Whether a participant has a biography page of their own is likewise a
+      # question about the whole graph, not this one. The DISTINCT sub-select
+      # keeps it to at most one row per participant; joining ?m2 directly
+      # multiplies the rows and inflates every ?count.
+      OPTIONAL {
+        { SELECT DISTINCT ?participant (?participant AS ?link)
+          WHERE { ?m2 mtp:hasSubject ?participant } }
+        # The card shows a thumbnail and an abstract snippet alongside the
+        # link. Both are single-valued, so plain OPTIONALs cannot inflate
+        # ?count the way joining ?m2 directly does.
+        OPTIONAL { ?participant mtp:thumbnail ?image }
+        OPTIONAL { ?participant mtp:hasAbstract ?abstract }
       }
     }
   }
 }
-GROUP BY ?participant ?label ?link
+GROUP BY ?participant ?label ?link ?image ?abstract
 ORDER BY DESC(?count) ?label';
 
 $sparqlPeriod = 'PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>
@@ -125,7 +142,10 @@ curl_setopt_array($curl, array(
     CURLOPT_POSTFIELDS => 'query='.$sparql_encoded,
     CURLOPT_HTTPHEADER => array(
         'Accept: application/sparql-results+json',
-        'Content-Type: application/x-www-form-urlencoded'
+        'Content-Type: application/x-www-form-urlencoded',
+        // PHP's cURL adds "Expect: 100-continue" for bodies over ~1KB; the
+        // endpoint never answers it, so the request stalls until a 408.
+        'Expect:'
     ),
 ));
 
@@ -137,15 +157,15 @@ curl_close($curl);
 
 $responseObj = json_decode($response);
 //print_r($responseObj->results->bindings);
-$bindings = $responseObj->results->bindings;
+$bindings = isset($responseObj->results->bindings) ? $responseObj->results->bindings : array();
 $outputObj = [];
 foreach ($bindings as $binding) {
     $item = [
-        'label' => $binding->label->value,
-        'link' => $binding->link->value,
-        'image' => $binding->image->value,
-        'abstract' => $binding->abstract->value,
-        'count' => $binding->count->value
+        'label' => bindingValue($binding, 'label'),
+        'link' => bindingValue($binding, 'link'),
+        'image' => bindingValue($binding, 'image'),
+        'abstract' => bindingValue($binding, 'abstract'),
+        'count' => bindingValue($binding, 'count')
     ];
     $outputObj[] = $item;
 }

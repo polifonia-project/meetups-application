@@ -1,10 +1,29 @@
 <?php
+require_once __DIR__.'/sparql-helpers.php';
 header('Content-Type: application/json; charset=utf-8');
 
 //$purposeFilter = (isset($_GET["purpose"])?"FILTER (regex(str(?purpose), \"".$_GET["purpose"]."\"))":"");
 //$subjectFilter = (isset($_GET["subject"])?"FILTER (regex(str(?subject), \"".$_GET["subject"]."\"))":"");
 //$participantFilter = (isset($_GET["participant"])?"FILTER (regex(str(?participant), \"".$_GET["participant"]."\"))":"");
 //$placeFilter = (isset($_GET["place"])?"FILTER (regex(str(?location_label), \"".$_GET["place"]."\"))":"");
+/**
+ * Build a case-insensitive full-text filter over a label variable.
+ *
+ * The graph used to be served by Blazegraph, whose bds: magic predicates
+ * (bds:search / bds:matchAllTerms) provided this. QLever has no bds: support
+ * and no text index on this dataset, so those triple patterns simply matched
+ * nothing and every text search silently returned zero rows. Each
+ * whitespace-separated term must match, which is what bds:matchAllTerms did.
+ */
+function textMatchFilter($var, $searchTerms) {
+    $clauses = array();
+    foreach (preg_split('/\s+/', trim($searchTerms), -1, PREG_SPLIT_NO_EMPTY) as $term) {
+        $escaped = str_replace(array('\\', '"'), array('\\\\', '\\"'), $term);
+        $clauses[] = 'CONTAINS(LCASE(STR('.$var.')), LCASE("'.$escaped.'"))';
+    }
+    return $clauses ? 'FILTER ( '.implode(' && ', $clauses).' )' : '';
+}
+
 $purposeFilter = "";
 if (isset($_GET["purpose"]) && !empty($_GET["purpose"])) {
     $purposeFilter = 'FILTER (?purpose_uri = <'.$_GET["purpose"].'>)';
@@ -14,24 +33,21 @@ $placeFilter = "";
 if (isset($_GET["place"]) && !empty($_GET["place"])) {
     $placeFilter = '
     ?meetup mtp:hasPlace/mtp:hasEntity/rdfs:label ?lit1 .
-    ?lit1 bds:search "'.$_GET["place"].'" .
-    ?lit1 bds:matchAllTerms "true" .';
+    '.textMatchFilter('?lit1', $_GET["place"]);
 }
 
 $participantFilter = "";
 if (isset($_GET["participant"]) && !empty($_GET["participant"])) {
     $participantFilter = '
     ?meetup mtp:hasParticipant/mtp:hasEntity/rdfs:label ?lit2 .
-    ?lit2 bds:search "'.$_GET["participant"].'" .
-    ?lit2 bds:matchAllTerms "true" .';
+    '.textMatchFilter('?lit2', $_GET["participant"]);
 }
 
 $subjectFilter = "";
 if (isset($_GET["subject"]) && !empty($_GET["subject"])) {
     $subjectFilter = '
     ?meetup mtp:hasSubject/rdfs:label ?lit3 .
-    ?lit3 bds:search "'.$_GET["subject"].'" .
-    ?lit3 bds:matchAllTerms "true" .';
+    '.textMatchFilter('?lit3', $_GET["subject"]);
 }
 
 $fromFilter = "";
@@ -59,22 +75,21 @@ if (isset($_GET["restricttomap"])) {
 }
 
 $sparql = 'PREFIX geo: <https://www.w3.org/2003/01/geo/wgs84_pos>
-PREFIX bds: <http://www.bigdata.com/rdf/search#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mtp: <http://w3id.org/polifonia/ontology/meetups-ontology#>  
 PREFIX time: <http://www.w3.org/2006/time#>
 
 SELECT ?subject ?subject_label ?meetup ?evidence_text ?purpose_Label
-(GROUP_CONCAT( DISTINCT ?place_uri; separator=", " ) as ?locations_URI )
+(GROUP_CONCAT( DISTINCT STR(?place_uri); separator=", " ) as ?locations_URI )
 (GROUP_CONCAT( DISTINCT ?location_label; separator=", " ) as ?locations_label )
-(GROUP_CONCAT( DISTINCT ?lat ; separator=", " ) as ?lats )
-(GROUP_CONCAT( DISTINCT ?long ; separator=", " ) as ?longs )
-(GROUP_CONCAT( DISTINCT ?participant_uri; separator=", " ) as ?participants_URI )
+(GROUP_CONCAT( DISTINCT STR(?lat) ; separator=", " ) as ?lats )
+(GROUP_CONCAT( DISTINCT STR(?long) ; separator=", " ) as ?longs )
+(GROUP_CONCAT( DISTINCT STR(?participant_uri); separator=", " ) as ?participants_URI )
 (GROUP_CONCAT( DISTINCT ?participant_label; separator=", " ) as ?participants_label ) 
-(GROUP_CONCAT( DISTINCT ?time_expression_URI ; separator=", " ) as ?time_expression_URIs )
-(GROUP_CONCAT( DISTINCT ?beginDate ; separator=", " ) as ?beginDates )
-(GROUP_CONCAT( DISTINCT ?endDate ; separator=", " ) as ?endDates )
+(GROUP_CONCAT( DISTINCT STR(?time_expression_URI) ; separator=", " ) as ?time_expression_URIs )
+(GROUP_CONCAT( DISTINCT STR(?beginDate) ; separator=", " ) as ?beginDates )
+(GROUP_CONCAT( DISTINCT STR(?endDate) ; separator=", " ) as ?endDates )
 (GROUP_CONCAT( DISTINCT ?time_evidence_text ; separator=", " ) as ?time_evidence_texts )
 WHERE{
   {
@@ -158,7 +173,10 @@ curl_setopt_array($curl, array(
     CURLOPT_POSTFIELDS => 'query='.$sparql_encoded,
     CURLOPT_HTTPHEADER => array(
         'Accept: application/sparql-results+json',
-        'Content-Type: application/x-www-form-urlencoded'
+        'Content-Type: application/x-www-form-urlencoded',
+        // PHP's cURL adds "Expect: 100-continue" for bodies over ~1KB; the
+        // endpoint never answers it, so the request stalls until a 408.
+        'Expect:'
     ),
 ));
 
@@ -172,24 +190,24 @@ curl_close($curl);
 
 $responseObj = json_decode($response);
 //print_r($responseObj->results->bindings);
-$bindings = $responseObj->results->bindings;
+$bindings = isset($responseObj->results->bindings) ? $responseObj->results->bindings : array();
 $outputObj = [];
 foreach ($bindings as $binding) {
     $tempObject = [
-        'purpose' => $binding->purpose_Label->value,
+        'purpose' => bindingValue($binding, 'purpose_Label'),
         'subject' => $binding->subject->value,
-        'subject_label' => $binding->subject_label->value,
+        'subject_label' => bindingValue($binding, 'subject_label'),
         'evidence_text' => $binding->evidence_text->value,
-        'participants' => $binding->participants_label->value,
-        'location' => explode (",", $binding->locations_label->value),
-        'locationUri' => explode (",", $binding->locations_URI->value),
-        'lat' => explode (",", $binding->lats->value),
-        'long' => explode (",", $binding->longs->value),
+        'participants' => bindingValue($binding, 'participants_label'),
+        'location' => bindingList($binding, 'locations_label'),
+        'locationUri' => bindingList($binding, 'locations_URI'),
+        'lat' => bindingList($binding, 'lats'),
+        'long' => bindingList($binding, 'longs'),
         'meetup' => $binding->meetup->value,
-        'when' => explode (",", $binding->time_expression_URIs->value)[0],
-        'beginDate' => explode (",", $binding->beginDates->value)[0],
-        'endDate' => explode (",", $binding->endDates->value)[0],
-        'time_evidence' => explode (",", $binding->time_evidence_texts->value)[0],
+        'when' => bindingFirst($binding, 'time_expression_URIs'),
+        'beginDate' => bindingFirst($binding, 'beginDates'),
+        'endDate' => bindingFirst($binding, 'endDates'),
+        'time_evidence' => bindingFirst($binding, 'time_evidence_texts'),
     ];
     $outputObj[] = $tempObject;
 }

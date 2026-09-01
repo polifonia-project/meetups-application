@@ -657,7 +657,8 @@ $searchPanel = True;
 
                 //check for map view restrict filter
                 if($("#restricttomap").is(':checked')) {
-                    //console.log(map.getBounds().toBBoxString());
+                    // re-measure in case the pane was resized while hidden
+                    map.invalidateSize();
                     east = map.getBounds().getEast();
                     west = map.getBounds().getWest();
                     north = map.getBounds().getNorth();
@@ -677,6 +678,11 @@ $searchPanel = True;
                     var groupList = [];
 
                     table.clear();
+                    // The reading view is a second DataTable fed from the same
+                    // loop; without clearing it too, each search appended to the
+                    // previous results (11 + 2 = 13 rows) while every other tab
+                    // showed the correct 2.
+                    tableReading.clear();
                     meetupsData = result;
                     resultsCount = 0;
                     $('#resultsCount').text(resultsCount);
@@ -703,18 +709,18 @@ $searchPanel = True;
                             subject_label = field.subject.split('/').pop();
                         }
 
-                        table.row.add([formatDateString(field.beginDate, field.endDate, field.time_evidence), subject_label, field.participants, field.location, field.purpose, buttonHtml])
+                        table.row.add([formatDateString(field.beginDate, field.endDate, field.time_evidence), (subject_label || ''), (field.participants || ''), (field.location || ''), (field.purpose || ''), buttonHtml])
 
 
                         // READING VIEW
                         readingFieldsHTML = '';
-                        readingFieldsHTML += '<br /><strong>Subject: </strong>'+subject_label;
+                        readingFieldsHTML += '<br /><strong>Subject: </strong>'+(subject_label || '');
                         readingFieldsHTML += '<br /><strong>When: </strong>'+formatDateString(field.beginDate, field.endDate, field.time_evidence);
-                        readingFieldsHTML += '<br /><strong>Where: </strong>'+field.location;
-                        readingFieldsHTML += '<br /><strong>Participants: </strong>'+field.participants;
-                        readingFieldsHTML += '<br /><strong>Purpose: </strong>'+field.purpose;
+                        readingFieldsHTML += '<br /><strong>Where: </strong>'+(field.location || '');
+                        readingFieldsHTML += '<br /><strong>Participants: </strong>'+(field.participants || '');
+                        readingFieldsHTML += '<br /><strong>Purpose: </strong>'+(field.purpose || '');
 
-                        evidenceHTML = '<p>' + field.evidence_text + '</p>' + getViewOnMapButton(field);
+                        evidenceHTML = '<p>' + (field.evidence_text || '') + '</p>' + getViewOnMapButton(field);
                         tableReading.row.add([evidenceHTML, readingFieldsHTML])
 
                         //Add events to timeline data object
@@ -855,7 +861,12 @@ $searchPanel = True;
                     });
                     clusterLayer.addLayer(pointsLayer);
                     map.addLayer(clusterLayer);
-                    map.fitBounds(pointsLayer.getBounds());
+                    // A search with no results (or no located results) leaves the
+                    // layer empty, and fitBounds throws "Bounds are not valid",
+                    // aborting the rest of this callback.
+                    if (pointsLayer.getBounds().isValid()) {
+                        map.fitBounds(pointsLayer.getBounds());
+                    }
 
                 });
             });
@@ -864,6 +875,18 @@ $searchPanel = True;
                 setTimeout(function () {
                     map.invalidateSize();
                 },1);
+            });
+
+            // "Restrict to map" filters on the map's visible bounds, but the map
+            // sits in a tab pane that stays hidden until it is first opened, and
+            // a hidden element measures 0x0. Its bounds then collapse to a single
+            // point and the search returns nothing. Open the map when the filter
+            // is switched on, so the area being restricted to is both valid and
+            // visible to the user.
+            $('#restricttomap').on('change', function () {
+                if (this.checked && map.getSize().x === 0) {
+                    $('#nav-home-tab').tab('show');
+                }
             });
 
         });

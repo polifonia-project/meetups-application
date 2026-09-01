@@ -1,4 +1,3 @@
-version: '3.9'
 services:
   php:
     image: php:7.2-apache
@@ -7,8 +6,10 @@ services:
       - '80:80'
     volumes:
     - ./website:/var/www/html/
+    - ./docker/php/dev.ini:/usr/local/etc/php/conf.d/zz-dev.ini:ro
   db:
     image: mysql:5.7
+    platform: linux/amd64
     restart: always
     environment:
       MYSQL_DATABASE: 'meetups'

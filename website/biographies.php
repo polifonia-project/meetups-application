@@ -379,7 +379,8 @@
                     subject_label = field.subject.split('/').pop();
                 }
                 subjectHtml = '<a href="biography.php?id=' + field.subject + '">' + subject_label + '</a>';
-                table.row.add([subjectHtml, field.dob, field.dod])
+                // absent dates come back as null, which would render as the text "null"
+                table.row.add([subjectHtml, field.dob || '', field.dod || ''])
             });
             table.draw() //update display
 
